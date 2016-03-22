@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/colorGreen"/>
+    <size android:width="@dimen/blood_oxygen_width"
+            android:height="@dimen/blood_oxygen_Height" />
+
+</shape>

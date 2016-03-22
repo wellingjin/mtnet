@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <com.welling.kinghacker.customView.RippleView
+        android:id="@+id/rippleViewOfPersonInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+    >
+        <ImageView
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/abc_ic_ab_back_material"
+        />
+    </com.welling.kinghacker.customView.RippleView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/titleOfActionbar"
+        android:textColor="@color/colorWhite"
+        android:text="@string/app_name"
+        android:textSize="@dimen/title_size"
+        android:layout_gravity="center"
+
+        />
+    <com.welling.kinghacker.customView.RippleView
+        android:id="@+id/rippleViewOfMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        >
+    <ImageView
+        android:id="@+id/buttonMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/abc_ic_menu_overflow_material"
+         />
+    </com.welling.kinghacker.customView.RippleView>
+</FrameLayout>

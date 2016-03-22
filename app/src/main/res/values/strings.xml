@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">健康助手</string>
+    <string name="login">登陆</string>
+    <string name="regist">没有账号？注册一个</string>
+    <string name="forgetPassword">忘记密码</string>
+    <string name="password">密码：</string>
+    <string name="confirmPassword">确认密码：</string>
+    <string name="account">账号：</string>
+    <string name="accountHint">手机号码</string>
+    <string name="logo">logo</string>
+    <string name="setting">设置</string>
+    <string name="about">关于</string>
+    <string name="more">更多</string>
+    <string name="normal">正常</string>
+    <string name="abnormal">异常</string>
+    <string name="default_date">2016–2–3</string>
+    <string name="default_time">19:23</string>
+    <string name="electrocar_diogram">心电</string>
+    <string name="blood_sugar">血糖</string>
+    <string name="blood_pressu">血压</string>
+    <string name="blood_fat">血脂</string>
+    <string name="blood_oxygen">血氧</string>
+    <string name="amount">mmol/L</string>
+    <string name="sync_blood_suger">同步血糖仪数据</string>
+    <string name="query_medicine">用药查询</string>
+    <string name="doctor_info">主治医生信息</string>
+    <string name="filterItem1">最近一周</string>
+    <string name="filterItem2">最近一个月</string>
+    <string name="filterItem3">最近三个月</string>
+    <string name="startTime">起始时间</string>
+    <string name="endTime">截至时间</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+
+    <string name="identityCard">身份证号：</string>
+    <string name="answer">答案：</string>
+    <string name="submit">提交</string>
+
+    <string name="checkNewVersion">检查新版本</string>
+    <string name="sugession">反馈与建议</string>
+    <string name="copyRight">\t\t\t\t\tSTU 版权所有\nCopyright © 2016-2017 Wellingjin\n\t\t\tAll Rights Reserved</string>
+
+    <string name="accountChange">切换账号</string>
+    <string name="alertSetting">提醒设置</string>
+    <string name="exitAccount">注销当前账号</string>
+
+    <string name="persion">个人</string>
+    <string name="doctor">医生</string>
+
+    <string-array name="questions">
+        <item>你的妻子叫什么？</item>
+        <item>你的女儿叫什么？</item>
+        <item>你的初恋叫什么？</item>
+    </string-array>
+
+</resources>

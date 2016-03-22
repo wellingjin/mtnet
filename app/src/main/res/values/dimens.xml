@@ -1,0 +1,39 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_buttom_margin">40dp</dimen>
+    <dimen name="font_size">50sp</dimen>
+    <dimen name="date_size">30sp</dimen>
+    <dimen name="time_size">20sp</dimen>
+    <dimen name="title_size">26sp</dimen>
+    <dimen name="item_size">20sp</dimen>
+
+    <dimen name="blood_suger_width">100dp</dimen>
+    <dimen name="blood_suger_Height">170dp</dimen>
+    <dimen name="lineWidth">3dp</dimen>
+    <dimen name="buttonTextSize">18sp</dimen>
+
+    <dimen name="asixPaintWidth">2dp</dimen>
+    <dimen name="markLength">6dp</dimen>
+    <dimen name="asixTextSize">15sp</dimen>
+    <dimen name="asixTextMark">30dp</dimen>
+    <dimen name="descTextSize">30sp</dimen>
+    <dimen name="pointRadius">2.5dp</dimen>
+    <dimen name="originalY">50dp</dimen>
+    <dimen name="originalX">50dp</dimen>
+    <dimen name="intervalX">40dp</dimen>
+
+    <dimen name="baseLine">150dp</dimen>
+    <dimen name="amplitude">10dp</dimen>
+    <dimen name="range">5dp</dimen>
+    <dimen name="startX">5dp</dimen>
+    <dimen name="paintWidth">1dp</dimen>
+
+    <dimen name="normalTextSize">20sp</dimen>
+
+    <dimen name="rightButtonSize">30dp</dimen>
+
+    <dimen name="blood_oxygen_width">170dp</dimen>
+    <dimen name="blood_oxygen_Height">170dp</dimen>
+</resources>

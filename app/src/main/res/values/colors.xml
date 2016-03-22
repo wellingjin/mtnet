@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#66CD00</color>
+    <color name="colorPrimaryDark">#458B00</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorHint">#b3b3b3</color>
+    <color name="colorAboutBG">#efefef</color>
+    <color name="colorGrate">#a09090</color>
+
+    <color name="colorGreen">#66CD00</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="rippelColor">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+
+    <color name="electrocarDiogramBGColor">#81DFE4</color>
+    <color name="bloodSugerBGColor">#00CED1</color>
+    <color name="bloodPressionBgColor">#90A6EA</color>
+    <color name="bloodOxygenBgColor">#1E90FF</color>
+    <color name="bloodFatBgColor">#6786E9</color>
+
+    <color name="pagerSelectedColor">#FFF5EE</color>
+    <color name="pagerUnselecteColor">#66CD00</color>
+
+    <color name="filterButtonColor">#66CD00</color>
+    <color name="buttonTextColor">#FFFFFF</color>
+
+    <color name="unSelectTabColor">#458B00</color>
+    <color name="selectColor">#81DFE4</color>
+</resources>

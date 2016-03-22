@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/bloodOxygenBgColor"/>
+    <size android:width="@dimen/blood_oxygen_width"
+        android:height="@dimen/blood_oxygen_Height" />
+</shape>
