@@ -51,7 +51,7 @@ public class OverFlowView extends TableLayout{
             icon.setImageResource(iconId);
             row.addView(icon);
         }
-        TextView textView = new TextView(context);
+        TextView textView = new TextView(context) ;
         textView.setTag("text");
         textView.setText(text);
         textView.setTextSize(context.getResources().getDimension(R.dimen.item_size));
