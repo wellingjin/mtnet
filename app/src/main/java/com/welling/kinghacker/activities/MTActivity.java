@@ -1,5 +1,6 @@
 package com.welling.kinghacker.activities;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -22,6 +23,7 @@ public class MTActivity extends AppCompatActivity {
     private ActionBarView actionBarView;
     private OverFlowView overFlowView;
     private View parentView;
+    private boolean isOverFlow = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,19 +46,22 @@ public class MTActivity extends AppCompatActivity {
             actionBarView.setOnclickListener(new ActionBarView.OnclickListener() {
                 @Override
                 public void leftButtonOnClick(boolean isBack) {
-                    if (isBack){
+                    if (isBack) {
                         onBackKey();
-                    }else {
+                    } else {
                         onLeftButtonClick();
                     }
                 }
 
                 @Override
                 public void rightButtonOnClick() {
-                    setOverFlowPosition();
-                    overFlowView.showOverFlow(parentView);
+                    if (isOverFlow) {
+                        setOverFlowPosition();
+                        overFlowView.showOverFlow(parentView);
+                    }
                 }
             });
+            setIsBackEnable(true);
         }
 
     }
@@ -73,6 +78,7 @@ public class MTActivity extends AppCompatActivity {
     }
 //   子类 必须调用这个方法
     protected void setParentView(View parentView){
+        isOverFlow = true;
         this.parentView = parentView;
     }
 //设置overflow的位置
@@ -135,6 +141,10 @@ public class MTActivity extends AppCompatActivity {
         return true;
     }
 
+    protected void gotoActivity(Class activity){
+        Intent intent = new Intent(this,activity);
+        startActivity(intent);
+    }
 
 
 

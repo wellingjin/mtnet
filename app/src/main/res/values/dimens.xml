@@ -24,9 +24,9 @@
     <dimen name="originalX">50dp</dimen>
     <dimen name="intervalX">40dp</dimen>
 
-    <dimen name="baseLine">150dp</dimen>
-    <dimen name="amplitude">10dp</dimen>
-    <dimen name="range">5dp</dimen>
+    <dimen name="baseLine">250dp</dimen>
+    <dimen name="amplitude">6dp</dimen>
+    <dimen name="range">2dp</dimen>
     <dimen name="startX">5dp</dimen>
     <dimen name="paintWidth">1dp</dimen>
 
@@ -36,4 +36,9 @@
 
     <dimen name="blood_oxygen_width">170dp</dimen>
     <dimen name="blood_oxygen_Height">170dp</dimen>
+
+    <dimen name="profileSIze">70dp</dimen>
+    <dimen name="nameHeight">40dp</dimen>
+    <dimen name="nameSize">25sp</dimen>
+    <dimen name="descSize">20sp</dimen>
 </resources>

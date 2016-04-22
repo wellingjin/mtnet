@@ -54,7 +54,7 @@ public class OverFlowView extends TableLayout{
         TextView textView = new TextView(context) ;
         textView.setTag("text");
         textView.setText(text);
-        textView.setTextSize(context.getResources().getDimension(R.dimen.item_size));
+        textView.setTextSize(SystemTool.getSystem(context).PxToDp(context.getResources().getDimension(R.dimen.item_size)));
         textView.setTextColor(getResources().getColor(R.color.colorWhite));
         int textWidth = (int) SystemTool.getSystem(context).adaptation1080((new FontTool(context).getTextWidth(textView)) + PublicRes.getInstance().overFlowItemOffset);
         textView.setWidth(textWidth);

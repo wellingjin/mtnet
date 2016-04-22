@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.welling.kinghacker.activities">
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -15,14 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.welling.kinghacker.activities.HomeActivity"></activity>
-        <activity android:name="com.welling.kinghacker.activities.BloodSugerActivity"></activity>
-        <activity android:name=".ChangePasswordActivity"></activity>
-        <activity android:name=".AboutActivity"></activity>
-        <activity android:name=".SettingActivity"></activity>
-        <activity android:name=".InformationActivity"></activity>
-        <activity android:name=".BloodPressureActivity"></activity>
-        <activity android:name=".BloodOxygenActivity"></activity>
+        <activity android:name="com.welling.kinghacker.activities.HomeActivity"/>
+        <activity android:name="com.welling.kinghacker.activities.BloodSugerActivity"/>
+        <activity android:name=".ChangePasswordActivity"/>
+        <activity android:name=".AboutActivity"/>
+        <activity android:name=".SettingActivity"/>
+        <activity android:name=".InformationActivity"/>
+        <activity android:name=".BloodPressureActivity"/>
+        <activity android:name=".BloodOxygenActivity"/>
+        <activity android:name=".ElectorDragramActivity"/>
+        <activity android:name=".HeartAllActivity"/>
+        <activity android:name=".RegisterActivity"/>
     </application>
 
 </manifest>

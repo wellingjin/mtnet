@@ -1,8 +1,6 @@
 package com.welling.kinghacker.activities;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -52,11 +50,11 @@ public class BloodSugerActivity extends MTActivity {
         rightInAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
 
         Button synInfoButton = (Button)findViewById(R.id.synButton);
-        synInfoButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
+        synInfoButton.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.bloodSugerBGColor));
         Button medicineButton = (Button)findViewById(R.id.medicineQueryButton);
-        medicineButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
+        medicineButton.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.bloodSugerBGColor));
         Button doctorInfoButton = (Button)findViewById(R.id.doctorButton);
-        doctorInfoButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
+        doctorInfoButton.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.bloodSugerBGColor));
 
     }
     @Override
@@ -83,7 +81,8 @@ public class BloodSugerActivity extends MTActivity {
         multipleView.setXaxis(xaxis);
         List<Float> yaxis = new ArrayList<>();
         for (int i= 0;i<count;i++){
-            yaxis.add(new Float(Math.random() * 30));
+            Float num = new Float(Math.random() * 30);
+            yaxis.add(num);
         }
         multipleView.setYaxis(yaxis);
         multipleView.setDescTextY("血糖值");

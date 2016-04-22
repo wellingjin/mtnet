@@ -15,6 +15,7 @@ import com.welling.kinghacker.activities.R;
 
 /**
  * Created by KingHacker on 3/5/2016.
+ *
  */
 public class FlipperView extends ViewFlipper  implements OnGestureListener{
     Animation leftInAnimation,leftOutAnimation,rightInAnimation,rightOutAnimation;

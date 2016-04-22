@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.welling.kinghacker.customView.BloodOxygenView;
 import com.welling.kinghacker.customView.BloodPressureView;
@@ -49,6 +48,7 @@ public class HomeActivity extends MTActivity {
         initBloodPressure();
         initBloodOxygen();
         initBloodFat();
+        initElectocarDiagram();
         setPagerView();
     }
 
@@ -57,8 +57,7 @@ public class HomeActivity extends MTActivity {
     protected void selectItem(String text){
         super.selectItem(text);
         if (text.equals(getString(R.string.about))){
-            Intent intent = new Intent(this,AboutActivity.class);
-            startActivity(intent);
+            gotoActivity(AboutActivity.class);
         }else if (text.equals(getString(R.string.setting))){
             Intent intent = new Intent(this,SettingActivity.class);
             startActivity(intent);
@@ -77,15 +76,15 @@ public class HomeActivity extends MTActivity {
         titleText[cuteItem.BP.ordinal()] = PublicRes.getInstance().bloodPresure;
         titleText[cuteItem.BS.ordinal()] = PublicRes.getInstance().bloodSuger;
 
-        color[cuteItem.ED.ordinal()] = getResources().getColor(R.color.electrocarDiogramBGColor);
-        color[cuteItem.BF.ordinal()] = getResources().getColor(R.color.bloodFatBgColor);
-        color[cuteItem.BO.ordinal()] = getResources().getColor(R.color.bloodOxygenBgColor);
-        color[cuteItem.BP.ordinal()] = getResources().getColor(R.color.bloodPressionBgColor);
-        color[cuteItem.BS.ordinal()] = getResources().getColor(R.color.bloodSugerBGColor);
+        color[cuteItem.ED.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.electrocarDiogramBGColor);
+        color[cuteItem.BF.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodFatBgColor);
+        color[cuteItem.BO.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodOxygenBgColor);
+        color[cuteItem.BP.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodPressionBgColor);
+        color[cuteItem.BS.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodSugerBGColor);
 
         setActionBarTitle(titleText[0]);
 
-        setCustonLsftButton(getResources().getDrawable(R.mipmap.gentleman_low));
+        setCustonLsftButton(SystemTool.getSystem(this).getXMLDrawable(R.mipmap.gentleman_low));
 
     }
     @Override
@@ -141,6 +140,16 @@ public class HomeActivity extends MTActivity {
     private void initBloodFat(){
 
     }
+    private void initElectocarDiagram(){
+        RippleView heardButton = (RippleView)findViewById(R.id.electrocarDiogramButton);
+        heardButton.setRippleDuration(heardButton.getRippleDuration()/3);
+        heardButton.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView rippleView) {
+                gotoActivity(ElectorDragramActivity.class);
+            }
+        });
+    }
 
 
     private void setPagerView(){
@@ -157,7 +166,7 @@ public class HomeActivity extends MTActivity {
 
         item2 = new ImageView(this);
 
-        item2.setBackgroundColor(getResources().getColor(R.color.bloodFatBgColor));
+        item2.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.bloodFatBgColor));
         item2.setLayoutParams(layoutParams);
 
         pagerView.addItem(electrocarDiogram);
@@ -183,8 +192,7 @@ public class HomeActivity extends MTActivity {
         });
     }
     public void jumpActivity(View view){
-        Intent intent = new Intent(this,BloodSugerActivity.class);
-        startActivity(intent);
+        gotoActivity(BloodSugerActivity.class);
     }
 
 

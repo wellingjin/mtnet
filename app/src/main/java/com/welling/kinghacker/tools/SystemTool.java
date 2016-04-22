@@ -1,33 +1,44 @@
 package com.welling.kinghacker.tools;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
  * Created by KingHacker on 3/3/2016.
+ *
  */
 public class SystemTool {
     private DisplayMetrics dm;
     private Context context;
     static private SystemTool systemTool = null;
+    private SharedPreferences sharedPreferences;
 
-    private SystemTool(){}
+    private SystemTool(Context context){
+        this.context = context;
+        Resources resources = context.getResources();
+        dm = resources.getDisplayMetrics();
+        sharedPreferences = context.getSharedPreferences(PublicRes.preferencesName, context.MODE_PRIVATE);
+    }
 
     static public SystemTool getSystem(Context context){
         if (systemTool == null){
-            systemTool = new SystemTool();
+            systemTool = new SystemTool(context);
         }
-        systemTool.context = context;
-        Resources resources = context.getResources();
-        systemTool.dm = resources.getDisplayMetrics();
+
         return systemTool;
     }
 //    获取屏幕宽度
@@ -97,5 +108,72 @@ public class SystemTool {
             e.printStackTrace();
         }
         return version;
+    }
+    public View getView(int layout){
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        return inflater.inflate(layout,null);
+    }
+    public float getXMLTextSize(int dimension){
+        float size = context.getResources().getDimension(dimension);
+        return PxToDp(size);
+    }
+    public int getXMLColor(int color){
+        return context.getResources().getColor(color);
+    }
+    public Drawable getXMLDrawable(int drawable){
+        return context.getResources().getDrawable(drawable);
+    }
+    public float getXMLDimension(int dimension){
+        return context.getResources().getDimension(dimension);
+    }
+//    存储相关
+/*
+* 永久存储字符串类型
+* */
+    public void saveStringKV(String key,String value){
+        Map<String,String> map = new HashMap<>();
+        map.put(key,value);
+        saveStringKV(map);
+    }
+    public void saveStringKV(Map<String,String> map){
+        if (map  == null) return;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> keys = map.keySet();
+        for (String key:keys){
+            editor.putString(key,map.get(key));
+        }
+        editor.apply();
+    }
+    public void saveBooleanKV(String key,boolean value){
+        Map<String,Boolean> map = new HashMap<>();
+        map.put(key,value);
+        saveBooleanKV(map);
+    }
+    public void saveBooleanKV(Map<String,Boolean> map){
+        if (map  == null) return;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> keys = map.keySet();
+        for (String key:keys){
+            editor.putBoolean(key, map.get(key));
+        }
+        editor.apply();
+    }
+
+    /*
+    * 获取某个字符串
+    *
+    * */
+    public String getStringValue(String key){
+        return getStringValue(key,"");
+    }
+    /*
+    * 获取某个字符串
+    *
+    * */
+    public String getStringValue(String key,String defaultValue){
+        return sharedPreferences.getString(key, defaultValue);
+    }
+    public boolean getBooleanValue(String key,boolean defaultValue){
+        return sharedPreferences.getBoolean(key, defaultValue);
     }
 }

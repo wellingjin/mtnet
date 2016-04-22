@@ -1,12 +1,13 @@
 package com.welling.kinghacker.tools;
 
-import android.app.Activity;
-import android.content.Context;
 
-import com.welling.kinghacker.activities.R;
+import android.os.Environment;
+
+import java.io.File;
 
 /**
  * Created by KingHacker on 3/11/2016.
+ *
  */
 public class PublicRes{
     private static PublicRes publicRes = null;
@@ -14,13 +15,26 @@ public class PublicRes{
     public int
                 overFlowItemOffset = 100,//item偏移量
                 marginLeft = 10,marginTop = 30,marginRight = 10,marginBottom = 30;
-//    折线图
-    public float originPointX = 150f,
-                   originPointY = 100f;
-    public int YLengthOffset = 100,
-                YTextOffset = 80;
+//    int
+    static public final int OK = 1;
+    static public final int ERROR = 0;
 
 //String
+    static public final String preferencesName = "NetMT";
+    static public final String ACCOUNT = "account";
+    static public final String PASSWORD = "password";
+    static public final String AUTOLOGIN = "autoLogin";
+
+    static public final String STATE = "state";
+    static public final String COOKIE = "cookie";
+    static public final String EXCEPTION = "exception";
+
+    static public final String ROOTPATH = Environment.getExternalStorageDirectory() + "/NetMT";
+    static public final String ECGPATH = ROOTPATH + "/ECG";
+
+    static public final String IP = "http://172.18.43.83:8080/QYYLZLPT/";
+
+
     public String electrocarDiogram,
                     bloodSuger,
                     bloodFat,
@@ -40,7 +54,10 @@ public class PublicRes{
         bloodSugerItem1 = "单次";
         bloodSugerItem2 = "全部";
         bloodSugerItem3 = "筛选";
-
+        File file = new File(ROOTPATH);
+        if (!file.exists()){
+            file.mkdir();
+        }
 
     }
     static public PublicRes getInstance(){

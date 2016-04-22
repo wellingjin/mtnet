@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 
 import android.view.View;
@@ -19,7 +18,7 @@ import com.welling.kinghacker.tools.SystemTool;
 
 /**
  * Created by KingHacker on 3/21/2016.
- */
+ **/
 public class MTToast {
     private Activity context;
     private TextView textView;
@@ -28,13 +27,14 @@ public class MTToast {
     private PopupWindow popWind;
     private final Handler handler;
     private ToastStaticListener toastStaticListener;
+    private boolean isListening = false;
 
     public MTToast(Context context){
         this.context = (Activity)context;
         textView = new TextView(context);
-        textView.setTextSize(context.getResources().getDimension(R.dimen.normalTextSize));
-        textView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
-        textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
+        textView.setTextSize(SystemTool.getSystem(context).getXMLTextSize(R.dimen.normalTextSize));
+        textView.setBackgroundColor(SystemTool.getSystem(context).getXMLColor(R.color.colorPrimary));
+        textView.setTextColor(SystemTool.getSystem(context).getXMLColor(R.color.colorWhite));
         timeStyle = SHORTTIME;
         handler = new Handler() {
             public void handleMessage(Message msg) {
@@ -43,7 +43,10 @@ public class MTToast {
                         if (popWind.isShowing()) {
                             popWind.dismiss();
                         }
-                        toastStaticListener.toastDispeared();
+                        if (isListening) {
+                            toastStaticListener.toastDispeared();
+                        }
+                        isListening = false;
                         break;
                 }
                 super.handleMessage(msg);
@@ -58,7 +61,7 @@ public class MTToast {
     public void showAtView(View view){
         if (popWind == null){
             popWind = new PopupWindow(textView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
-            popWind.setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
+            popWind.setBackgroundDrawable(SystemTool.getSystem(context).getXMLDrawable(android.R.color.transparent));
             popWind.setOutsideTouchable(true);
             popWind.setFocusable(false);
             popWind.setAnimationStyle(android.R.style.Animation_Dialog);    //设置一个动画
@@ -71,7 +74,6 @@ public class MTToast {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.i("TAGGGG","run");
                 Message message = new Message( );
                 message.what = 1;
                 handler.sendMessageDelayed(message,timeStyle);
@@ -80,6 +82,7 @@ public class MTToast {
     }
 
     public void setToastStaticListener(ToastStaticListener toastStaticListener) {
+        isListening = true;
         this.toastStaticListener = toastStaticListener;
     }
 

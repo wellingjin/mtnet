@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * Created by KingHacker on 3/6/2016.
+ * 左右切换
  */
 public class PagerView extends FrameLayout {
     private ViewPager viewPager;
