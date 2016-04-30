@@ -1,13 +1,12 @@
 package com.welling.kinghacker.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.welling.kinghacker.customView.ListAdapter;
 import com.welling.kinghacker.mtdata.AdapterStruct;
+import com.welling.kinghacker.tools.SystemTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,8 @@ public class InformationActivity extends TabActivity {
         initView();
     }
     private void initView(){
-        TextView textView = new TextView(this);
-        textView.setText("sdfafd");
-        textView.setTextColor(Color.RED);
-        setLeftView(textView);
+        View personInfoView = SystemTool.getSystem(this).getView(R.layout.layout_personal_info);
+        setLeftView(personInfoView);
 
         ListView doctorInfo = new ListView(this);
         List<AdapterStruct> data = new ArrayList<>();

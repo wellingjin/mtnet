@@ -29,6 +29,7 @@ public class MTActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initActionBar();
     }
+    //初始化actionbar
     private void initActionBar(){
         actionBarView = new ActionBarView(this);
 

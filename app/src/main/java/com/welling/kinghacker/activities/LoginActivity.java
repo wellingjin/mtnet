@@ -9,7 +9,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.welling.kinghacker.bean.AccountBean;
 import com.welling.kinghacker.customView.RippleView;
+import com.welling.kinghacker.database.DatabaseManager;
 import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
@@ -78,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog = ProgressDialog.show(this,"请稍候","正在验证登录信息...");
             httpManager = new MTHttpManager();
             HashMap<String,String> params = new HashMap<>();
-            params.put("name",accountStr);
+            params.put("username",accountStr);
             params.put("password", passwordStr);
             httpManager.post(params, httpManager.getRequestID(), "user/login.do");
             httpManager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
@@ -101,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                         makeToast("登录成功");
                         SystemTool.getSystem(LoginActivity.this).saveBooleanKV(PublicRes.AUTOLOGIN, true);
                         SystemTool.getSystem(LoginActivity.this).saveStringKV(PublicRes.COOKIE, cookie);
+
                         jumpActivity(HomeActivity.class);
                     }else{
                         makeToast(exceptionInfo);
@@ -163,6 +166,8 @@ public class LoginActivity extends AppCompatActivity {
         map.put(PublicRes.ACCOUNT, name);
         map.put(PublicRes.PASSWORD, psd);
         SystemTool.getSystem(this).saveStringKV(map);
+        AccountBean accountBean = new AccountBean(this,name,psd);
+        accountBean.update();
     }
     public void jumpActivity(Class cls){
         Intent intent = new Intent(this,cls);

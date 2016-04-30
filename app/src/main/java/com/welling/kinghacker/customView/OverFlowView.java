@@ -19,6 +19,7 @@ import com.welling.kinghacker.tools.SystemTool;
 
 /**
  * Created by KingHacker on 3/4/2016.
+ *
  */
 public class OverFlowView extends TableLayout{
     final static public int NONE = 0;
@@ -33,7 +34,6 @@ public class OverFlowView extends TableLayout{
         TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
         this.setLayoutParams(layoutParams);
 
-//        setBackgroundColor(getResources().getColor(R.color.colorPrimary));
     }
 //    新增一项
     public void addItem(int iconId,String text){
@@ -41,7 +41,7 @@ public class OverFlowView extends TableLayout{
         if (rowNum > 0){
             TableRow view = new TableRow(context);
             view.setMinimumHeight(1);
-            view.setBackgroundColor(getResources().getColor(R.color.colorHint));
+            view.setBackgroundColor(SystemTool.getSystem(context).getXMLColor(R.color.colorHint));
             addView(view);
         }
         rowNum++;
@@ -55,11 +55,11 @@ public class OverFlowView extends TableLayout{
         textView.setTag("text");
         textView.setText(text);
         textView.setTextSize(SystemTool.getSystem(context).PxToDp(context.getResources().getDimension(R.dimen.item_size)));
-        textView.setTextColor(getResources().getColor(R.color.colorWhite));
+        textView.setTextColor(SystemTool.getSystem(context).getXMLColor(R.color.colorWhite));
         int textWidth = (int) SystemTool.getSystem(context).adaptation1080((new FontTool(context).getTextWidth(textView)) + PublicRes.getInstance().overFlowItemOffset);
         textView.setWidth(textWidth);
 
-        row.setBackgroundDrawable(getResources().getDrawable(R.drawable.bt_selector));
+        row.setBackground(SystemTool.getSystem(context).getXMLDrawable(R.drawable.bt_selector));
         row.addView(textView);
         row.setGravity(Gravity.CENTER_VERTICAL);
         LayoutParams lp = new LayoutParams();
@@ -85,11 +85,13 @@ public class OverFlowView extends TableLayout{
         if (popWind == null){
         popWind = new PopupWindow(this,
                          LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
-        popWind.setBackgroundDrawable(getResources().getDrawable(R.color.colorPrimary));
+        popWind.setBackgroundDrawable(SystemTool.getSystem(context).getXMLDrawable(R.color.colorPrimary));
         popWind.setOutsideTouchable(true);
         popWind.setAnimationStyle(android.R.style.Animation_Dialog);    //设置一个动画
         }
-        popWind.showAtLocation(parentView, Gravity.RIGHT | Gravity.TOP, xOffset, yOffset);
+        if (parentView != null) {
+            popWind.showAtLocation(parentView, Gravity.RIGHT | Gravity.TOP, xOffset, yOffset);
+        }
     }
     public void setOffset(int x,int y){
         xOffset = x;

@@ -55,7 +55,11 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         startX = SystemTool.getSystem(getContext()).getXMLDimension(R.dimen.startX);
 
         ECGFile file = ECGFilesUtils.getLastECGFile();
-        point = new ArrayList<>(file.ecgData);
+        if (file != null) {
+            point = new ArrayList<>(file.ecgData);
+        }else {
+            point = new ArrayList<>();
+        }
         /*int pointCount = 10000;
         for (int i = 0; i<pointCount;i++){
             Float num =Float.valueOf((float) (Math.random() * 10 - 5));
@@ -98,6 +102,10 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
 
 
                         List<Integer> drawPoint = new ArrayList<>();
+                    if (point.size() <=0){
+                        isRun = false;
+                        return;
+                    }
                     for (int w : point) {
                         int pointNum = (w-1950)/10;
                         if (Math.abs(pointNum) > maxNum){

@@ -29,7 +29,6 @@ public class ECGFilesUtils {
         JSONObject object = new JSONObject();
         object.put("time", ecgFile.time);
         object.put("nAverageHR", ecgFile.nAverageHR);
-        Log.i("tag",ecgFile.ecgData.size()+"");
         object.put("nAnalysis", ecgFile.nAnalysis);
         JSONArray array = new JSONArray();
         List<Integer> ecgData = ecgFile.ecgData;
@@ -58,8 +57,15 @@ public class ECGFilesUtils {
 
     public static List<File> getECGFileList(String path) {
         List<File> list = new ArrayList<>();
-        File file = new File(path);
+        File file;
+        try {
+            file = new File(path);
+        }catch (Exception ignored){
+            return null;
+        }
+
         File[] files = file.listFiles();
+        if (files == null || files.length <= 0) return null;
         TreeMap<Long,File> tm = new TreeMap<>();
 
         for (File file1 : files) {

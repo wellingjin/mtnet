@@ -3,10 +3,7 @@ package com.welling.kinghacker.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.welling.kinghacker.customView.BloodOxygenView;
 import com.welling.kinghacker.customView.BloodPressureView;
@@ -25,7 +22,7 @@ import java.util.List;
  **/
 public class HomeActivity extends MTActivity {
     //全局变量定义
-    enum cuteItem {ED,BS,BP,BO,BF}//分别表示，心电，血糖，血压，血氧，血脂
+    enum cuteItem {ED,BS,BP,BO}//分别表示，心电，血糖，血压，血氧
     int screenWidth;
     PagerView pagerView;
     String [] titleText = new String[5];
@@ -71,13 +68,11 @@ public class HomeActivity extends MTActivity {
         screenWidth = (int)SystemTool.getSystem(this).getScreenWidth();
 
         titleText[cuteItem.ED.ordinal()] = PublicRes.getInstance().electrocarDiogram;
-        titleText[cuteItem.BF.ordinal()] = PublicRes.getInstance().bloodFat;
         titleText[cuteItem.BO.ordinal()] = PublicRes.getInstance().bloodOxygen;
         titleText[cuteItem.BP.ordinal()] = PublicRes.getInstance().bloodPresure;
         titleText[cuteItem.BS.ordinal()] = PublicRes.getInstance().bloodSuger;
 
         color[cuteItem.ED.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.electrocarDiogramBGColor);
-        color[cuteItem.BF.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodFatBgColor);
         color[cuteItem.BO.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodOxygenBgColor);
         color[cuteItem.BP.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodPressionBgColor);
         color[cuteItem.BS.ordinal()] = SystemTool.getSystem(this).getXMLColor(R.color.bloodSugerBGColor);
@@ -154,26 +149,19 @@ public class HomeActivity extends MTActivity {
 
     private void setPagerView(){
         pagerView = (PagerView) findViewById(R.id.flipperView);
-        LayoutInflater flater = getLayoutInflater();
-        View electrocarDiogram = flater.inflate(R.layout.electrocar_diogram, null);
+
+        View electrocarDiogram = SystemTool.getSystem(this).getView(R.layout.electrocar_diogram);
         View bloodSuger = bloodSugerView.getBloodSugerView();
 
-        ImageView item2;
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
 
         final View bloodPressure = bloodPressureView.getBloodPressureView();
 
 
-        item2 = new ImageView(this);
-
-        item2.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.bloodFatBgColor));
-        item2.setLayoutParams(layoutParams);
 
         pagerView.addItem(electrocarDiogram);
         pagerView.addItem(bloodSuger);
         pagerView.addItem(bloodPressure);
         pagerView.addItem(bloodOxygenView.getBloodOxygenView());
-        pagerView.addItem(item2);
         pagerView.commit();
         pagerView.setOnPagerChangedListener(new PagerView.OnPagerChangedListener() {
 

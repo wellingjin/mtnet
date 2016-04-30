@@ -21,6 +21,7 @@ import java.util.Set;
 public class BluetoothConnectUtils {
 
     private static final String TAG = "BluetoothConnectUtils";
+    final public static int SEARCHING = 0x006;  //  正在查找
     final public  static int SEARCH_COMPLETE = 0x001;  //  搜索完成
     final public static int SEARCH_FAILED = 0x002;  //  搜索异常
     final public static int CONNECTING = 0x003;  //  正在连接
@@ -82,7 +83,8 @@ public class BluetoothConnectUtils {
         blueToothManager = new BlueToothManager(context);
         this.bluetoothOper = new BluetoothOpertion(context, new MyBluetoothCallback());
         connectParedDevice();
-        initDialog();
+
+//        initDialog();
     }
 
 
@@ -140,7 +142,7 @@ public class BluetoothConnectUtils {
      * @return true or false
      */
     public static boolean checkName(String deviceName) {
-        return deviceName.equals("PC80B");
+        return deviceName!=null && deviceName.equals("PC80B");
     }
 
 

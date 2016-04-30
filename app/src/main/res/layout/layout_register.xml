@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        >
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="450dp"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -153,6 +153,29 @@
             />
 
     </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/identityCard"
+                android:textSize="@dimen/normalTextSize"
+                android:gravity="end"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                />
+            <EditText
+                android:id="@+id/registerID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                />
+
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

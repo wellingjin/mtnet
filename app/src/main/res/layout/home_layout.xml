@@ -13,15 +13,11 @@
         >
 
     </com.welling.kinghacker.customView.PagerView>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        >
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_weight="1"
         >
         <TableRow
             android:layout_weight="1"
@@ -65,28 +61,15 @@
             </com.welling.kinghacker.customView.RippleView>
             <com.welling.kinghacker.customView.RippleView
                 android:layout_weight="1"
+                android:id="@+id/electrocarDiogramButton"
                 >
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/blood_fat"
-                    android:background="@color/bloodFatBgColor"
+                    android:text="@string/electrocar_diogram"
+                    android:background="@color/electrocarDiogramBGColor"
                     />
             </com.welling.kinghacker.customView.RippleView>
         </TableRow>
     </TableLayout>
-        <com.welling.kinghacker.customView.RippleView
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:id="@+id/electrocarDiogramButton"
-            >
-        <Button
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:background="@drawable/shape"
-            android:text="@string/electrocar_diogram"
-            />
-        </com.welling.kinghacker.customView.RippleView>
-</FrameLayout>
 </LinearLayout>

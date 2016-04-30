@@ -34,6 +34,7 @@ public class PublicRes{
 
     static public final String IP = "http://172.18.43.83:8080/QYYLZLPT/";
 
+    static public final String Syn_Clound = "同步服务器";
 
     public String electrocarDiogram,
                     bloodSuger,
