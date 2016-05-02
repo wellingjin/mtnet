@@ -1,4 +1,4 @@
-package com.welling.kinghacker.activities;
+﻿package com.welling.kinghacker.activities;
 
 
 import android.os.Bundle;
@@ -52,6 +52,14 @@ public class BloodPressureActivity extends MTActivity {
         medicineButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
         Button doctorInfoButton = (Button)findViewById(R.id.doctorButton);
         doctorInfoButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
+		synInfoButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final Intent intent = new Intent(this, DeviceScanActivity.class);
+				startActivity(intent);
+			}
+		});
     }
 
     @Override
