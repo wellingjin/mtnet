@@ -31,6 +31,10 @@
         <activity android:name=".ElectorDragramActivity"/>
         <activity android:name=".HeartAllActivity"/>
         <activity android:name=".RegisterActivity"/>
+		
+		<activityandroid:name="com.example.bluetooth.le.DeviceScanActivity"/>       
+        <activity android:name="com.example.bluetooth.le.DeviceControlActivity"/>
+        <service android:name="com.example.bluetooth.le.BluetoothLeService" android:enabled="true"/>
     </application>
 
 </manifest>
