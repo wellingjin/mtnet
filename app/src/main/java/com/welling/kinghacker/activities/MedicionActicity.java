@@ -58,6 +58,6 @@ public class MedicionActicity extends  MTActivity{
 
             }
         });
-        manager.post();
+//        manager.post();
     }
 }
