@@ -34,7 +34,7 @@
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             />
         <EditText
-            android:id="@+id/registerName"
+            android:id="@+id/personName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -57,7 +57,7 @@
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             />
         <EditText
-            android:id="@+id/registerPhone"
+            android:id="@+id/personPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -80,7 +80,7 @@
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             />
         <EditText
-            android:id="@+id/registerID"
+            android:id="@+id/personID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -101,7 +101,7 @@
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             />
         <TextView
-            android:id="@+id/registerSex"
+            android:id="@+id/personSex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/activity_vertical_margin"
@@ -117,7 +117,7 @@
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             />
         <TextView
-            android:id="@+id/registerBirdthday"
+            android:id="@+id/personBirdthday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/activity_vertical_margin"

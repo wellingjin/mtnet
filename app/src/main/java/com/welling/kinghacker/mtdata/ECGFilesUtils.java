@@ -80,7 +80,18 @@ public class ECGFilesUtils {
         }
         return list;
     }
+    public static String getStringFile(File file) throws  IOException{
+        FileInputStream fis = new FileInputStream(file);
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buff = new byte[1024];
+        int len;
+        while ((len = fis.read(buff)) != -1) {
+            baos.write(buff, 0, len);
+        }
+        baos.flush();
+        return baos.toString();
+    }
     public static ECGFile getECGFile(File file) throws IOException, JSONException {
 
         FileInputStream fis = new FileInputStream(file);
@@ -120,6 +131,17 @@ public class ECGFilesUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    static public String getLastECGFileString(){
+        List<File> files = getECGFileList(PublicRes.ECGPATH);
+        if (files != null && files.size() > 0){
+            try {
+                return getStringFile(files.get(0));
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

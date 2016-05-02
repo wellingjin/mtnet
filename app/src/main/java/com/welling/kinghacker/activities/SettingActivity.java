@@ -1,6 +1,8 @@
 package com.welling.kinghacker.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -23,11 +25,28 @@ public class SettingActivity extends MTActivity {
         initData();
         settingList.setAdapter(new ArrayAdapter<>(this, R.layout.list_item_textview_layout, listData));
         setContentView(settingList);
+        settingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onItemClicked(position);
+            }
+        });
     }
     private void initData(){
         listData = new ArrayList<>();
         listData.add(getString(R.string.alertSetting));
         listData.add(getString(R.string.accountChange));
         listData.add(getString(R.string.exitAccount));
+    }
+    private void onItemClicked(int position){
+        switch (position){
+            case 0:
+                break;
+            case 1:
+                gotoActivity(LoginActivity.class);
+                break;
+            case 2:
+                break;
+        }
     }
 }

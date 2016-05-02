@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -85,62 +84,50 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         isRun = false;
+        if (drawThread.isAlive()){
+            drawThread.interrupt();
+        }
+        drawThread = null;
     }
 
     synchronized private void dramThread(){
        drawThread = new Thread(new Runnable() {
             @Override
             public void run() {
-
-                while (isRun){
-                        SurfaceHolder surfaceHolder = holder;
-                    Log.i("Dram","start");
-
-                        Paint paint = new Paint();
-                        paint.setColor(Color.GREEN);
-                        paint.setStrokeWidth(getResources().getDimension(R.dimen.paintWidth));
+                SurfaceHolder surfaceHolder = holder;
+                Paint paint = new Paint();
+                paint.setColor(Color.GREEN);
+                paint.setStrokeWidth(getResources().getDimension(R.dimen.paintWidth));
 
 
-                        List<Integer> drawPoint = new ArrayList<>();
-                    if (point.size() <=0){
-                        isRun = false;
-                        return;
+                List<Integer> drawPoint = new ArrayList<>();
+                if (point.size() <=0){
+                    isRun = false;
+                    return;
+                }
+                for (int w : point) {
+                    int pointNum = (w-1950)/10;
+                    if (Math.abs(pointNum) > maxNum){
+                        maxNum = pointNum;
                     }
-                    for (int w : point) {
-                        int pointNum = (w-1950)/10;
-                        if (Math.abs(pointNum) > maxNum){
-                            maxNum = pointNum;
-                        }
-                        drawPoint.add(-pointNum);
+                    drawPoint.add(-pointNum);
+                }
+                float lastX = -startX, lastY = baseLine;
+                for (int i = 0; i < drawPoint.size() && isRun; i++) {
+                    Rect rect = new Rect((int)(lastX+0.5) ,(int)(baseLine - maxNum * amplitude ),(int)(lastX + 2*range+5 ),(int)(baseLine + maxNum * amplitude* 2));
+                    clearCanvas(rect, surfaceHolder);
+                    Canvas c = surfaceHolder.lockCanvas(rect);
+                    if (c != null) {
+                        c.drawLine(lastX, lastY, lastX + range, baseLine + drawPoint.get(i) * amplitude, paint);
+                        surfaceHolder.unlockCanvasAndPost(c);
                     }
-                        float lastX = -startX, lastY = baseLine;
-                        for (int i = 0; i < drawPoint.size(); i++) {
-                            if (!isRun) break;
-                            Rect rect = new Rect((int)(lastX+0.5) ,(int)(baseLine - maxNum * amplitude ),(int)(lastX + 2*range+5 ),(int)(baseLine + maxNum * amplitude* 2));
-                            Log.i("Dram","dram"+drawPoint.get(i));
-                            clearCanvas(rect, surfaceHolder);
-                            Canvas c = surfaceHolder.lockCanvas(rect);
-                            if (c != null) {
-                                c.drawLine(lastX, lastY, lastX + range, baseLine + drawPoint.get(i) * amplitude, paint);
-                                surfaceHolder.unlockCanvasAndPost(c);
-                            }
-                            lastX += range;
-                            lastY = baseLine + drawPoint.get(i) * amplitude;
-
-                            if (lastX >= SystemTool.getSystem(getContext()).getScreenWidth() - range){
-                                lastX = -startX;
-
-                            }
-
-                            /*try {
-                                Thread.sleep(timeInterval);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }*/
-                        }
-
-                        isRun = false;
+                    lastX += range;
+                    lastY = baseLine + drawPoint.get(i) * amplitude;
+                    if (lastX >= SystemTool.getSystem(getContext()).getScreenWidth() - range){
+                        lastX = -startX;
                     }
+
+                }
                 }
 
         });
@@ -163,7 +150,7 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         }
 
 //       canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-       if (canvas != null) {
+       if (canvas != null && isRun) {
            canvas.drawColor(Color.BLACK);
            holder.unlockCanvasAndPost(canvas);
        }

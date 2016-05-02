@@ -2,6 +2,7 @@ package com.welling.kinghacker.mtdata;
 
 /**
  * Created by KingHacker on 3/22/2016.
+ *
  */
 public class AdapterStruct {
     //    数据结构

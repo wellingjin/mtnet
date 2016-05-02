@@ -1,7 +1,6 @@
 package com.welling.kinghacker.customView;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,20 +9,21 @@ import android.widget.TextView;
 
 import com.welling.kinghacker.activities.R;
 import com.welling.kinghacker.mtdata.AdapterStruct;
+import com.welling.kinghacker.tools.SystemTool;
 
 import java.util.List;
 
 /**
  * Created by KingHacker on 3/22/2016.
  **/
-public class ListAdapter extends BaseAdapter{
+public class DoctorListAdapter extends BaseAdapter{
 
     private List<AdapterStruct> dataaList;
-    private LayoutInflater layoutInflater;
+    private Context context;
 
-    public ListAdapter(Context context,List<AdapterStruct> dataList){
+    public DoctorListAdapter(Context context, List<AdapterStruct> dataList){
         this.dataaList = dataList;
-        layoutInflater = LayoutInflater.from(context);
+        this.context = context;
     }
     @Override
     public int getCount() {
@@ -42,10 +42,10 @@ public class ListAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Composition composition = null;
+        Composition composition;
         if (convertView == null){
             composition = new Composition();
-            convertView = layoutInflater.inflate(R.layout.doctor_info_list_layout,null);
+            convertView = SystemTool.getSystem(context).getView(R.layout.doctor_info_list_layout);
             composition.profile = (ImageView)convertView.findViewById(R.id.profile);
             composition.nameText = (TextView)convertView.findViewById(R.id.nameText);
             composition.descText = (TextView)convertView.findViewById(R.id.descText);
@@ -54,7 +54,7 @@ public class ListAdapter extends BaseAdapter{
             composition = (Composition)convertView.getTag();
         }
         composition.profile.setImageResource(dataaList.get(position).profile);
-        composition.nameText.setText(dataaList.get(position).style + "  " + dataaList.get(position).name);
+        composition.nameText.setText(String.format("%s  %s",dataaList.get(position).style, dataaList.get(position).name));
         composition.descText.setText(dataaList.get(position).description);
         return convertView;
     }

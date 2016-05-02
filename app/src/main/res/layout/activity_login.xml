@@ -45,7 +45,6 @@
             android:hint="@string/accountHint"
             android:ems="12"
             android:textColorHint="@color/colorHint"
-            android:inputType="phone"
             android:labelFor="@id/account"
             />
     </LinearLayout>

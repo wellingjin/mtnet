@@ -3,6 +3,7 @@ package com.welling.kinghacker.bean;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import com.welling.kinghacker.database.DatabaseManager;
 import com.welling.kinghacker.database.TableItem;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  * 账户bean
  */
 public class AccountBean extends MTBean{
-
+    static public String TABLENAME = "AccountBean";
     private String account;
     private String password;
     public AccountBean(Context context){
@@ -47,15 +48,14 @@ public class AccountBean extends MTBean{
     static public String getPasswordName(){
         return "password";
     }
-
-    public void update(){
+    @Override
+    public void insert(){
         if (account == null || password == null) return;
-        DatabaseManager manager = new DatabaseManager(context);
-        manager.deleteByFieldEqual(getClass().getName(), getAccountName(), account);
+        manager.deleteByFieldEqual(TABLENAME, getAccountName(), account);
         ContentValues cv = new ContentValues();
         cv.put(getAccountName(),account);
         cv.put(getPasswordName(),password);
-        manager.insert(getClass().getName(),cv);
+        manager.insert(TABLENAME,cv);
     }
 
     @Override
@@ -65,6 +65,7 @@ public class AccountBean extends MTBean{
         ArrayList<TableItem> items = new ArrayList<>();
         items.add(item1);
         items.add(item2);
-        manager.createTable(getClass().getName(), items);
+        Log.i("data",item1.toString());
+        manager.createTable(TABLENAME, items);
     }
 }

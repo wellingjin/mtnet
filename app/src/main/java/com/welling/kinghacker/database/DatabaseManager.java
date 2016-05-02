@@ -20,7 +20,6 @@ public class DatabaseManager {
     private DatabaseHelper helper;
     final String Tag = "database";
     public DatabaseManager(Context context){
-//        db = context.openOrCreateDatabase(DatabaseHelper.DB_NAME, Context.MODE_PRIVATE, null);
         helper = new DatabaseHelper(context);
     }
     public void createTable(String tableName,ArrayList<TableItem> fields){
@@ -62,13 +61,18 @@ public class DatabaseManager {
     }
     public boolean insert(String table,ContentValues cv) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        return cv != null && db.insert(table, null, cv) > 0;
+        boolean result = cv != null && db.insert(table, null, cv) > 0;
+        db.close();
+        return result;
     }
     public boolean deleteByFieldEqual(String table,String field,String value){
         SQLiteDatabase db = helper.getWritableDatabase();
         String whereClause = field+"=?";//删除的条件
         String[] whereArgs = {value};//删除的条件参数
-        return db.delete(table,whereClause,whereArgs) > 0;//执行删除
+        Log.i(Tag,"delete");
+        boolean result = db.delete(table,whereClause,whereArgs) > 0;//执行删除
+        db.close();
+        return result;
 
     }
     //查询单行数据
@@ -91,6 +95,7 @@ public class DatabaseManager {
             }
         }
         cursor.close();
+        db.close();
         return jsonObject;
     }
     //查询多行数据，如果start 或 end 为null，查询所有field数据
@@ -140,6 +145,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         cursor.close();
+        db.close();
         return jsonObject;
     }
 
@@ -147,6 +153,7 @@ public class DatabaseManager {
         SQLiteDatabase db = helper.getWritableDatabase();
         try {
             db.execSQL(sql);
+            db.close();
             return true;
         }catch (SQLException e){
             return false;

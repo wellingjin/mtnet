@@ -15,6 +15,6 @@ public abstract class MTBean {
         manager = new DatabaseManager(context);
         createTable();
     }
-
+    abstract public void insert();
     abstract protected void createTable();
 }

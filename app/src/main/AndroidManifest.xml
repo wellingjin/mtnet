@@ -31,6 +31,10 @@
         <activity android:name=".ElectorDragramActivity"/>
         <activity android:name=".HeartAllActivity"/>
         <activity android:name=".RegisterActivity"/>
+        <activity android:name=".MedicionActicity"/>
+        <activity android:name=".MainDoctorActivity"/>
+        <activity android:name=".DoctorDetailActivity"/>
+        <activity android:name=".MedicineDetailActivity"/>
     </application>
 
 </manifest>

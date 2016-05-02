@@ -1,7 +1,9 @@
 package com.welling.kinghacker.activities;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.creative.base.BLUReader;
@@ -19,14 +22,18 @@ import com.creative.ecg.ECG;
 import com.creative.ecg.IECGCallBack;
 import com.creative.filemanage.ECGFile;
 import com.creative.filemanage.FileOperation;
+import com.loopj.android.http.RequestParams;
 import com.welling.kinghacker.customView.ElectrocarDiogram;
 import com.welling.kinghacker.customView.MTDialog;
 import com.welling.kinghacker.customView.MTToast;
 import com.welling.kinghacker.mtdata.ECGFilesUtils;
 import com.welling.kinghacker.tools.BlueToothManager;
 import com.welling.kinghacker.tools.BluetoothConnectUtils;
+import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,19 +89,19 @@ public class ElectorDragramActivity extends MTActivity {
                         if (isFinish) break;
                         int size = msg.getData().getInt("fileSize",0);
                         sumSize += size;
-                        showAlertDialog("正在接收数据...", false, false);
+                        showAlertDialog("正在接收数据...", false, false,false,false);
                         if (sumSize >= mtDialog.getMAX()){
                             mtDialog.setMax(sumSize + size);
                         }
                         mtDialog.setProgress(sumSize);
                         break;
                     case MTFINISH:
-                        showAlertDialog("数据接收完成", true, false);
+                        showAlertDialog("数据接收完成", true, false,true,true);
                         mtDialog.setMax(sumSize);
                         mtDialog.setProgress(sumSize);
                         break;
                     case MTOUTOFTIME:
-                        showAlertDialog("文件接收超时", true, true);
+                        showAlertDialog("文件接收超时", true, true,true,false);
                         break;
 
                 }
@@ -113,6 +120,13 @@ public class ElectorDragramActivity extends MTActivity {
         FrameLayout upView = (FrameLayout)findViewById(R.id.universalUpView);
         View electrocarDiogram = SystemTool.getSystem(this).getView(R.layout.electrocar_diogram);
         upView.addView(electrocarDiogram);
+        LinearLayout timeChoose = (LinearLayout)electrocarDiogram.findViewById(R.id.timeChoose);
+        timeChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimeChoose();
+            }
+        });
         ElectrocarDiogram diogram = (ElectrocarDiogram)electrocarDiogram.findViewById(R.id.heartDram);
         ECGFile file = ECGFilesUtils.getLastECGFile();
         if (file != null) {
@@ -139,14 +153,14 @@ public class ElectorDragramActivity extends MTActivity {
         medicineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                gotoActivity(MedicionActicity.class);
             }
         });
         doctorInfoButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                gotoActivity(HeartAllActivity.class);
+                gotoActivity(MainDoctorActivity.class);
             }
         });
 
@@ -164,6 +178,8 @@ public class ElectorDragramActivity extends MTActivity {
     protected void selectItem(String text){
         switch (text){
             case PublicRes.Syn_Clound:
+                updateToCloud();
+
                 break;
         }
     }
@@ -171,7 +187,9 @@ public class ElectorDragramActivity extends MTActivity {
 
     private void discoverBlueTooth(){
         isFinish = false;
-        blueToothManager = new BlueToothManager(this);
+        if (blueToothManager == null) {
+            blueToothManager = new BlueToothManager(this);
+        }
         if (!blueToothManager.isHaveBlueTooth()){
             mtToast.makeText("本机没有找到蓝牙硬件或驱动！", MTToast.LONGTIME);
             mtToast.showAtView(rootView);
@@ -189,6 +207,11 @@ public class ElectorDragramActivity extends MTActivity {
             // mBluetoothAdapter.enable();
             // mBluetoothAdapter.disable();//关闭蓝牙
         }else {
+            if (connectUtils!=null) {
+                connectUtils.closeSocket();
+                connectUtils = null;
+                mtDialog = null;
+            }
             startSearchBlueTooth();
         }
 
@@ -208,8 +231,10 @@ public class ElectorDragramActivity extends MTActivity {
     }
     private void startSearchBlueTooth(){
         //   bluetooth
-        connectUtils = new BluetoothConnectUtils(this);
-        showAlertDialog("正在查找...",false,true);
+        if (connectUtils == null) {
+            connectUtils = new BluetoothConnectUtils(this);
+        }
+        showAlertDialog("正在查找...", false, true,false,false);
         connectUtils.setOnBluetoothConnectedListener(new BluetoothConnectUtils.OnBluetoothConnectedListener() {
             @Override
             public void setOnBluetoothConnected(BluetoothSocket bluetoothSocket) {
@@ -218,6 +243,7 @@ public class ElectorDragramActivity extends MTActivity {
                     OutputStream os = bluetoothSocket.getOutputStream();
                     final InputStream iss = is;
                     ecg = new ECG(new BLUReader(is), new BLUSender(os), new HeartAllECGCallBack());
+
                     ecg.Start();
                     new Thread(new Runnable() {
                         @Override
@@ -229,7 +255,7 @@ public class ElectorDragramActivity extends MTActivity {
                                 byte[] buff = new byte[128];
                                 int state;
                                 try {
-                                    if (iss == null){
+                                    if (iss == null) {
                                         isRun = false;
                                         break;
                                     }
@@ -238,19 +264,19 @@ public class ElectorDragramActivity extends MTActivity {
                                         do {
                                             len = iss.available();
                                             countA++;
-                                            if (countA > 80560) {
+                                            if (countA > 140000) {
                                                 isRun = false;
                                                 break;
                                             }
                                         } while (len == 0);
                                     }
-                                    if (!isRun){
+                                    if (!isRun) {
                                         break;
                                     }
                                     state = iss.read(buff);
-                                    if (state == -1){
+                                    if (state == -1) {
                                         isRun = false;
-                                    }else{
+                                    } else {
                                         Message msg = new Message();
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("fileSize", state);
@@ -261,8 +287,8 @@ public class ElectorDragramActivity extends MTActivity {
                                     }
                                 } catch (Exception e) {
                                     count++;
-                                    if (count >10) {
-                                        isRun =false;
+                                    if (count > 10) {
+                                        isRun = false;
                                     }
                                 }
 
@@ -278,22 +304,22 @@ public class ElectorDragramActivity extends MTActivity {
 
             @Override
             public void bluetoothConnectState(int state) {
-                switch (state){
+                switch (state) {
                     case BluetoothConnectUtils.CONNECTING:
-                        showAlertDialog("正在连接...",false,true);
+                        showAlertDialog("正在连接...", false, true, false, false);
                         break;
                     case BluetoothConnectUtils.CONNECT_FAILED:
-                        showAlertDialog("连接失败...",true,true);
+                        showAlertDialog("连接失败...", true, true, true, false);
                         break;
                     case BluetoothConnectUtils.CONNECTED:
-                        showAlertDialog("连接成功，等待接收文件...",false,true);
+                        showAlertDialog("连接成功，等待接收文件...", false, true, true, false);
 
                         break;
                     case BluetoothConnectUtils.SEARCH_COMPLETE:
-                        showAlertDialog("搜索结束...",true,true);
+                        showAlertDialog("搜索结束...", true, true, false, false);
                         break;
                     case BluetoothConnectUtils.SEARCH_FAILED:
-                        showAlertDialog("搜索失败...",true,true);
+                        showAlertDialog("搜索失败...", true, true, true, false);
                         break;
 
                 }
@@ -302,14 +328,63 @@ public class ElectorDragramActivity extends MTActivity {
 
     }
 
-    void showAlertDialog(String str,boolean prgHide,boolean barHiden){
+    void showAlertDialog(String str,boolean prgHide,boolean barHiden,boolean caEnable,boolean coEnable){
         if (mtDialog == null){
             mtDialog = new MTDialog(this);
+            mtDialog.setOnButtonClickListener(new MTDialog.OnButtonClickListener() {
+                @Override
+                public void onButtonClick(int which) {
+                    mtDialog.dismiss();
+                    switch (which){
+
+                        case 0://取消
+
+                            break;
+                        case 1://确定
+                            updateToCloud();
+                            break;
+                    }
+                }
+            });
         }
         mtDialog.setStateText(str);
         mtDialog.setRecBarHiden(barHiden);
         mtDialog.setProgressBarHiden(prgHide);
+        mtDialog.setCancleButtonEnable(caEnable, "取消");
+        mtDialog.setComfireButtonEnable(coEnable, "上传");
+    }
 
+    private void updateToCloud(){
+        MTHttpManager manager = new MTHttpManager();
+        manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
+            @Override
+            public void onSuccess(int requestId, JSONObject JSONResponse) {
+
+            }
+
+            @Override
+            public void onFailure(int requestId, int errorCode) {
+
+            }
+        });
+        RequestParams params = new RequestParams();
+        String file = ECGFilesUtils.getLastECGFileString();
+        manager.updateToCloud(this, file, 0);
+    }
+    private void showTimeChoose(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.shape_circle);
+        builder.setTitle("选择一个城市");
+        //    指定下拉列表的显示数据
+        final String[] cities = {"广州", "上海", "北京", "香港", "澳门", "上海", "北京", "香港", "澳门", "上海", "北京", "香港", "澳门", "上海", "北京", "香港", "澳门"};
+        //    设置一个下拉的列表选择项
+        builder.setItems(cities, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                makeToast("选择的城市为：" + cities[which]);
+            }
+        });
+        builder.show();
     }
 
     class HeartAllECGCallBack implements IECGCallBack {
@@ -409,14 +484,17 @@ public class ElectorDragramActivity extends MTActivity {
         public void OnConnectLose() {
             Log.i(TAG, "断开连接");
             makeToast("断开连接");
-            showAlertDialog("断开连接", true, true);
+            showAlertDialog("断开连接", true, true,false,false);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        connectUtils.closeSocket();
+        if (connectUtils!=null) {
+            connectUtils.closeSocket();
+            connectUtils = null;
+        }
     }
 
     /**

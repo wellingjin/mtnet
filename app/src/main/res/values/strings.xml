@@ -63,4 +63,13 @@
 
     <string name="update">上传</string>
 
+    <string name="perfession">专业</string>
+    <string name="name">姓名</string>
+    <string name="hosipital">医院</string>
+    <string name="detailSex">性别</string>
+    <string name="age">年龄</string>
+    <string name="address">办公地址</string>
+    <string name="nation">国籍</string>
+    <string name="detailPhone">手机</string>
+    <string name="email">邮箱</string>
 </resources>

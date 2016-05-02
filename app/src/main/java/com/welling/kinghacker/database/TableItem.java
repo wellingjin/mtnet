@@ -20,13 +20,13 @@ public class TableItem {
     public int length;
     public String attribute;
     public TableItem(String field){
-        new TableItem(field,M_VARCHAR,4000);
+        this(field,M_VARCHAR,4000);
     }
     public TableItem(String field,String fieldType){
-        new TableItem(field,fieldType,0);
+        this(field,fieldType,0);
     }
     public TableItem(String field,String fieldType,int len){
-        new TableItem(field,fieldType,len,null);
+        this(field,fieldType,len,null);
     }
     public TableItem(String field,String fieldType,int len,String attribute){
         this.fieldName = field;
@@ -34,5 +34,10 @@ public class TableItem {
         this.length = len;
         this.attribute = attribute;
     }
+    @Override
+    public String toString(){
+        return "name:"+fieldName+" type:"+fieldType+" length:"+length+" attribute:"+attribute;
+    }
+
 
 }

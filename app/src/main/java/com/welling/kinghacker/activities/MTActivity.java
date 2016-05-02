@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.welling.kinghacker.customView.ActionBarView;
 import com.welling.kinghacker.customView.OverFlowView;
@@ -146,7 +147,9 @@ public class MTActivity extends AppCompatActivity {
         Intent intent = new Intent(this,activity);
         startActivity(intent);
     }
-
+    protected void makeToast(String content){
+        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+    }
 
 
 //overflowitem的结构体

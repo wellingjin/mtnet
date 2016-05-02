@@ -27,12 +27,12 @@ public class PublicRes{
 
     static public final String STATE = "state";
     static public final String COOKIE = "cookie";
-    static public final String EXCEPTION = "exception";
+    static public final String EXCEPTION = "error";
 
     static public final String ROOTPATH = Environment.getExternalStorageDirectory() + "/NetMT";
     static public final String ECGPATH = ROOTPATH + "/ECG";
 
-    static public final String IP = "http://172.18.43.83:8080/QYYLZLPT/";
+    static public final String IP = "http://172.18.43.42:8080/HCP2/mobile/";
 
     static public final String Syn_Clound = "同步服务器";
 

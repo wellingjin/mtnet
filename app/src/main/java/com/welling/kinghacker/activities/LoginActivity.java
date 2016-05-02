@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,7 +12,6 @@ import android.widget.Toast;
 
 import com.welling.kinghacker.bean.AccountBean;
 import com.welling.kinghacker.customView.RippleView;
-import com.welling.kinghacker.database.DatabaseManager;
 import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
@@ -82,17 +82,21 @@ public class LoginActivity extends AppCompatActivity {
             HashMap<String,String> params = new HashMap<>();
             params.put("username",accountStr);
             params.put("password", passwordStr);
-            httpManager.post(params, httpManager.getRequestID(), "user/login.do");
+            httpManager.post(params, httpManager.getRequestID(), "login.do");
             httpManager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
                 @Override
                 public void onSuccess(int requestId, JSONObject JSONResponse) {
                     int state = PublicRes.ERROR;
                     String cookie;
                     String exceptionInfo;
+                    Log.i("login",JSONResponse.toString());
                     try {
                         state = JSONResponse.getInt(PublicRes.STATE);
+                        Log.i("login",state+"");
                         cookie = JSONResponse.getString(PublicRes.COOKIE);
+                        Log.i("login",cookie);
                         exceptionInfo = JSONResponse.getString(PublicRes.EXCEPTION);
+                        Log.i("login",exceptionInfo);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         cookie = null;
@@ -167,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
         map.put(PublicRes.PASSWORD, psd);
         SystemTool.getSystem(this).saveStringKV(map);
         AccountBean accountBean = new AccountBean(this,name,psd);
-        accountBean.update();
+        accountBean.insert();
     }
     public void jumpActivity(Class cls){
         Intent intent = new Intent(this,cls);

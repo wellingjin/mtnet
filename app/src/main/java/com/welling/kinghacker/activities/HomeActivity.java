@@ -44,7 +44,6 @@ public class HomeActivity extends MTActivity {
         initBloodSuger();
         initBloodPressure();
         initBloodOxygen();
-        initBloodFat();
         initElectocarDiagram();
         setPagerView();
     }
@@ -132,9 +131,7 @@ public class HomeActivity extends MTActivity {
         });
 
     }
-    private void initBloodFat(){
 
-    }
     private void initElectocarDiagram(){
         RippleView heardButton = (RippleView)findViewById(R.id.electrocarDiogramButton);
         heardButton.setRippleDuration(heardButton.getRippleDuration()/3);

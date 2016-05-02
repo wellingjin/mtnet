@@ -1,14 +1,17 @@
 package com.welling.kinghacker.tools;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.loopj.android.http.*;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
@@ -36,6 +39,7 @@ public class MTHttpManager {
         client.setTimeout(TIMEOUT);
         client.setEnableRedirects(true);
         requestID = 0;
+
     }
 
 
@@ -58,18 +62,30 @@ public class MTHttpManager {
     public boolean post(HashMap<String,String> params,int requestId,String url){
         if (params == null) return false;
         RequestParams requestParams = new RequestParams(params);
-        return post(requestParams, requestId,this.url+url);
+        return post(requestParams, requestId,url);
     }
     public boolean post( RequestParams requestParams,int requestId,String url){
-        if (requestParams == null) return false;
-        final int id = requestId;
+        if (requestParams == null) return post(requestId,url);
 
-        client.post(url, requestParams, new JsonHttpResponseHandler(){
+        final int id = requestId;
+        Log.i("http",this.url+url);
+        client.post(this.url+url, requestParams, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject responseBody) {
-
                 Log.i("http","sss"+ responseBody.toString());
-                httpResponseListener.onSuccess(id,responseBody);
+                String jsonStr = responseBody.toString();
+                try {
+                    jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
+                    Log.i("http","utf8"+jsonStr);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    httpResponseListener.onSuccess(id,new JSONObject(jsonStr));
+                } catch (JSONException e) {
+                    httpResponseListener.onSuccess(id,responseBody);
+                }
             }
 
             @Override
@@ -86,19 +102,20 @@ public class MTHttpManager {
                     for (Header header : headers) {
                         Log.i("http", header.getValue());
                     }
-                    httpResponseListener.onFailure(id, statusCode);
+
                 }
+                httpResponseListener.onFailure(id, statusCode);
             }
         });
         return true;
     }
     public boolean post(int requestId,String url){
         final int id = requestId;
-        client.post(url,new JsonHttpResponseHandler() {
+        client.post(this.url+url,new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject responseBody) {
                 Log.i("http","sss"+ responseBody.toString());
-                httpResponseListener.onSuccess(id,responseBody);
+                httpResponseListener.onSuccess(id, responseBody);
             }
 
             @Override
@@ -106,11 +123,22 @@ public class MTHttpManager {
                 for (Header header:headers){
                     Log.i("http",header.getValue());
                 }
+                Log.i("http",responseBody.toString());
                 httpResponseListener.onFailure(id,statusCode);
             }
 
         });
         return true;
+    }
+    public void updateToCloud(Context context,String data,int type){
+        String account = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
+//        String cookie = SystemTool.getSystem(context).getStringValue(PublicRes.COOKIE);
+        RequestParams params = new RequestParams();
+        params.put("account",account);
+//        params.put(PublicRes.COOKIE,cookie);
+        params.put("data",data);
+        params.put("type",type);
+        post(params,getRequestID(),"update.do");
     }
 
     public int getRequestID(){

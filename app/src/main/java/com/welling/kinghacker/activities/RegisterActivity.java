@@ -9,8 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.RequestParams;
+import com.welling.kinghacker.bean.PersonalInfo;
 import com.welling.kinghacker.tools.MTHttpManager;
+import com.welling.kinghacker.tools.PublicRes;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -19,7 +22,7 @@ import org.json.JSONObject;
  *
  */
 public class RegisterActivity extends MTActivity{
-    EditText account,password,comfirePassword,name,phone,answer1,answer2,answer3;
+    EditText account,password,comfirePassword,name,phone,answer1,answer2,answer3,editID;
     TextView sex,birthday;
     Button summit;
     ProgressDialog progressDialog;
@@ -43,6 +46,7 @@ public class RegisterActivity extends MTActivity{
         sex = (TextView)findViewById(R.id.registerSex);
         birthday = (TextView)findViewById(R.id.registerBirdthday);
         summit = (Button)findViewById(R.id.registerCommitButton);
+        editID = (EditText)findViewById(R.id.registerID);
 
         summit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,9 +64,25 @@ public class RegisterActivity extends MTActivity{
         httpManager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
             @Override
             public void onSuccess(int requestId, JSONObject JSONResponse) {
+
                 if (progressDialog != null && progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
+                int state = 0;
+                String excptionInfo = "";
+                try {
+                    state = JSONResponse.getInt(PublicRes.STATE);
+                    excptionInfo = JSONResponse.getString(PublicRes.EXCEPTION);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    excptionInfo = "数据解析失败";
+                }
+                if (state == 1){
+                    excptionInfo = "注册成功";
+                    saveDataBase();
+                    finish();
+                }
+                makeToast(excptionInfo);
             }
 
             @Override
@@ -70,6 +90,7 @@ public class RegisterActivity extends MTActivity{
                 if (progressDialog != null && progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
+                makeToast("连接服务器错误，错误码："+errorCode);
             }
         });
 //        HashMap<String,String> params = new HashMap<>();
@@ -84,11 +105,12 @@ public class RegisterActivity extends MTActivity{
         params.put("sex", sexInt);
         params.put("birthday",birthday.getText().toString());
         params.put("phone",phone.getText().toString());
+        params.put("idNumber",editID.getText().toString());
         params.put("answer1",answer1.getText().toString());
         params.put("answer2",answer2.getText().toString());
         params.put("answer3",answer3.getText().toString());
 
-        httpManager.post(params, httpManager.getRequestID(), "user/m/patient/register.do");
+        httpManager.post(params, httpManager.getRequestID(), "register.do");
     }
 
     boolean checkValidity(){
@@ -128,6 +150,11 @@ public class RegisterActivity extends MTActivity{
             phone.requestFocus();
             return false;
         }
+        if (editID.getText().toString().length() != 18){
+            makeToast("身份证号码不符合规则，必须为18位");
+            phone.requestFocus();
+            return false;
+        }
         if (answer1.getText().toString().length() <= 0){
             makeToast("问题1还没有回答");
             answer1.requestFocus();
@@ -146,6 +173,16 @@ public class RegisterActivity extends MTActivity{
 
 
         return true;
+    }
+    private void saveDataBase(){
+        PersonalInfo info = new PersonalInfo(this);
+        info.setAccount(account.getText().toString());
+        info.setBorthDay(birthday.getText().toString());
+        info.setUserName(name.getText().toString());
+        info.setPhone(phone.getText().toString());
+        info.setSex(sex.getText().toString().equals("男") ? 1 : 0);
+        info.setIDNum(editID.getText().toString());
+        info.insert();
     }
     private void makeToast(String content){
         Toast.makeText(this, content, Toast.LENGTH_LONG).show();

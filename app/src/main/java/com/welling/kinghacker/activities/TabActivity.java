@@ -1,21 +1,22 @@
 package com.welling.kinghacker.activities;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
+
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.welling.kinghacker.customView.OverFlowView;
 import com.welling.kinghacker.customView.PagerView;
+import com.welling.kinghacker.customView.RippleView;
+import com.welling.kinghacker.tools.SystemTool;
 
 /**
  * Created by KingHacker on 3/19/2016.
@@ -26,6 +27,7 @@ public class TabActivity extends AppCompatActivity{
     private int selectColor,unSelectColor;
     private FrameLayout leftView,rightView;
     private PagerView pagerView;
+    private OverFlowView overFlowView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +44,8 @@ public class TabActivity extends AppCompatActivity{
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootView = inflater.inflate(R.layout.tab_view_layout,null);
+        View rootView = SystemTool.getSystem(this).getView(R.layout.tab_view_layout);
+
 
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,ActionBar.LayoutParams.MATCH_PARENT);
         actionBar.setCustomView(rootView, layoutParams);
@@ -59,6 +61,15 @@ public class TabActivity extends AppCompatActivity{
                 }
             }
         });
+        RippleView rightButton = (RippleView)rootView.findViewById(R.id.tabMore);
+        initRightButton();
+        rightButton.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView rippleView) {
+                onRightClick();
+            }
+        });
+
         leftTab = (TextView)findViewById(R.id.leftTab);
         rightTab = (TextView)findViewById(R.id.rightTab);
         setTab(true);
@@ -78,6 +89,36 @@ public class TabActivity extends AppCompatActivity{
         });
     }
 
+    protected void onRightClick() {
+        setOverFlowPosition();
+        overFlowView.showOverFlow(pagerView);
+    }
+
+    protected void initRightButton(){
+        if (overFlowView == null){
+            overFlowView = new OverFlowView(this);
+        }
+        overFlowView.setOnRowClickListener(new OverFlowView.OnRowClickListener() {
+            @Override
+            public void onClick(String text) {
+                itemSelected(text);
+            }
+        });
+    }
+    protected void itemSelected(String text){
+
+    }
+    protected void setRightButton(int id,String text){
+        overFlowView.addItem(id, text);
+    }
+    //设置overflow的位置
+    private void setOverFlowPosition(){
+        int offsetX,offsetY;
+        offsetX = 50;
+
+        offsetY = SystemTool.getSystem(this).getStatusBarHeight() + getSupportActionBar().getHeight();
+        overFlowView.setOffset(offsetX, offsetY);
+    }
     private void setTab(boolean isLeftTab){
         if (isLeftTab){
             leftTab.setBackgroundColor(getResources().getColor(selectColor));
@@ -107,9 +148,9 @@ public class TabActivity extends AppCompatActivity{
         pagerView.setOnPagerChangedListener(new PagerView.OnPagerChangedListener() {
             @Override
             public void onPageSelected(int position) {
-                if (position == 0){
+                if (position == 0) {
                     setTab(true);
-                }else {
+                } else {
                     setTab(false);
                 }
             }
@@ -139,4 +180,12 @@ public class TabActivity extends AppCompatActivity{
         finish();
         return true;
     }
+    protected void gotoActivity(Class activity){
+        Intent intent = new Intent(this,activity);
+        startActivity(intent);
+    }
+    protected void makeToast(String content){
+        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+    }
+
 }
