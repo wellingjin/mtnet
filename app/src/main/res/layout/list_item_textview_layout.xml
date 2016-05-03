@@ -7,5 +7,4 @@
     android:textAppearance="?android:attr/textAppearanceListItem"
     android:gravity="center_vertical"
     android:textAlignment="viewStart"
-    android:background="@drawable/list_item_selector"
-    />
+    android:background="@drawable/list_item_selector"/>
