@@ -1,13 +1,13 @@
-﻿package com.welling.kinghacker.activities;
-
-
+package com.welling.kinghacker.activities;
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 
+import com.example.bluetooth.le.DeviceScanActivity;
 import com.welling.kinghacker.customView.BloodPressureView;
 import com.welling.kinghacker.customView.FilterView;
 import com.welling.kinghacker.customView.LineBlood;
@@ -52,15 +52,15 @@ public class BloodPressureActivity extends MTActivity {
         medicineButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
         Button doctorInfoButton = (Button)findViewById(R.id.doctorButton);
         doctorInfoButton.setBackgroundColor(getResources().getColor(R.color.bloodSugerBGColor));
-		synInfoButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				final Intent intent = new Intent(this, DeviceScanActivity.class);
-				startActivity(intent);
-			}
-		});
+        synInfoButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                gotoActivity(DeviceScanActivity.class);
+            }
+        });
     }
+
 
     @Override
     protected void onPostCreate(Bundle saveBundle){

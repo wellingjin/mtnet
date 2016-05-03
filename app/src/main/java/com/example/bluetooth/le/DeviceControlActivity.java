@@ -24,7 +24,8 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bluetooth.le.R;
+import com.welling.kinghacker.activities.R;
+
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect,
@@ -229,22 +230,22 @@ public class DeviceControlActivity extends Activity {
 				heart_rate_pro.setVisibility(View.GONE);
 				break;
 			case BluetoothLeService.LOW_BATTERY:
-				Toast.makeText(DeviceControlActivity.this, "µçÁ¿¹ýµÍ£¬Çë¸ü»»µç³Ø»ò²åÉÏµçÔ´", Toast.LENGTH_LONG).show();;
+				Toast.makeText(DeviceControlActivity.this, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½Ïµï¿½Ô´", Toast.LENGTH_LONG).show();;
 				break;
 			case BluetoothLeService.ERROR_1:
-				Toast.makeText(DeviceControlActivity.this, "²âÁ¿¹ý³ÌÖÐÃ»ÓÐÕì²âµ½Âö²«ÐÅºÅ", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½âµ½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_2:
-				Toast.makeText(DeviceControlActivity.this, "²âÁ¿´íÎó£¬²âÁ¿¹ý³¤ÖÐ¸ÉÈÅ¹ý´ó", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¸ï¿½ï¿½Å¹ï¿½ï¿½ï¿½", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_3:
-				Toast.makeText(DeviceControlActivity.this, "³äÆøÊ§°Ü£¬³äÆøÊ±¼ä¹ý³¤»òÐä´øÂ©Æø", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â©ï¿½ï¿½", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_4:
-				Toast.makeText(DeviceControlActivity.this, "²âÁ¿¹ý³ÌÖÐ³öÏÖÎ´Öª´íÎó", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð³ï¿½ï¿½ï¿½Î´Öªï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_5:
-				Toast.makeText(DeviceControlActivity.this, "²âÁ¿Ê§°Ü£¬²âÁ¿µÄ½á¹û¸ßÑ¹ÓëµÍÑ¹Ïà²îÌ«´ó", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½Ì«ï¿½ï¿½", Toast.LENGTH_LONG).show();
 				break;
 			}
 		}		

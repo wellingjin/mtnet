@@ -184,7 +184,5 @@ public class RegisterActivity extends MTActivity{
         info.setIDNum(editID.getText().toString());
         info.insert();
     }
-    private void makeToast(String content){
-        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
-    }
+
 }

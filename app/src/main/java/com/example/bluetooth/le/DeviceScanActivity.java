@@ -1,6 +1,7 @@
 package com.example.bluetooth.le;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
@@ -8,7 +9,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,8 +22,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.welling.kinghacker.activities.R;
+import com.welling.kinghacker.tools.SystemTool;
+
 import java.util.ArrayList;
-import java.util.UUID;
+
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
@@ -37,26 +40,28 @@ public class DeviceScanActivity extends ListActivity {
     private Handler mHandler;
 
     private static final int REQUEST_ENABLE_BT = 1;
-    // 10цК╨Смёж╧╡ИуркякВ.
+    // 10О©╫О©╫О©╫мёж╧О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫.
     private static final long SCAN_PERIOD = 10000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setTitle(R.string.title_devices);
+        ActionBar actionBar = getActionBar();
+        if (actionBar!=null)
+        actionBar.setTitle(getString(R.string.title_devices));
         mHandler = new Handler();
 
-        // ╪Л╡И╣╠г╟йж╩Зйг╥Яж╖Ёжble ю╤яю,хГ╧Ш╡╩ж╖ЁжмкЁЖЁлпР
+        // О©╫О©╫И╣╠г╟О©╫ж╩О©╫О©╫г╥О©╫ж╖О©╫О©╫ble О©╫О©╫О©╫О©╫,О©╫О©╫О©╫О©╫О©╫ж╖О©╫О©╫О©╫кЁО©╫О©╫О©╫О©╫О©╫
         //if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
         //    Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
         //    finish();
         //}
 
-        // ЁУй╪╩╞ Bluetooth adapter, м╗╧Щю╤яю╧эюМфВ╣ц╣╫р╩╦Ж╡н©╪ю╤яюййеДфВ(API╠ьпКтзртиоandroid4.3╩Рртио╨м╟Ф╠╬)
+        // О©╫О©╫й╪О©╫О©╫ Bluetooth adapter, м╗О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ц╣О©╫р╩О©╫О©╫О©╫н©О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫(APIО©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫android4.3О©╫О©╫О©╫О©╫О©╫о╨м╟Ф╠╬)
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        // ╪Л╡ИиХ╠╦иойг╥Яж╖Ёжю╤яю
+        // О©╫О©╫О©╫О©╫Х╠╦О©╫О©╫О©╫г╥О©╫ж╖О©╫О©╫О©╫О©╫О©╫О©╫
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             finish();
@@ -98,7 +103,7 @@ public class DeviceScanActivity extends ListActivity {
         Log.i("asdfg", "DeviceScanActivity->onresume_first");
         super.onResume();
         
-        // н╙акх╥╠ёиХ╠╦иою╤яюдэй╧сц, хГ╧Ш╣╠г╟ю╤яюиХ╠╦ц╩фТсц,╣╞ЁЖ╤т╩╟©РоРсц╩╖р╙гСйзсХх╗очю╢фТсц
+        // н╙О©╫О©╫х╥О©╫О©╫О©╫Х╠╦О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╧О©╫О©╫, О©╫О©╫О©╫О©╫О©╫г╟О©╫О©╫О©╫О©╫О©╫Х╠╦ц╩О©╫О©╫О©╫О©╫,О©╫О©╫О©╫О©╫О©╫т╩О©╫О©╫О©╫О©╫О©╫О©╫ц╩О©╫р╙О©╫О©╫О©╫О©╫О©╫О©╫х╗О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
         if (!mBluetoothAdapter.isEnabled()) {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);

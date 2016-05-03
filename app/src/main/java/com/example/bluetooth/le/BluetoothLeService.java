@@ -102,7 +102,7 @@ public class BluetoothLeService extends Service {
 					count++;					
 					stringBuilder.append(String.format("%d ",datatoint));// %02X
 				}
-				Log.i("asdfg", "²âÁ¿Êý¾ÝÎª£º"+ stringBuilder.toString());
+
 				while(count>=6){
 					if(bufferint.get(0)==254){
 						if(bufferint.get(1)==132){
@@ -117,25 +117,25 @@ public class BluetoothLeService extends Service {
 						}
 						else if(bufferint.get(1)==129){
 							if(count==7){
-								Log.i("asdfg_»ØÓ¦", "¿ª»ú»ØÓ¦");
+								Log.i("asdfg_ï¿½ï¿½Ó¦", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦");
 								for(int i=0;i<7;i++)bufferint.remove(0);
 								count-=7;
 							}					
 						}
 						else if(bufferint.get(1)==131){
 							switch(bufferint.get(2)){
-							case 1:update_date(ERROR_1);Log.i("asdfg_info", "²âÁ¿¹ý³ÌÖÐÃ»ÓÐÕì²âµ½Âö²«ÐÅºÅ");break;
-							case 2:update_date(ERROR_2);Log.i("asdfg_info", "²âÁ¿´íÎó£¬²âÁ¿¹ý³¤ÖÐ¸ÉÈÅ¹ý´ó");break;
-							case 3:update_date(ERROR_3);Log.i("asdfg_info", "³äÆøÊ§°Ü£¬³äÆøÊ±¼ä¹ý³¤»òÐä´øÂ©Æø");break;
-							case 5:update_date(ERROR_5);Log.i("asdfg_info", "²âÁ¿Ê§°Ü£¬²âÁ¿µÄ½á¹û¸ßÑ¹ÓëµÍÑ¹Ïà²îÌ«´ó");break;
-							default:update_date(ERROR_4);Log.i("asdfg_info", "²âÁ¿¹ý³ÌÖÐ³öÏÖÎ´Öª´íÎó");break;
+							case 1:update_date(ERROR_1);Log.i("asdfg_info", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½âµ½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½");break;
+							case 2:update_date(ERROR_2);Log.i("asdfg_info", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¸ï¿½ï¿½Å¹ï¿½ï¿½ï¿½");break;
+							case 3:update_date(ERROR_3);Log.i("asdfg_info", "ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â©ï¿½ï¿½");break;
+							case 5:update_date(ERROR_5);Log.i("asdfg_info", "ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½Ì«ï¿½ï¿½");break;
+							default:update_date(ERROR_4);Log.i("asdfg_info", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð³ï¿½ï¿½ï¿½Î´Öªï¿½ï¿½ï¿½ï¿½");break;
 							}
 							for(int i=0;i<6;i++)bufferint.remove(0);
 							count-=6;
 						}
 						else if(bufferint.get(1)==133){
 							update_date(LOW_BATTERY);
-							Log.i("asdfg_info", "µçÁ¿¹ýµÍ£¬Çë¸ü»»µç³Ø»ò²åÉÏµçÔ´");
+							Log.i("asdfg_info", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½Ïµï¿½Ô´");
 							for(int i=0;i<6;i++)bufferint.remove(0);
 							count-=6;
 						}
@@ -143,10 +143,10 @@ public class BluetoothLeService extends Service {
 					else if(bufferint.get(0)==255){
 						if(count==72){
 							Log.i("asdfg_bloodandheart", 
-									" ¸ßÑ¹="+bufferint.get(10)+
-									" µÍÑ¹="+bufferint.get(11)+
-									" Âö²«="+bufferint.get(12)+
-									" ÐÄÂÊ²»Æë="+(bufferint.get(13)&0x80));
+									" ï¿½ï¿½Ñ¹="+bufferint.get(10)+
+									" ï¿½ï¿½Ñ¹="+bufferint.get(11)+
+									" ï¿½ï¿½ï¿½ï¿½="+bufferint.get(12)+
+									" ï¿½ï¿½ï¿½Ê²ï¿½ï¿½ï¿½="+(bufferint.get(13)&0x80));
 							high_blood=bufferint.get(10);
 							low_blood=bufferint.get(11);
 							heart_rate=bufferint.get(12);
@@ -372,7 +372,7 @@ public class BluetoothLeService extends Service {
 	 * 
 	 * @param characteristic
 	 *            Characteristic to act on.
-	 * @param enabled
+	 * @param enable
 	 *            If true, enable notification. False otherwise.
 	 */
 	public void setCharacteristicNotification(
