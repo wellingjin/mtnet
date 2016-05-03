@@ -61,7 +61,7 @@ public class BluetoothLeService extends Service {
 				broadcastUpdate(intentAction);
 				Log.i(TAG, "Connected to GATT server.");
 				// Attempts to discover services after successful connection.
-				Log.i("asdfg", "Attempting to start service discovery:"
+				Log.i(TAG, "Attempting to start service discovery:"
 						+ mBluetoothGatt.discoverServices());
 
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -76,8 +76,6 @@ public class BluetoothLeService extends Service {
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
-			} else {
-				Log.i("asdfg", "onServicesDiscovered received: " + status);
 			}
 		}
 
@@ -111,42 +109,34 @@ public class BluetoothLeService extends Service {
 								update_date(0);
 								pressure_value=newbloodpress;
 							}
-							Log.i("asdfg_pressure", bufferint.get(2)+" "+bufferint.get(3)+" "+(bufferint.get(2)*256+bufferint.get(3)));
 							for(int i=0;i<6;i++)bufferint.remove(0);
 							count-=6;
 						}
 						else if(bufferint.get(1)==129){
 							if(count==7){
-								Log.i("asdfg_��Ӧ", "������Ӧ");
 								for(int i=0;i<7;i++)bufferint.remove(0);
 								count-=7;
 							}					
 						}
 						else if(bufferint.get(1)==131){
 							switch(bufferint.get(2)){
-							case 1:update_date(ERROR_1);Log.i("asdfg_info", "����������û����⵽�����ź�");break;
-							case 2:update_date(ERROR_2);Log.i("asdfg_info", "�������󣬲��������и��Ź���");break;
-							case 3:update_date(ERROR_3);Log.i("asdfg_info", "����ʧ�ܣ�����ʱ����������©��");break;
-							case 5:update_date(ERROR_5);Log.i("asdfg_info", "����ʧ�ܣ������Ľ����ѹ���ѹ���̫��");break;
-							default:update_date(ERROR_4);Log.i("asdfg_info", "���������г���δ֪����");break;
+							case 1:update_date(ERROR_1);break;
+							case 2:update_date(ERROR_2);break;
+							case 3:update_date(ERROR_3);break;
+							case 5:update_date(ERROR_5);break;
+							default:update_date(ERROR_4);break;
 							}
 							for(int i=0;i<6;i++)bufferint.remove(0);
 							count-=6;
 						}
 						else if(bufferint.get(1)==133){
 							update_date(LOW_BATTERY);
-							Log.i("asdfg_info", "�������ͣ��������ػ���ϵ�Դ");
 							for(int i=0;i<6;i++)bufferint.remove(0);
 							count-=6;
 						}
 					}
 					else if(bufferint.get(0)==255){
 						if(count==72){
-							Log.i("asdfg_bloodandheart", 
-									" ��ѹ="+bufferint.get(10)+
-									" ��ѹ="+bufferint.get(11)+
-									" ����="+bufferint.get(12)+
-									" ���ʲ���="+(bufferint.get(13)&0x80));
 							high_blood=bufferint.get(10);
 							low_blood=bufferint.get(11);
 							heart_rate=bufferint.get(12);
@@ -158,14 +148,13 @@ public class BluetoothLeService extends Service {
 							count=0;
 						}
 						else break;
-					}else {						
-						Log.i("asdfg_0", bufferint.get(0)+" "+count);
+					}else {
 						bufferint.remove(0);
 						count-=1;
 					}
 				}
 				
-			} else Log.i("asdfg", "data->" + data);
+			}
 		}
 
 		@Override
@@ -176,7 +165,6 @@ public class BluetoothLeService extends Service {
 				final StringBuilder stringBuilder = new StringBuilder(data.length);
 				for (byte byteChar : data)
 					stringBuilder.append(String.format("%02x ", byteChar));// %02X
-				Log.i("asdfg","="+stringBuilder.toString());
 			}
 		}
 
