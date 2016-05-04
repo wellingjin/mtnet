@@ -66,13 +66,13 @@
 	<string name="ble_not_supported">该设备不支持BLE</string>
     <string name="connected">已连接</string>
     <string name="disconnected">未连接</string>
-    <string name="title_devices">正在扫描可用设备</string>
+    <string name="title_devices">可用设备</string>
     <string name="error_bluetooth_not_supported">该设备不支持蓝牙</string>
-    <!-- Menu items -->
-    <string name="menu_connect">连接</string>
-    <string name="menu_disconnect">断开</string>
-    <string name="menu_scan">扫描</string>
-    <string name="menu_stop">停止</string>
+
+    <string name="measure_blood">测量血压</string>
+    <string name="scan">扫描</string>
+    <string name="stop">停止</string>
+    <string name="nodevice">没有扫描到可用设备</string>
     <string name="unknown_device">未知设备</string>
 
     <string name="perfession">专业</string>
