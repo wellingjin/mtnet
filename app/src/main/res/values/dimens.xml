@@ -12,7 +12,7 @@
 
     <dimen name="blood_suger_width">100dp</dimen>
     <dimen name="blood_suger_Height">170dp</dimen>
-    <dimen name="lineWidth">3dp</dimen>
+    <dimen name="lineWidth">1dp</dimen>
     <dimen name="buttonTextSize">18sp</dimen>
 
     <dimen name="asixPaintWidth">2dp</dimen>

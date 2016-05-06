@@ -5,6 +5,7 @@
     android:orientation="vertical"
     >
     <ScrollView
+        android:id="@+id/doctorDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <TableLayout
@@ -19,7 +20,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="@string/app_name"
+                android:id="@+id/doctorName"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -35,8 +36,8 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
+                android:id="@+id/perfession"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -52,7 +53,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="@string/app_name"
+                android:id="@+id/hospital"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -69,6 +70,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
+                android:id="@+id/doctorSex"
                 android:text="男"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -85,6 +87,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
+                android:id="@+id/doctorAge"
                 android:text="25"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -101,7 +104,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="中国"
+                android:id="@+id/nation"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -119,7 +122,7 @@
         </TableRow>
 
         <TextView
-            android:text="中国广东省汕头市汕头大学大学路243号"
+            android:id="@+id/doctorAddress"
             android:textSize="@dimen/detail_size"
             />
         <LinearLayout
@@ -133,7 +136,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="13750406545"
+                android:id="@+id/doctorTel"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -149,7 +152,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="13750406545@360.com"
+                android:id="@+id/doctorEmail"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -164,7 +167,7 @@
             android:textSize="@dimen/detail_size"
             />
         <TextView
-            android:text="我乃齐天大圣孙悟空，200年前大闹天宫"
+            android:id="@+id/doctorInfo"
             android:textSize="@dimen/detail_size"
             />
     </TableLayout>

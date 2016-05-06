@@ -19,7 +19,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="@string/app_name"
+                android:id="@+id/medicineDetailName"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -36,7 +36,7 @@
                 />
             <TextView
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"
+                android:id="@+id/medicineDetailWay"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -52,7 +52,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="@string/app_name"
+                android:id="@+id/medicineDetailNumber"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -69,7 +69,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="一天3次"
+                android:id="@+id/medicineDetailCount"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -85,7 +85,7 @@
                 android:textSize="@dimen/detail_size"
                 />
             <TextView
-                android:text="饭前"
+                android:id="@+id/medicineDetailTime"
                 android:textSize="@dimen/detail_size"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 />
@@ -102,7 +102,7 @@
             android:textSize="@dimen/detail_size" />
 
         <TextView
-            android:text="聚乙烯，花昂东，晃动大概，啊的说法，萨法，师弟"
+            android:id="@+id/medicineDetailElement"
             android:textSize="@dimen/detail_size"
             />
         <LinearLayout
@@ -115,7 +115,7 @@
             android:textSize="@dimen/detail_size" />
 
         <TextView
-            android:text="聚乙烯，花昂东，晃动大概，啊的说法，萨法，师弟"
+            android:id="@+id/medicineDetailIndication"
             android:textSize="@dimen/detail_size"
             />
         <LinearLayout
@@ -130,7 +130,7 @@
             android:textSize="@dimen/detail_size"
             />
         <TextView
-            android:text="我乃齐天大圣孙悟空，200年前大闹天宫"
+            android:id="@+id/medicineDetailReaction"
             android:textSize="@dimen/detail_size"
             />
         <LinearLayout
@@ -145,7 +145,7 @@
             android:textSize="@dimen/detail_size"
             />
         <TextView
-            android:text="我乃齐天大圣孙悟空，200年前大闹天宫"
+            android:id="@+id/medicineDetailTaboo"
             android:textSize="@dimen/detail_size"
             />
         <LinearLayout
@@ -160,7 +160,7 @@
             android:textSize="@dimen/detail_size"
             />
         <TextView
-            android:text="我乃齐天大圣孙悟空，200年前大闹天宫"
+            android:id="@+id/medicineDetailAttention"
             android:textSize="@dimen/detail_size"
             />
 
@@ -176,7 +176,7 @@
             android:textSize="@dimen/detail_size"
             />
         <TextView
-            android:text="我乃齐天大圣孙悟空，200年前大闹天宫"
+            android:id="@+id/medicineDetailDirection"
             android:textSize="@dimen/detail_size"
             />
     </TableLayout>

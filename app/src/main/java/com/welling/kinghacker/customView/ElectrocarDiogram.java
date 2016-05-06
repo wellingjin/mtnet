@@ -83,11 +83,7 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        isRun = false;
-        if (drawThread.isAlive()){
-            drawThread.interrupt();
-        }
-        drawThread = null;
+        stopDram();
     }
 
     synchronized private void dramThread(){
@@ -139,6 +135,13 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
             clearCanvas(null,holder);
             dramThread();
         }
+    }
+    public void stopDram(){
+        isRun = false;
+        if (drawThread!= null && drawThread.isAlive()){
+            drawThread.interrupt();
+        }
+        drawThread = null;
     }
 
     private void clearCanvas(Rect rect,SurfaceHolder holder){

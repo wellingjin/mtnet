@@ -29,12 +29,20 @@ public class PublicRes{
     static public final String COOKIE = "cookie";
     static public final String EXCEPTION = "error";
 
+
     static public final String ROOTPATH = Environment.getExternalStorageDirectory() + "/NetMT";
     static public final String ECGPATH = ROOTPATH + "/ECG";
 
-    static public final String IP = "http://172.18.43.42:8080/HCP2/mobile/";
+    static public final String IP = "http://172.18.43.46:8080/HCP2/mobile/";
 
     static public final String Syn_Clound = "同步服务器";
+
+    static public final String[] ELCresult = {"节律无异常","疑似心跳稍快，请注意休息",
+            "疑似心跳过快，请注意休息","疑似阵发性心跳过快，请咨询医生","疑似心跳稍缓，请注意休息","疑似心跳过缓，请注意休息"
+            ,"疑似心跳间期缩短，请咨询医生","疑似心跳间期不规律，请咨询医生","疑似心跳稍快伴有心跳间期缩短，请咨询医生"
+            ,"疑似心跳稍缓伴有心跳间期缩短，请咨询医生","疑似心跳稍快伴有心跳间期不规律，请咨询医生","波形有漂移"
+            ,"疑似心跳过快伴有波形漂移，请咨询医生","疑似心跳过缓伴有波形漂移，请咨询医生","疑似心跳间期缩短伴有波形漂移，请咨询医生"
+            ,"疑似心跳间期不规律伴有波形漂移，请咨询医生","信号较差，请重新测量"};
 
     public String electrocarDiogram,
                     bloodSuger,

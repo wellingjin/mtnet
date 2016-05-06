@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-<ScrollView
+    <Button
+        android:id="@+id/registerCommitButton"
+        android:layout_alignParentBottom = "true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+
+        />
+
+    <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="450dp"
+    android:layout_height="match_parent"
+    android:layout_above="@id/registerCommitButton"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -268,13 +278,5 @@
         />
     </LinearLayout>
     </ScrollView>
-    <Button
-        android:id="@+id/registerCommitButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:layout_gravity="bottom"
 
-        />
-
-</FrameLayout>
+</RelativeLayout>
