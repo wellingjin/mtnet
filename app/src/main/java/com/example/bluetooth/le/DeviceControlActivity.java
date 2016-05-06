@@ -24,6 +24,7 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.welling.kinghacker.activities.MTActivity;
 import com.welling.kinghacker.activities.R;
 
 
@@ -34,7 +35,7 @@ import com.welling.kinghacker.activities.R;
  * turn interacts with the Bluetooth LE API.
  */
 @SuppressLint("NewApi")
-public class DeviceControlActivity extends Activity {
+public class DeviceControlActivity extends MTActivity {
 	
 	private Button start_to_measure=null;
 	private TextView status_dev=null;
@@ -81,11 +82,9 @@ public class DeviceControlActivity extends Activity {
 			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 				mConnected = true;
 				updateConnectionState(R.string.connected);
-				invalidateOptionsMenu();
 			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
 				mConnected = false;
 				updateConnectionState(R.string.disconnected);
-				invalidateOptionsMenu();
 				clearUI();
 			} else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED
 					.equals(action)) {
@@ -109,7 +108,7 @@ public class DeviceControlActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.blood_measure);
-
+		setActionBarTitle(getResources().getString(R.string.measure_blood));
 		start_to_measure=(Button)findViewById(R.id.start_to_measure);
 		status_dev=(TextView)findViewById(R.id.status_dev);
 		high_blood=(TextView)findViewById(R.id.high_blood);
@@ -122,8 +121,8 @@ public class DeviceControlActivity extends Activity {
 		mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
 		mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
-		getActionBar().setTitle(mDeviceName);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		//getActionBar().setTitle(mDeviceName);
+		//getActionBar().setDisplayHomeAsUpEnabled(true);
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
 		bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 		start_to_measure.setOnClickListener(new OnClickListener() {
@@ -159,35 +158,6 @@ public class DeviceControlActivity extends Activity {
 		unbindService(mServiceConnection);
 		mBluetoothLeService = null;
 		Log.i("asdfg", "DeviceControlActivity->ondestroy");
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.gatt_services, menu);
-		if (mConnected) {
-			menu.findItem(R.id.menu_connect).setVisible(false);
-			menu.findItem(R.id.menu_disconnect).setVisible(true);
-		} else {
-			menu.findItem(R.id.menu_connect).setVisible(true);
-			menu.findItem(R.id.menu_disconnect).setVisible(false);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_connect:
-			mBluetoothLeService.connect(mDeviceAddress);
-			return true;
-		case R.id.menu_disconnect:
-			mBluetoothLeService.disconnect();
-			return true;
-		case android.R.id.home:
-			onBackPressed();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	private void updateConnectionState(final int resourceId) {
@@ -230,22 +200,22 @@ public class DeviceControlActivity extends Activity {
 				heart_rate_pro.setVisibility(View.GONE);
 				break;
 			case BluetoothLeService.LOW_BATTERY:
-				Toast.makeText(DeviceControlActivity.this, "�������ͣ��������ػ���ϵ�Դ", Toast.LENGTH_LONG).show();;
+				Toast.makeText(DeviceControlActivity.this, "电量过低，请更换电池或插上电源", Toast.LENGTH_LONG).show();;
 				break;
 			case BluetoothLeService.ERROR_1:
-				Toast.makeText(DeviceControlActivity.this, "����������û����⵽�����ź�", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "测量过程中没有侦测到脉搏信号", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_2:
-				Toast.makeText(DeviceControlActivity.this, "�������󣬲��������и��Ź���", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "测量错误，测量过长中干扰过大", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_3:
-				Toast.makeText(DeviceControlActivity.this, "����ʧ�ܣ�����ʱ����������©��", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "充气失败，充气时间过长或袖带漏气", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_4:
-				Toast.makeText(DeviceControlActivity.this, "���������г���δ֪����", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "测量过程中出现未知错误", Toast.LENGTH_LONG).show();
 				break;
 			case BluetoothLeService.ERROR_5:
-				Toast.makeText(DeviceControlActivity.this, "����ʧ�ܣ������Ľ����ѹ���ѹ���̫��", Toast.LENGTH_LONG).show();
+				Toast.makeText(DeviceControlActivity.this, "测量失败，测量的结果高压与低压相差太大", Toast.LENGTH_LONG).show();
 				break;
 			}
 		}		
