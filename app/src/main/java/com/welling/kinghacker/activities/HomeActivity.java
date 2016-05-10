@@ -27,28 +27,15 @@ public class HomeActivity extends MTActivity {
     //全局变量定义
     enum cuteItem {ED,BS,BP,BO}//分别表示，心电，血糖，血压，血氧
     int screenWidth;
-    public static PagerView pagerView;
+    PagerView pagerView;
     String [] titleText = new String[5];
     int[] color = new int[5];
     private BloodSugerView bloodSugerView;
     float bloodSugerValue = 8f;
     private BloodPressureView bloodPressureView;
     private boolean isExit = false;
-    public static BloodOxygenView bloodOxygenView;
-    public static int currentOxygenValue = 0;
-    public static Handler myHandler=new Handler() {
-
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    //更新展示的数据
-                    bloodOxygenView.setBloodOxygenValue(currentOxygenValue);
-                    bloodOxygenView.startAnimation();
-                    pagerView.invalidate();
-                    break;
-            }
-        }
-    };
+    public BloodOxygenView bloodOxygenView;
+    public  int currentOxygenValue = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,5 +207,11 @@ public class HomeActivity extends MTActivity {
             isExit = true;
         }
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initBloodOxygen();
     }
 }

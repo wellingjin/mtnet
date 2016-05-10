@@ -88,12 +88,11 @@ public class BloodOxygenUploadActivity extends MTActivity{
                         //更新展示的血氧值
                         BloodOxygenActivity.currentOxygenValue = averageSpo2;
                         BloodOxygenActivity.myHandler.sendEmptyMessage(1);//更新数据
-                        finish();
+                        //finish();
                         break;
                     }
                     if(!nStatus){
                         //探头脱落
-                        finish();
                         break;
                     }
                     try{

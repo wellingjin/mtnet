@@ -24,7 +24,6 @@ public class OxygenMTDialog {
     private OnButtonClickListener onButtonClickListener;
     public OxygenMTDialog(Context context){
         alertDialog = new AlertDialog.Builder(context).create();
-        //添加这句话可以使得EditText可以编辑
         alertDialog.setView(new EditText(context));
         show();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -56,7 +55,6 @@ public class OxygenMTDialog {
         });
 //        alertDialog.setOnDismissListener(new                                                                                  );
     }
-    //    内部方法
     private void show(){
         if (!alertDialog.isShowing()) {
             alertDialog.show();

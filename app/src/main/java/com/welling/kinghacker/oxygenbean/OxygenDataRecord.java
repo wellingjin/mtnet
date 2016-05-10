@@ -62,7 +62,7 @@ public class OxygenDataRecord extends OxygenMTBean {
         int data= 0;
         JSONObject jsonObject =  manager.getMultiRaw(TABLENAME, null, null, null);
         try{
-            int row = (int)jsonObject.get("row");
+            int row = (int)jsonObject.get("count");
             JSONObject item = jsonObject.getJSONObject((row -1)+"");
             data = item.getInt(OXYGENVALUE);
         }catch(JSONException j){
@@ -75,7 +75,7 @@ public class OxygenDataRecord extends OxygenMTBean {
         int data[]= new int[7];
         JSONObject jsonObject =  manager.getMultiRaw(TABLENAME, null, null, null);
         try{
-            int row = (int)jsonObject.get("row");
+            int row = (int)jsonObject.get("count");
             for(int index = 1;index<=7;index++ ) {
                 JSONObject item = jsonObject.getJSONObject((row - index) + "");
                 data[index-1] = item.getInt(OXYGENVALUE);

@@ -68,9 +68,6 @@ public class BloodOxygenActivity extends MTActivity {
                     BloodOxygenActivity.singleBloodOxygenView.setBloodOxygenValue(currentOxygenValue);
                    // rootView.addView(singleBloodOxygenView.getBloodOxygenView());
                     BloodOxygenActivity.singleBloodOxygenView.startAnimation();
-
-                    HomeActivity.currentOxygenValue = currentOxygenValue;
-                    HomeActivity.myHandler.sendEmptyMessage(1);
                     //更新最近7次数据
                     for(int i= bloodOxygenChartView.bloodOxyData.length-1;i>=1;i--){
                         bloodOxygenChartView.bloodOxyData[i] = bloodOxygenChartView.bloodOxyData[i-1];
@@ -121,20 +118,20 @@ public class BloodOxygenActivity extends MTActivity {
         medicineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoActivity(OxygenMedicineActicity.class);
+                gotoActivity(MedicionActicity.class);
             }
         });
         doctorInfoButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                gotoActivity(OxygenMainDoctorActivity.class);
+                gotoActivity(MainDoctorActivity.class);
             }
         });
 
         mtToast = new MTToast(this);
         items = new ArrayList<>();
-
+        drawLineChart();
     }
     private void discoverBlueTooth(){
         isFinish = false;
@@ -180,7 +177,7 @@ public class BloodOxygenActivity extends MTActivity {
     private void startSearchBlueTooth(){
         //   bluetooth
         connectUtils = new BluetoothConnectUtils(this);
-        showAlertDialog("正在查找...",false,true,true);
+        showAlertDialog("正在查找...",false,true);
         connectUtils.setOnBluetoothConnectedListener(new BluetoothConnectUtils.OnBluetoothConnectedListener() {
             @Override
             public void setOnBluetoothConnected(BluetoothSocket bluetoothSocket) {
@@ -200,26 +197,26 @@ public class BloodOxygenActivity extends MTActivity {
             public void bluetoothConnectState(int state) {
                 switch (state){
                     case BluetoothConnectUtils.CONNECTING:
-                        showAlertDialog("正在连接...",false,true,true);
+                        showAlertDialog("正在连接...",false,true);
                         break;
                     case BluetoothConnectUtils.CONNECT_FAILED:
-                        showAlertDialog("连接失败...",true,true,true);
+                        showAlertDialog("连接失败...",true,true);
                         mtDialog.dismiss();
                         //在此跳出手动输入的弹窗
                         showMTAlertDialog();
                         break;
                     case BluetoothConnectUtils.CONNECTED:
-                        showAlertDialog("连接成功",false,true,true);
+                        showAlertDialog("连接成功",false,true);
                         //跳到展示的页面
                         mtDialog.dismiss();
                         intent= new Intent(BloodOxygenActivity.this, BloodOxygenUploadActivity.class);
                         startActivity(intent);
                         break;
                     case BluetoothConnectUtils.SEARCH_COMPLETE:
-                        showAlertDialog("搜索结束...",true,true,true);
+                        showAlertDialog("搜索结束...",true,true);
                         break;
                     case BluetoothConnectUtils.SEARCH_FAILED:
-                        showAlertDialog("搜索失败...",true,true,true);
+                        showAlertDialog("搜索失败...",true,true);
                         mtDialog.dismiss();
                         showMTAlertDialog();
                         break;
@@ -319,14 +316,15 @@ public class BloodOxygenActivity extends MTActivity {
             filterView.showFilter(findViewById(R.id.universalMoudleRootView));
         }
     }
-    void showAlertDialog(String str,boolean prgHide,boolean barHide,boolean buttonHide){
+    void showAlertDialog(String str,boolean prgHide,boolean barHide){
         if (mtDialog == null){
             mtDialog = new MTDialog(this);
         }
         mtDialog.setStateText(str);
         mtDialog.setRecBarHiden(barHide);
         mtDialog.setProgressBarHiden(prgHide);
-        mtDialog.setButtonHiden(buttonHide);
+        mtDialog.setCancleButtonEnable(false,"取消");
+        mtDialog.setComfireButtonEnable(false,"上传");
     }
     //设置手动输入弹窗
     void showMTAlertDialog(){

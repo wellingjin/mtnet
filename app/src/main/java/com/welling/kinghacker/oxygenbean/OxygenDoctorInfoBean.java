@@ -32,7 +32,7 @@ public class OxygenDoctorInfoBean extends OxygenMTBean {
     public int age;
     public String address;
     public String nation;
-    public String info ;//¼ò½é
+    public String info ;
     public String telPhone;
     public String email;
     public OxygenDoctorInfoBean(Context context){
