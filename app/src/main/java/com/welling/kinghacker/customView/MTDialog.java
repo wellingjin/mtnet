@@ -154,6 +154,7 @@ public class MTDialog {
     public void dismiss(){
         if (alertDialog!=null && alertDialog.isShowing())
             alertDialog.dismiss();
+
     }
 
     public interface OnButtonClickListener{

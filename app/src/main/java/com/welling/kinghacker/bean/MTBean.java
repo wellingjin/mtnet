@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.welling.kinghacker.database.DatabaseManager;
 
+import java.io.Serializable;
+
 /**
  * Created by KingHacker on 4/30/2016.
  * bean类

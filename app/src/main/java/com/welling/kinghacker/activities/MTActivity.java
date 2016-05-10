@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +59,7 @@ public class MTActivity extends AppCompatActivity {
                 @Override
                 public void rightButtonOnClick() {
                     if (isOverFlow) {
+                        Log.i("MTActivity","rightButton");
                         setOverFlowPosition();
                         overFlowView.showOverFlow(parentView);
                     }

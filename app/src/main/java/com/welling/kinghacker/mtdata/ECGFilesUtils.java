@@ -3,6 +3,7 @@ package com.welling.kinghacker.mtdata;
 import android.util.Log;
 
 import com.creative.filemanage.ECGFile;
+import com.welling.kinghacker.bean.ELCBean;
 import com.welling.kinghacker.tools.PublicRes;
 
 import org.json.JSONArray;
@@ -19,12 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import cz.msebera.android.httpclient.util.EncodingUtils;
+
 /**
  * Created by user on 2015/12/7.
  **/
 public class ECGFilesUtils {
 
-    public static void packECGFile(ECGFile ecgFile) throws JSONException, IOException {
+
+    public static String packECGFile(ECGFile ecgFile) throws JSONException, IOException {
 
         JSONObject object = new JSONObject();
         object.put("time", ecgFile.time);
@@ -43,7 +47,8 @@ public class ECGFilesUtils {
             Log.i("File","created");
             pFile.mkdir();
         }
-        File file = new File(pFile, System.currentTimeMillis() + ".txt");
+        String fileName = System.currentTimeMillis() + ".txt";
+        File file = new File(pFile, fileName);
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -53,6 +58,7 @@ public class ECGFilesUtils {
         bos.flush();
         fos.close();
         bos.close();
+        return fileName;
     }
 
     public static List<File> getECGFileList(String path) {
@@ -91,6 +97,39 @@ public class ECGFilesUtils {
         }
         baos.flush();
         return baos.toString();
+    }
+    public static ECGFile getECGFileByName(String fileName){
+        String path = PublicRes.ECGPATH+"/"+fileName;
+        File file = new File(path);
+        try {
+            return getECGFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getFileByName(String fileName){
+        String res = null;
+        String path = PublicRes.ECGPATH+"/"+fileName;
+        Log.i("getfile",path);
+        try{
+            FileInputStream fin = new FileInputStream(path);
+
+            int length = fin.available();
+            byte [] buffer = new byte[length];
+
+            Log.i("getfile", "size "+fin.read(buffer));
+            res = EncodingUtils.getString(buffer, "UTF-8");
+            fin.close();
+        }
+
+        catch(Exception e){
+            Log.i("getfile","excption");
+            e.printStackTrace();
+        }
+        return res;
     }
     public static ECGFile getECGFile(File file) throws IOException, JSONException {
 

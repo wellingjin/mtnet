@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import com.creative.filemanage.ECGFile;
 import com.welling.kinghacker.activities.R;
 import com.welling.kinghacker.mtdata.ECGFilesUtils;
+import com.welling.kinghacker.mtdata.MTThread;
 import com.welling.kinghacker.tools.SystemTool;
 
 import java.util.ArrayList;
@@ -23,13 +25,14 @@ import java.util.List;
 **/
 public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
-    private boolean isRun = false;
+//    private boolean isRun = false;
     private List<Integer> point;
     private float baseLine ,range ,amplitude;
-    private Thread drawThread;
+
     private int timeInterval = 10;
     private float maxNum = 0;
     private float startX;
+    private List<MTThread> threads = new ArrayList<>();
 
     public ElectrocarDiogram(Context context) {
         super(context);
@@ -83,15 +86,12 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        isRun = false;
-        if (drawThread.isAlive()){
-            drawThread.interrupt();
-        }
-        drawThread = null;
+        stopDram();
     }
 
-    synchronized private void dramThread(){
-       drawThread = new Thread(new Runnable() {
+    synchronized private void dramThread(final MTThread thread){
+
+        thread.setMtRun(new MTThread.MTRun() {
             @Override
             public void run() {
                 SurfaceHolder surfaceHolder = holder;
@@ -101,21 +101,23 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
 
 
                 List<Integer> drawPoint = new ArrayList<>();
-                if (point.size() <=0){
-                    isRun = false;
+                if (point.size() <= 0) {
+                    thread.isRun = false;
                     return;
                 }
                 for (int w : point) {
-                    int pointNum = (w-1950)/10;
-                    if (Math.abs(pointNum) > maxNum){
+                    int pointNum = (w - 1950) / 10;
+                    if (Math.abs(pointNum) > maxNum) {
                         maxNum = pointNum;
                     }
                     drawPoint.add(-pointNum);
                 }
                 float lastX = -startX, lastY = baseLine;
-                for (int i = 0; i < drawPoint.size() && isRun; i++) {
-                    Rect rect = new Rect((int)(lastX+0.5) ,(int)(baseLine - maxNum * amplitude ),(int)(lastX + 2*range+5 ),(int)(baseLine + maxNum * amplitude* 2));
-                    clearCanvas(rect, surfaceHolder);
+                for (int i = 0; i < drawPoint.size() && thread.isRun; i++) {
+                    Rect rect = new Rect((int) (lastX + 0.5), (int) (baseLine - maxNum * amplitude), (int) (lastX + 2 * range + 5), (int) (baseLine + maxNum * amplitude * 2));
+
+                    clearCanvas(thread, rect, surfaceHolder);
+
                     Canvas c = surfaceHolder.lockCanvas(rect);
                     if (c != null) {
                         c.drawLine(lastX, lastY, lastX + range, baseLine + drawPoint.get(i) * amplitude, paint);
@@ -123,25 +125,39 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
                     }
                     lastX += range;
                     lastY = baseLine + drawPoint.get(i) * amplitude;
-                    if (lastX >= SystemTool.getSystem(getContext()).getScreenWidth() - range){
+                    if (lastX >= SystemTool.getSystem(getContext()).getScreenWidth() - range) {
                         lastX = -startX;
                     }
 
                 }
-                }
+            }
 
         });
-        drawThread.start();
+        thread.start();
     }
     public void startDram(){
-        isRun = true;
-        if (drawThread == null || !drawThread.isAlive()) {
-            clearCanvas(null,holder);
-            dramThread();
+        if (threads.size() > 0){
+            stopDram();
         }
+        MTThread thread = new MTThread();
+        thread.isRun = true;
+        threads.add(thread);
+        clearCanvas(thread, null, holder);
+        dramThread(thread);
+        Log.i("thread","thread size:"+threads.size());
+    }
+    public void stopDram(){
+        for (MTThread thread:threads){
+            thread.isRun = false;
+            if (thread.isAlive()){
+                thread.interrupt();
+            }
+        }
+
+        threads.clear();
     }
 
-    private void clearCanvas(Rect rect,SurfaceHolder holder){
+    synchronized private void clearCanvas(MTThread thread,Rect rect,SurfaceHolder holder){
         Canvas canvas;
         if (rect == null){
             canvas = holder.lockCanvas();
@@ -150,7 +166,7 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         }
 
 //       canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-       if (canvas != null && isRun) {
+       if (canvas != null ) {
            canvas.drawColor(Color.BLACK);
            holder.unlockCanvasAndPost(canvas);
        }
@@ -167,7 +183,7 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         }
     }*/
 
-    public void setPoint(List<Integer> point) {
+    synchronized public void setPoint(List<Integer> point) {
         this.point = point;
     }
 

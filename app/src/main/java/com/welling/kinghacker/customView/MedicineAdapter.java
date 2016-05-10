@@ -1,6 +1,7 @@
 package com.welling.kinghacker.customView;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -44,31 +45,17 @@ public class MedicineAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Composition composition;
-        if (convertView == null){
-            composition = new Composition();
-            convertView = new FrameLayout(context);
-            View childView1= SystemTool.getSystem(context).getView(R.layout.layout_medicine_list) ;
-            View childView2 =SystemTool.getSystem(context).getView(R.layout.layout_list_header);
-            if (dataaList.get(position).isSeccsion){
+        Composition composition = new Composition();
 
-                ((FrameLayout)convertView).addView(childView2);
-            }else {
-                ((FrameLayout)convertView).addView(childView1);
-
-            }
-            composition.timeText = (TextView)childView2.findViewById(R.id.listHeader);
-            composition.nameText = (TextView)childView1.findViewById(R.id.medicineNameText);
-            composition.countText = (TextView)childView1.findViewById(R.id.countText);
-            composition.wayText = (TextView)childView1.findViewById(R.id.medicineWay);
-            convertView.setTag(composition);
-
-        }else {
-            composition = (Composition)convertView.getTag();
-        }
         if (dataaList.get(position).isSeccsion){
-            composition.timeText.setText( dataaList.get(position).eatTime);
+            convertView = SystemTool.getSystem(context).getView(R.layout.layout_list_header);
+            composition.timeText = (TextView)convertView.findViewById(R.id.listHeader);
+            composition.timeText.setText(dataaList.get(position).eatTime);
         }else {
+            convertView = SystemTool.getSystem(context).getView(R.layout.layout_medicine_list) ;
+            composition.nameText = (TextView)convertView.findViewById(R.id.medicineNameText);
+            composition.countText = (TextView)convertView.findViewById(R.id.countText);
+            composition.wayText = (TextView)convertView.findViewById(R.id.medicineWay);
             composition.countText.setText(dataaList.get(position).count);
             composition.wayText.setText(dataaList.get(position).way);
             composition.nameText.setText(dataaList.get(position).medicineName);

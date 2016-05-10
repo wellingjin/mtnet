@@ -16,7 +16,7 @@ import com.welling.kinghacker.tools.SystemTool;
  */
 public class MyInformation {
     private EditText editName,editPhone,editID;
-    private TextView textSex,textBorthday;
+    private TextView textSex,textAge;
     private View rootView ;
     private Context context;
     public MyInformation(Context context){
@@ -25,7 +25,7 @@ public class MyInformation {
         editName = (EditText)rootView.findViewById(R.id.personName);
         editPhone = (EditText)rootView.findViewById(R.id.personPhone);
         editID = (EditText)rootView.findViewById(R.id.personID);
-        textBorthday = (TextView)rootView.findViewById(R.id.personBirdthday);
+        textAge = (TextView)rootView.findViewById(R.id.personBirdthday);
         textSex = (TextView)rootView.findViewById(R.id.personSex);
         textSex.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,7 +33,7 @@ public class MyInformation {
                 Log.i("person","clicksex");
             }
         });
-        textBorthday.setOnClickListener(new View.OnClickListener() {
+        textAge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("person","clickday");
@@ -53,11 +53,15 @@ public class MyInformation {
     public void setIDNumText(String text){
         editID.setText(text);
     }
-    public void setSexText(String text){
+    public void setSexText(int sex){
+        String text = "男";
+        if (sex == 0){
+            text = "女";
+        }
         textSex.setText(text);
     }
-    public void setBirthdayText(String text){
-        textBorthday.setText(text);
+    public void setAgeText(String text){
+        textAge.setText(text);
     }
 
     public View getRootView() {
@@ -68,7 +72,7 @@ public class MyInformation {
         editName.setEnabled(editEnable);
         editID.setEnabled(editEnable);
         textSex.setClickable(editEnable);
-        textBorthday.setClickable(editEnable);
+        textAge.setClickable(editEnable);
     }
 
 
@@ -78,7 +82,7 @@ public class MyInformation {
         info.setPhone(editPhone.getText().toString());
         info.setUserName(editName.getText().toString());
         info.setSex(textSex.getText().toString().equals("男")?1:0);
-        info.setBorthDay(textBorthday.getText().toString());
+        info.setBorthDay(textAge.getText().toString());
         info.updateInfo();
 
     }

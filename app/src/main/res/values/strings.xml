@@ -5,6 +5,7 @@
     <string name="forgetPassword">忘记密码</string>
     <string name="password">密码：</string>
     <string name="confirmPassword">确认密码：</string>
+    <string name="oldPassword">旧密码：</string>
     <string name="account">账号：</string>
     <string name="accountHint">手机号码</string>
     <string name="logo">logo</string>

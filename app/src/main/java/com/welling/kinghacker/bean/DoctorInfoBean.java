@@ -6,6 +6,9 @@ import android.content.Context;
 
 import com.welling.kinghacker.database.TableItem;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -31,8 +34,8 @@ public class DoctorInfoBean extends MTBean {
     public String hospital;
     public int doctorID;
     public String perfession;
-    public String sex;
-    public int age;
+    public int sex = 1;
+    public int age = 30;
     public String address;
     public String nation;
     public String info ;//简介
@@ -41,11 +44,54 @@ public class DoctorInfoBean extends MTBean {
     public DoctorInfoBean(Context context){
         super(context);
     }
+    public DoctorInfoBean(Context context,int doctorID){
+        this(context);
+        this.doctorID = doctorID;
+        JSONObject JsonBean = manager.getOneRawByFieldEqual(TABLENAME, DOCTORID, doctorID+"");
+        try {
+            int count = JsonBean.getInt("count");
+            if (count > 0) {
+                name = JsonBean.getString(USERNAME);
+                hospital = JsonBean.getString(HOSPITAL);
+                perfession = JsonBean.getString(PERFESSION);
+                address = JsonBean.getString(ADDRESS);
+                nation = JsonBean.getString(NATION);
+                info = JsonBean.getString(INFO);
+                telPhone = JsonBean.getString(PHONE);
+                email = JsonBean.getString(EMAIL);
+                age = Integer.valueOf(JsonBean.getString(AGE));
+                sex = Integer.valueOf(JsonBean.getString(SEX));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void update(){
+        ContentValues cv = new ContentValues();
+        cv.put(INFO,info);
+        cv.put(USERNAME,name);
+        cv.put(PHONE,telPhone);
+        cv.put(SEX,sex);
+        cv.put(AGE,age);
+        cv.put(ADDRESS,address);
+        cv.put(HOSPITAL,hospital);
+        cv.put(PERFESSION,perfession);
+        cv.put(NATION, nation);
+        cv.put(EMAIL,email);
+        manager.updateByFieldEqual(TABLENAME,DOCTORID,doctorID+"",cv);
+    }
+
+    public boolean isExict(){
+        return true;
+    }
+
     @Override
     public void insert() {
         if (doctorID <= 0) return;
         manager.deleteByFieldEqual(TABLENAME, DOCTORID, doctorID + "");
         ContentValues cv = new ContentValues();
+        cv.put(DOCTORID,doctorID);
         cv.put(INFO,info);
         cv.put(USERNAME,name);
         cv.put(PHONE,telPhone);

@@ -18,6 +18,7 @@
         android:orientation="horizontal"
         >
         <TextView
+            android:id="@+id/elcAttr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -33,6 +34,7 @@
             android:id="@+id/timeChoose"
             >
         <TextView
+            android:id="@+id/elcDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -42,6 +44,7 @@
             android:gravity="end"
             />
             <TextView
+                android:id="@+id/elcTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"

@@ -1,6 +1,7 @@
 package com.welling.kinghacker.tools;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.loopj.android.http.*;
@@ -12,9 +13,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.HttpEntityWrapper;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 
 /**
@@ -38,6 +42,7 @@ public class MTHttpManager {
         client = new AsyncHttpClient();
         client.setTimeout(TIMEOUT);
         client.setEnableRedirects(true);
+
         requestID = 0;
 
     }
@@ -73,19 +78,13 @@ public class MTHttpManager {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject responseBody) {
                 Log.i("http","sss"+ responseBody.toString());
-                String jsonStr = responseBody.toString();
-                try {
-                    jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-                    Log.i("http","utf8"+jsonStr);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+
+                for (Header header:headers){
+                    Log.i("http",header.getValue());
                 }
 
-                try {
-                    httpResponseListener.onSuccess(id,new JSONObject(jsonStr));
-                } catch (JSONException e) {
-                    httpResponseListener.onSuccess(id,responseBody);
-                }
+                httpResponseListener.onSuccess(id,responseBody);
+
             }
 
             @Override
@@ -130,15 +129,14 @@ public class MTHttpManager {
         });
         return true;
     }
-    public void updateToCloud(Context context,String data,int type){
+    public void updateToCloud(Context context,String data,int type,int requestID){
+        Log.i("update","fileType "+type);
         String account = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
-//        String cookie = SystemTool.getSystem(context).getStringValue(PublicRes.COOKIE);
         RequestParams params = new RequestParams();
-        params.put("account",account);
-//        params.put(PublicRes.COOKIE,cookie);
+        params.put("username",account);
         params.put("data",data);
         params.put("type",type);
-        post(params,getRequestID(),"update.do");
+        post(params,requestID,"uploadHdRecord.do");
     }
 
     public int getRequestID(){

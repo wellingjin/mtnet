@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.creative.base.BLUReader;
@@ -23,21 +24,27 @@ import com.creative.ecg.IECGCallBack;
 import com.creative.filemanage.ECGFile;
 import com.creative.filemanage.FileOperation;
 import com.loopj.android.http.RequestParams;
+import com.welling.kinghacker.bean.ELCBean;
 import com.welling.kinghacker.customView.ElectrocarDiogram;
 import com.welling.kinghacker.customView.MTDialog;
 import com.welling.kinghacker.customView.MTToast;
+import com.welling.kinghacker.database.DatabaseManager;
 import com.welling.kinghacker.mtdata.ECGFilesUtils;
+import com.welling.kinghacker.mtdata.MTECGFile;
 import com.welling.kinghacker.tools.BlueToothManager;
 import com.welling.kinghacker.tools.BluetoothConnectUtils;
 import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -46,7 +53,7 @@ import java.util.Vector;
  * Created by KingHacker on 3/23/2016.
  **/
 public class ElectorDragramActivity extends MTActivity {
-
+    List<ELCBean> timeList = new ArrayList<>();
     private static final String TAG = "ELC";
     BlueToothManager blueToothManager;
     View rootView;
@@ -54,6 +61,7 @@ public class ElectorDragramActivity extends MTActivity {
     List<String> items;
     int sumSize = 0;
     MTDialog mtDialog;
+    TextView ELCDate,ELCTime,ELCattr;
 
     BluetoothConnectUtils connectUtils;
     ECG ecg;
@@ -68,7 +76,7 @@ public class ElectorDragramActivity extends MTActivity {
 
     Handler handler;
     boolean isFinish = false;
-
+    ElectrocarDiogram diogram;
     @Override
     protected void onCreate(Bundle saveBundle){
         super.onCreate(saveBundle);
@@ -81,7 +89,8 @@ public class ElectorDragramActivity extends MTActivity {
                     case MTHR:
                         break;
                     case MTTOAST:
-                        Toast.makeText(ElectorDragramActivity.this, msg.obj + "", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ElectorDragramActivity.this,msg.obj+"" , Toast.LENGTH_SHORT).show();
+                        showAlertDialog("断开连接", true, true, false, false);
                         break;
                     case MTRESULT:
                         break;
@@ -127,17 +136,22 @@ public class ElectorDragramActivity extends MTActivity {
                 showTimeChoose();
             }
         });
-        ElectrocarDiogram diogram = (ElectrocarDiogram)electrocarDiogram.findViewById(R.id.heartDram);
+        diogram = (ElectrocarDiogram)electrocarDiogram.findViewById(R.id.heartDram);
+
+        ELCDate = (TextView)electrocarDiogram.findViewById(R.id.elcDate);
+        ELCTime = (TextView)electrocarDiogram.findViewById(R.id.elcTime);
+        ELCattr = (TextView)electrocarDiogram.findViewById(R.id.elcAttr);
+
         ECGFile file = ECGFilesUtils.getLastECGFile();
-        if (file != null) {
-            diogram.setPoint(file.ecgData);
-            diogram.startDram();
-        }
+        showELC(file);
+
         rootView = upView.getRootView();
         setParentView(rootView);
 //        get the buttons
         Button synInfoButton = (Button)findViewById(R.id.synButton);
         synInfoButton.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.electrocarDiogramBGColor));
+        synInfoButton.setText("同步心电仪数据");
+
         Button medicineButton = (Button)findViewById(R.id.medicineQueryButton);
         medicineButton.setBackgroundColor(SystemTool.getSystem(this).getXMLColor(R.color.electrocarDiogramBGColor));
         Button doctorInfoButton = (Button)findViewById(R.id.doctorButton);
@@ -166,6 +180,27 @@ public class ElectorDragramActivity extends MTActivity {
 
         mtToast = new MTToast(this);
         items = new ArrayList<>();
+        getAllTimeList();
+    }
+
+    void showELC(ECGFile file){
+        if (file != null) {
+            diogram.stopDram();
+            setDateTime(file);
+            diogram.setPoint(file.ecgData);
+            diogram.startDram();
+        }
+    }
+    //设置对应的时间，属性
+    void setDateTime(ECGFile file){
+        String []dateTime = file.time.split(" ");
+        ELCDate.setText(dateTime[0]);
+        ELCTime.setText(dateTime[1]);
+        String attr = "异常";
+        if (file.nAnalysis == 0){
+            attr = "正常";
+        }
+        ELCattr.setText(attr);
     }
     @Override
     protected void setOverFlowView(){
@@ -231,10 +266,10 @@ public class ElectorDragramActivity extends MTActivity {
     }
     private void startSearchBlueTooth(){
         //   bluetooth
-        if (connectUtils == null) {
-            connectUtils = new BluetoothConnectUtils(this);
-        }
-        showAlertDialog("正在查找...", false, true,false,false);
+        if (connectUtils != null) connectUtils = null;
+        showAlertDialog("正在查找...", false, true, false, false);
+        connectUtils = new BluetoothConnectUtils(this);
+
         connectUtils.setOnBluetoothConnectedListener(new BluetoothConnectUtils.OnBluetoothConnectedListener() {
             @Override
             public void setOnBluetoothConnected(BluetoothSocket bluetoothSocket) {
@@ -313,7 +348,6 @@ public class ElectorDragramActivity extends MTActivity {
                         break;
                     case BluetoothConnectUtils.CONNECTED:
                         showAlertDialog("连接成功，等待接收文件...", false, true, true, false);
-
                         break;
                     case BluetoothConnectUtils.SEARCH_COMPLETE:
                         showAlertDialog("搜索结束...", true, true, false, false);
@@ -344,6 +378,7 @@ public class ElectorDragramActivity extends MTActivity {
                             updateToCloud();
                             break;
                     }
+                    mtDialog = null;
                 }
             });
         }
@@ -356,10 +391,86 @@ public class ElectorDragramActivity extends MTActivity {
 
     private void updateToCloud(){
         MTHttpManager manager = new MTHttpManager();
+
+        final List<ELCBean> beans = new ArrayList<>();
         manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
             @Override
             public void onSuccess(int requestId, JSONObject JSONResponse) {
+                if (requestId < beans.size()) {
+                    beans.get(requestId).update();
+                }
+            }
 
+            @Override
+            public void onFailure(int requestId, int errorCode) {
+
+            }
+        });
+
+        DatabaseManager dbManager = new DatabaseManager(this);
+        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.ISUPDATE, null, "0");
+
+        try {
+            int count = object.getInt("count");
+            for(int i=0;i<count;i++){
+                ELCBean bean = new ELCBean(this);
+                bean.fileName = object.getJSONObject(""+i).getString(ELCBean.FILENAME);
+                beans.add(bean);
+                String file = ECGFilesUtils.getFileByName(bean.fileName);
+                manager.updateToCloud(this, file, 0, i);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+    void getLocalTimeList(){
+        timeList.clear();
+        DatabaseManager dbManager = new DatabaseManager(this);
+        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.CREATETIME, null, null);
+
+        try {
+            int count = object.getInt("count");
+            for(int i=0;i<count;i++){
+                ELCBean bean = new ELCBean(this);
+                bean.createTime = object.getJSONObject(""+i).getString(ELCBean.CREATETIME);
+                timeList.add(bean);
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    void getAllTimeList(){
+        getLocalTimeList();
+        MTHttpManager manager = new MTHttpManager();
+        manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
+            @Override
+            public void onSuccess(int requestId, JSONObject JSONResponse) {
+                int state = 0;
+                String error;
+                timeList.clear();
+                try {
+                    state = JSONResponse.getInt(PublicRes.STATE);
+                    error = JSONResponse.getString(PublicRes.EXCEPTION);
+                    JSONArray  jsonArray = JSONResponse.getJSONArray("list");
+                    for (int i=0;i< jsonArray.length();i++){
+                        String timestamp = jsonArray.getString(i);
+                        ELCBean bean = new ELCBean(ElectorDragramActivity.this);
+                        bean.createTime = timestamp;
+                        timeList.add(bean);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+                if (state == 0){
+                    makeToast("获取历史列表失败");
+                }
             }
 
             @Override
@@ -368,23 +479,94 @@ public class ElectorDragramActivity extends MTActivity {
             }
         });
         RequestParams params = new RequestParams();
-        String file = ECGFilesUtils.getLastECGFileString();
-        manager.updateToCloud(this, file, 0);
+        params.put("username", SystemTool.getSystem(this).getStringValue(PublicRes.ACCOUNT));
+        manager.post(params, manager.getRequestID(), "getAllHdRecordTime.do");
     }
     private void showTimeChoose(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.shape_circle);
-        builder.setTitle("选择一个城市");
+        builder.setTitle("选择一个时间的心电数据");
         //    指定下拉列表的显示数据
-        final String[] cities = {"广州", "上海", "北京", "香港", "澳门", "上海", "北京", "香港", "澳门", "上海", "北京", "香港", "澳门", "上海", "北京", "香港", "澳门"};
+
+        final String[] cities ;
+
+        cities = new String[timeList.size()];
+        for (int i=0;i<timeList.size();i++){
+            cities[i] = timeList.get(i).createTime;
+        }
         //    设置一个下拉的列表选择项
         builder.setItems(cities, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                makeToast("选择的城市为：" + cities[which]);
+                getELCByTime(which);
             }
         });
         builder.show();
+    }
+    boolean getLocalELC(String chooseTime){
+        DatabaseManager manager = new DatabaseManager(this);
+        JSONObject object = manager.getOneRawByFieldEqual(ELCBean.TABLENAME, ELCBean.CREATETIME, chooseTime);
+        try {
+            int count = object.getInt("count");
+            if (count > 0){
+                String fileName = object.getString(ELCBean.FILENAME);
+                ECGFile file = ECGFilesUtils.getECGFileByName(fileName);
+                if (file == null){
+                    return false;
+                }
+                showELC(file);
+            }
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
+    }
+    void dealWithELC(JSONObject object){
+        int state = 0;
+        String error;
+        try {
+            state = object.getInt(PublicRes.STATE);
+            error = object.getString(PublicRes.EXCEPTION);
+            JSONArray array = object.getJSONArray("list");
+            if (array.length() >0){
+                JSONObject fileObject=array.getJSONObject(0);
+                ECGFile file = new ECGFile();
+                file.time = fileObject.getString("measureTime");
+                file.nAnalysis = fileObject.getInt("analysis");
+                file.ecgData = (List<Integer>)fileObject.get("ecg");
+                file.nAverageHR = fileObject.getInt("heartRate");
+                showELC(file);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void getELCByTime(int which){
+        if (getLocalELC(timeList.get(which).createTime)){
+         return;
+        }
+        MTHttpManager manager = new MTHttpManager();
+        manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
+            @Override
+            public void onSuccess(int requestId, JSONObject JSONResponse) {
+                dealWithELC(JSONResponse);
+            }
+
+            @Override
+            public void onFailure(int requestId, int errorCode) {
+
+
+            }
+        });
+        RequestParams params = new RequestParams();
+        params.put("username",SystemTool.getSystem(this).getStringValue(PublicRes.ACCOUNT));
+        params.put("startTime",timeList.get(which).createTime);
+        params.put("endTime", timeList.get(which).createTime);
+        manager.post(params, manager.getRequestID(), "getHdPatientRecords.do");
+    }
+    void saveFileToLocal(ELCBean bean){
+        bean.insert();
     }
 
     class HeartAllECGCallBack implements IECGCallBack {
@@ -432,8 +614,13 @@ public class ElectorDragramActivity extends MTActivity {
                     Log.i(TAG, " " + bFinish);
 
                     ECGFile ecgFile = FileOperation.AnalyseSCPFile(srcByte);
+
+                    ELCBean bean = new ELCBean(ElectorDragramActivity.this);
+                    bean.createTime = ecgFile.time;
                     //  打包ecg文件到本地
-                    ECGFilesUtils.packECGFile(ecgFile);
+                    bean.fileName = ECGFilesUtils.packECGFile(ecgFile);
+                    saveFileToLocal(bean);
+//                    handler.sendEmptyMessage(MTFINISH);
 //                    setHR(ecgFile.nAverageHR);
 //                    setAnalysisResult(ecgFile.nAnalysis-1);
 
@@ -484,7 +671,7 @@ public class ElectorDragramActivity extends MTActivity {
         public void OnConnectLose() {
             Log.i(TAG, "断开连接");
             makeToast("断开连接");
-            showAlertDialog("断开连接", true, true,false,false);
+
         }
     }
 
