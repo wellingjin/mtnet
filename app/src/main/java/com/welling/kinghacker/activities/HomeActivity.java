@@ -3,6 +3,8 @@ package com.welling.kinghacker.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 
 import com.welling.kinghacker.customView.BloodOxygenView;
@@ -11,6 +13,7 @@ import com.welling.kinghacker.customView.BloodSugerView;
 import com.welling.kinghacker.customView.MTToast;
 import com.welling.kinghacker.customView.PagerView;
 import com.welling.kinghacker.customView.RippleView;
+import com.welling.kinghacker.oxygenbean.OxygenDataRecord;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
 
@@ -24,15 +27,28 @@ public class HomeActivity extends MTActivity {
     //全局变量定义
     enum cuteItem {ED,BS,BP,BO}//分别表示，心电，血糖，血压，血氧
     int screenWidth;
-    PagerView pagerView;
+    public static PagerView pagerView;
     String [] titleText = new String[5];
     int[] color = new int[5];
     private BloodSugerView bloodSugerView;
     float bloodSugerValue = 8f;
     private BloodPressureView bloodPressureView;
     private boolean isExit = false;
-    private BloodOxygenView bloodOxygenView;
+    public static BloodOxygenView bloodOxygenView;
+    public static int currentOxygenValue = 0;
+    public static Handler myHandler=new Handler() {
 
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    //更新展示的数据
+                    bloodOxygenView.setBloodOxygenValue(currentOxygenValue);
+                    bloodOxygenView.startAnimation();
+                    pagerView.invalidate();
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,8 +134,11 @@ public class HomeActivity extends MTActivity {
     }
 
     private void initBloodOxygen(){
+        //获取最近一次测量记录的血氧值赋值给currentOxygenValue
+        OxygenDataRecord oxygenDataRecord = new OxygenDataRecord(this);
+        currentOxygenValue = oxygenDataRecord.getRecentlyOneData();
         bloodOxygenView = new BloodOxygenView(this);
-        bloodOxygenView.setBloodOxygenValue(56f);
+        bloodOxygenView.setBloodOxygenValue(currentOxygenValue);
         RippleView bloodOxygenButton = (RippleView)findViewById(R.id.bloodOxygenButton);
         bloodOxygenButton.setRippleDuration(bloodOxygenButton.getRippleDuration()/2);
         bloodOxygenButton.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {

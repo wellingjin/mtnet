@@ -81,6 +81,17 @@ public class MTDialog {
         stateText.setText(text);
     }
 //    设置右边旋转bar的显示
+    public void setButtonHiden(boolean isHide){
+        if (isHide){
+            cancleButton.setVisibility(View.GONE);
+            comfireButton.setVisibility(View.GONE);
+        }else {
+            if (cancleButton.getVisibility() != View.VISIBLE){
+                cancleButton.setVisibility(View.VISIBLE);
+                comfireButton.setVisibility(View.VISIBLE);
+            }
+        }
+    }
     public void setProgressBarHiden(boolean isHide){
         if (isHide){
             progressBar.setVisibility(View.GONE);
