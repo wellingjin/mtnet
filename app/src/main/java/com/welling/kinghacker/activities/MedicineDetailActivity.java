@@ -76,6 +76,7 @@ public class MedicineDetailActivity extends MTActivity{
     }
 
     private void setDetail(int id){
+        Log.i("Medicine","id:"+id);
         if (id <= 0) {
             makeToast("id error");
             return;

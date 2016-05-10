@@ -80,6 +80,7 @@ public class ElectorDragramActivity extends MTActivity {
     @Override
     protected void onCreate(Bundle saveBundle){
         super.onCreate(saveBundle);
+        Log.i("LIFE","oncreate");
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -90,7 +91,6 @@ public class ElectorDragramActivity extends MTActivity {
                         break;
                     case MTTOAST:
                         Toast.makeText(ElectorDragramActivity.this,msg.obj+"" , Toast.LENGTH_SHORT).show();
-                        showAlertDialog("断开连接", true, true, false, false);
                         break;
                     case MTRESULT:
                         break;
@@ -110,7 +110,7 @@ public class ElectorDragramActivity extends MTActivity {
                         mtDialog.setProgress(sumSize);
                         break;
                     case MTOUTOFTIME:
-                        showAlertDialog("文件接收超时", true, true,true,false);
+                       // showAlertDialog("文件接收超时", true, true,true,false);
                         break;
 
                 }
@@ -189,6 +189,9 @@ public class ElectorDragramActivity extends MTActivity {
             setDateTime(file);
             diogram.setPoint(file.ecgData);
             diogram.startDram();
+            Log.i(TAG,"startD");
+        }else {
+            Log.i(TAG, "file is null");
         }
     }
     //设置对应的时间，属性
@@ -200,6 +203,7 @@ public class ElectorDragramActivity extends MTActivity {
         if (file.nAnalysis == 0){
             attr = "正常";
         }
+        Log.i(TAG, PublicRes.ELCresult[file.nAnalysis]);
         ELCattr.setText(attr);
     }
     @Override
@@ -284,7 +288,6 @@ public class ElectorDragramActivity extends MTActivity {
                         @Override
                         public void run() {
                             boolean isRun = true;
-                            boolean isStart = false;
                             int count = 0;
                             while (isRun) {
                                 byte[] buff = new byte[128];
@@ -294,20 +297,7 @@ public class ElectorDragramActivity extends MTActivity {
                                         isRun = false;
                                         break;
                                     }
-                                    if (isStart) {
-                                        int countA = 0, len;
-                                        do {
-                                            len = iss.available();
-                                            countA++;
-                                            if (countA > 140000) {
-                                                isRun = false;
-                                                break;
-                                            }
-                                        } while (len == 0);
-                                    }
-                                    if (!isRun) {
-                                        break;
-                                    }
+
                                     state = iss.read(buff);
                                     if (state == -1) {
                                         isRun = false;
@@ -318,7 +308,6 @@ public class ElectorDragramActivity extends MTActivity {
                                         msg.setData(bundle);
                                         msg.what = MTRECFILE;
                                         handler.sendMessage(msg);
-                                        isStart = true;
                                     }
                                 } catch (Exception e) {
                                     count++;
@@ -328,7 +317,7 @@ public class ElectorDragramActivity extends MTActivity {
                                 }
 
                             }
-                            handler.sendEmptyMessage(MTFINISH);
+                            // handler.sendEmptyMessage(MTFINISH);
                         }
                     }).start();
 
@@ -408,18 +397,21 @@ public class ElectorDragramActivity extends MTActivity {
         });
 
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.ISUPDATE, null, "0");
+        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.ISUPDATE,null, "0");
 
         try {
             int count = object.getInt("count");
+            Log.i(TAG,"count:"+count);
             for(int i=0;i<count;i++){
                 ELCBean bean = new ELCBean(this);
                 bean.fileName = object.getJSONObject(""+i).getString(ELCBean.FILENAME);
                 beans.add(bean);
+                Log.i(TAG, "filename"+bean.fileName);
                 String file = ECGFilesUtils.getFileByName(bean.fileName);
                 manager.updateToCloud(this, file, 0, i);
             }
         } catch (JSONException e) {
+            Log.i(TAG,"updateExc");
             e.printStackTrace();
         }
 
@@ -504,10 +496,12 @@ public class ElectorDragramActivity extends MTActivity {
         builder.show();
     }
     boolean getLocalELC(String chooseTime){
+        Log.i(TAG,"getLocal");
         DatabaseManager manager = new DatabaseManager(this);
         JSONObject object = manager.getOneRawByFieldEqual(ELCBean.TABLENAME, ELCBean.CREATETIME, chooseTime);
         try {
             int count = object.getInt("count");
+            Log.i(TAG,"local count:"+count);
             if (count > 0){
                 String fileName = object.getString(ELCBean.FILENAME);
                 ECGFile file = ECGFilesUtils.getECGFileByName(fileName);
@@ -515,41 +509,62 @@ public class ElectorDragramActivity extends MTActivity {
                     return false;
                 }
                 showELC(file);
+                return true;
             }
         } catch (JSONException e) {
             return false;
         }
-        return true;
+        return false;
     }
     void dealWithELC(JSONObject object){
         int state = 0;
         String error;
+        Log.i(TAG,object.toString());
         try {
             state = object.getInt(PublicRes.STATE);
             error = object.getString(PublicRes.EXCEPTION);
             JSONArray array = object.getJSONArray("list");
             if (array.length() >0){
+                Log.i(TAG,"0");
                 JSONObject fileObject=array.getJSONObject(0);
                 ECGFile file = new ECGFile();
+                Log.i(TAG,"1");
                 file.time = fileObject.getString("measureTime");
+                Log.i(TAG,"2");
                 file.nAnalysis = fileObject.getInt("analysis");
-                file.ecgData = (List<Integer>)fileObject.get("ecg");
+                Log.i(TAG,"3");
+                String ecgDataArray = fileObject.getString("ecg");
+                Log.i(TAG,"4");
+                List<Integer> ecgData = new ArrayList<>();
+                ecgDataArray = ecgDataArray.substring(1,ecgDataArray.length()-1);
+                Log.i(TAG, ecgDataArray);
+                String dates[] = ecgDataArray.split(",");
+
+                for (String data:dates){
+                    ecgData.add(Integer.valueOf(data));
+                }
+                file.ecgData = ecgData;
                 file.nAverageHR = fileObject.getInt("heartRate");
                 showELC(file);
             }
 
         } catch (JSONException e) {
+            Log.i(TAG,"excshow");
             e.printStackTrace();
         }
     }
     private void getELCByTime(int which){
+        Log.i(TAG,"which:"+which);
         if (getLocalELC(timeList.get(which).createTime)){
-         return;
+            Log.i(TAG,"local OK");
+//            return;
         }
+        Log.i(TAG,"local false");
         MTHttpManager manager = new MTHttpManager();
         manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
             @Override
             public void onSuccess(int requestId, JSONObject JSONResponse) {
+                Log.i(TAG,"success");
                 dealWithELC(JSONResponse);
             }
 
@@ -566,6 +581,7 @@ public class ElectorDragramActivity extends MTActivity {
         manager.post(params, manager.getRequestID(), "getHdPatientRecords.do");
     }
     void saveFileToLocal(ELCBean bean){
+        Log.i(TAG,"fileName:"+bean.fileName);
         bean.insert();
     }
 
@@ -600,9 +616,7 @@ public class ElectorDragramActivity extends MTActivity {
         @Override
         public void OnGetFileTransmit(int bFinish, Vector<Integer> srcByte) {
             Log.i(TAG, "文件接收..."+bFinish);
-/*            if (bFinish == 3){
-                handler.sendEmptyMessage(MTFINISH);
-            }*/
+
             isFinish = false;
             //    当bfinish值为1代表传输完成
             if (bFinish == 1 ){
@@ -611,7 +625,7 @@ public class ElectorDragramActivity extends MTActivity {
             }
             try {
                 if(srcByte.size()>0) {
-                    Log.i(TAG, " " + bFinish);
+                    Log.i(TAG, " size:" + bFinish);
 
                     ECGFile ecgFile = FileOperation.AnalyseSCPFile(srcByte);
 
@@ -629,6 +643,10 @@ public class ElectorDragramActivity extends MTActivity {
                 }
 
             } catch (Exception e) {
+                Log.i(TAG, "exc:"+bFinish);
+                if (bFinish == 3){
+                    handler.sendEmptyMessage(MTFINISH);
+                }
                 e.printStackTrace();
             }
         }

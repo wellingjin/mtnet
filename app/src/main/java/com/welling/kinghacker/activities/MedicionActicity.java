@@ -52,18 +52,18 @@ public class MedicionActicity extends  MTActivity{
 
                     JSONObject medicine = new JSONObject();
                     try {
-                        medicine.put("medicineID",bean.medicineID);
-                        medicine.put("way",bean.way);
-                        medicine.put("unit",bean.unit);
-                        medicine.put("number",bean.number+"");
-                        medicine.put("time",bean.time);
-                        medicine.put("count",bean.count);
+                        medicine.put("medicineID", bean.medicineID);
+                        medicine.put("way", bean.way);
+                        medicine.put("unit", bean.unit);
+                        medicine.put("number", bean.number + "");
+                        medicine.put("time", bean.time);
+                        medicine.put("count", bean.count);
                     } catch (JSONException e) {
 
                         e.printStackTrace();
                     }
 
-                    intent.putExtra("medicine",medicine.toString());
+                    intent.putExtra("medicine", medicine.toString());
                     startActivity(intent);
                 }
             }
@@ -93,34 +93,46 @@ public class MedicionActicity extends  MTActivity{
 
     private void getLocalMedicineList() {
         DatabaseManager manager = new DatabaseManager(this);
-        JSONObject jsonDocList = manager.getMultiRaw(MedicineBean.TABLENAME, null, null, null);
-        MedicineBean medicineBean = new MedicineBean(this);
+        JSONObject jsonMedicineList = manager.getMultiRaw(MedicineBean.TABLENAME, null, null, null);
+
         listData.clear();
         try {
-            int count = jsonDocList.getInt("count");
+            int count = jsonMedicineList.getInt("count");
             for (int i=0;i<count;i++){
-                JSONObject object = jsonDocList.getJSONObject(""+i);
-
-                medicineBean.medicineID = object.getInt(MedicineBean.MEDICINEID);
+                JSONObject object = jsonMedicineList.getJSONObject(""+i);
+                MedicineBean medicineBean = new MedicineBean(this);
+                medicineBean.medicineID = Integer.valueOf(object.getString(MedicineBean.MEDICINEID));
                 medicineBean.medicineName = object.getString(MedicineBean.MEDICINENAME);
-                medicineBean.number = (float)object.getDouble(MedicineBean.NUMBER);
-                medicineBean.time = object.getString(MedicineBean.TIME);
-                medicineBean.unit = object.getString(MedicineBean.UNIT);
-                medicineBean.way = object.getString(MedicineBean.WAY);
-                medicineBean.count = object.getString(MedicineBean.COUNT);
-                medicineBean.createTime = object.getString(MedicineBean.CREATETIME);
-
-                if (!session.equals(medicineBean.createTime)) {
+                if (object.has(MedicineBean.NUMBER)) {
+                    medicineBean.number = Float.valueOf(object.getString(MedicineBean.NUMBER));
+                }
+                if (object.has(MedicineBean.TIME)) {
+                    medicineBean.time = object.getString(MedicineBean.TIME);
+                }
+                if (object.has(MedicineBean.UNIT)) {
+                    medicineBean.unit = object.getString(MedicineBean.UNIT);
+                }
+                if (object.has(MedicineBean.WAY)) {
+                    medicineBean.way = object.getString(MedicineBean.WAY);
+                }
+                if (object.has(MedicineBean.COUNT)) {
+                    medicineBean.count = object.getString(MedicineBean.COUNT);
+                }
+                if (object.has(MedicineBean.CREATETIME)) {
+                    medicineBean.createTime = object.getString(MedicineBean.CREATETIME);
+                }
+                if (medicineBean.createTime !=null && !session.equals(medicineBean.createTime)) {
                     session = medicineBean.createTime;
                     listData.add(new MedicineAdapterStruct(session));
                 }
                 listData.add(new MedicineAdapterStruct(medicineBean));
-
             }
+            adapter.notifyDataSetChanged();
         } catch (JSONException e) {
+            Log.i("medicine","exception");
             e.printStackTrace();
         }
-        adapter.notifyDataSetChanged();
+
     }
 
     private void setMedicineList(JSONObject jsonObject){

@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.TextView;
 
+import com.creative.filemanage.ECGFile;
 import com.welling.kinghacker.customView.BloodOxygenView;
 import com.welling.kinghacker.customView.BloodPressureView;
 import com.welling.kinghacker.customView.BloodSugerView;
+import com.welling.kinghacker.customView.ElectrocarDiogram;
 import com.welling.kinghacker.customView.MTToast;
 import com.welling.kinghacker.customView.PagerView;
 import com.welling.kinghacker.customView.RippleView;
+import com.welling.kinghacker.mtdata.ECGFilesUtils;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
 
@@ -21,6 +25,9 @@ import java.util.List;
  * Created by KingHacker on 2/28/2016.
  **/
 public class HomeActivity extends MTActivity {
+    private ElectrocarDiogram diogram;
+    private TextView ELCTime,ELCattr,ELCDate;
+
     //全局变量定义
     enum cuteItem {ED,BS,BP,BO}//分别表示，心电，血糖，血压，血氧
     int screenWidth;
@@ -143,11 +150,37 @@ public class HomeActivity extends MTActivity {
         });
     }
 
-
+    void showELC(ECGFile file){
+        if (file != null) {
+            diogram.stopDram();
+            setDateTime(file);
+            diogram.setPoint(file.ecgData);
+            diogram.startDram();
+        }
+    }
+    //设置对应的时间，属性
+    void setDateTime(ECGFile file){
+        String []dateTime = file.time.split(" ");
+        ELCDate.setText(dateTime[0]);
+        ELCTime.setText(dateTime[1]);
+        String attr = "异常";
+        if (file.nAnalysis == 0){
+            attr = "正常";
+        }
+        ELCattr.setText(attr);
+    }
     private void setPagerView(){
         pagerView = (PagerView) findViewById(R.id.flipperView);
 
         View electrocarDiogram = SystemTool.getSystem(this).getView(R.layout.electrocar_diogram);
+        diogram = (ElectrocarDiogram)electrocarDiogram.findViewById(R.id.heartDram);
+
+        ELCDate = (TextView)electrocarDiogram.findViewById(R.id.elcDate);
+        ELCTime = (TextView)electrocarDiogram.findViewById(R.id.elcTime);
+        ELCattr = (TextView)electrocarDiogram.findViewById(R.id.elcAttr);
+        ECGFile file = ECGFilesUtils.getLastECGFile();
+        showELC(file);
+
         View bloodSuger = bloodSugerView.getBloodSugerView();
 
 

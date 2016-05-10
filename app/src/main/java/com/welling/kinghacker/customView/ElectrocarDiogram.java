@@ -25,14 +25,13 @@ import java.util.List;
 **/
 public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
-//    private boolean isRun = false;
     private List<Integer> point;
     private float baseLine ,range ,amplitude;
 
     private int timeInterval = 10;
     private float maxNum = 0;
     private float startX;
-    private List<MTThread> threads = new ArrayList<>();
+    static private List<MTThread> threads = new ArrayList<>();
 
     public ElectrocarDiogram(Context context) {
         super(context);
@@ -62,14 +61,7 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         }else {
             point = new ArrayList<>();
         }
-        /*int pointCount = 10000;
-        for (int i = 0; i<pointCount;i++){
-            Float num =Float.valueOf((float) (Math.random() * 10 - 5));
-            point.add(num);
-            if (Math.abs(num) > maxNum) {
-                maxNum = Math.abs(num);
-            }
-        }*/
+
         holder = getHolder();
         holder.addCallback(this);
 
@@ -81,12 +73,12 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+            Log.i("MySurface",width+"change:"+format);
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        stopDram();
+//        stopDram();
     }
 
     synchronized private void dramThread(final MTThread thread){
@@ -117,7 +109,9 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
                     Rect rect = new Rect((int) (lastX + 0.5), (int) (baseLine - maxNum * amplitude), (int) (lastX + 2 * range + 5), (int) (baseLine + maxNum * amplitude * 2));
 
                     clearCanvas(thread, rect, surfaceHolder);
-
+                    if (!thread.isRun) {
+                        break;
+                    }
                     Canvas c = surfaceHolder.lockCanvas(rect);
                     if (c != null) {
                         c.drawLine(lastX, lastY, lastX + range, baseLine + drawPoint.get(i) * amplitude, paint);
@@ -136,15 +130,16 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         thread.start();
     }
     public void startDram(){
-        if (threads.size() > 0){
+        if (threads!=null&&threads.size() > 0){
             stopDram();
         }
+
         MTThread thread = new MTThread();
         thread.isRun = true;
         threads.add(thread);
         clearCanvas(thread, null, holder);
         dramThread(thread);
-        Log.i("thread","thread size:"+threads.size());
+        Log.i("thread", "thread size:" + threads.size());
     }
     public void stopDram(){
         for (MTThread thread:threads){
@@ -166,22 +161,17 @@ public class ElectrocarDiogram extends SurfaceView implements SurfaceHolder.Call
         }
 
 //       canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-       if (canvas != null ) {
+       if (canvas != null) {
            canvas.drawColor(Color.BLACK);
-           holder.unlockCanvasAndPost(canvas);
+           try {
+               holder.unlockCanvasAndPost(canvas);
+           }catch (Exception e){
+               Log.i("ELC","ex");
+               thread.isRun = false;
+           }
        }
    }
-    /*private void clearAll(Rect rect,SurfaceHolder holder){
-        Canvas canvas = holder.lockCanvas(rect);
 
-        if (canvas != null) {
-            Paint paint = new Paint();
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-            canvas.drawPaint(paint);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-            holder.unlockCanvasAndPost(canvas);
-        }
-    }*/
 
     synchronized public void setPoint(List<Integer> point) {
         this.point = point;

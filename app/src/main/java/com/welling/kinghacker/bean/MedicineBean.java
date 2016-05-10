@@ -134,6 +134,7 @@ public class MedicineBean extends MTBean {
         items.add(new TableItem(TABOO));
         items.add(new TableItem(ATTENTION));
         items.add(new TableItem(DIRECTION));
+
         manager.createTable(TABLENAME, items);
 
     }
