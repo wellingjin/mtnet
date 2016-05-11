@@ -176,4 +176,19 @@ public class SystemTool {
     public boolean getBooleanValue(String key,boolean defaultValue){
         return sharedPreferences.getBoolean(key, defaultValue);
     }
+    /**
+     * 获取版本号
+     * @return 当前应用的版本号
+     */
+    static public int getVersionCode(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            return info.versionCode;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

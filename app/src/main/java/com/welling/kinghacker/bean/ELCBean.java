@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * 心电数据
  */
 public class ELCBean  extends MTBean{
-    static public final int YES = 1,NO = 0;
+
     static public String
             TABLENAME = "ELC",
             FILENAME = "filename",

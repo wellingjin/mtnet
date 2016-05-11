@@ -408,7 +408,7 @@ public class ElectorDragramActivity extends MTActivity {
                 beans.add(bean);
                 Log.i(TAG, "filename"+bean.fileName);
                 String file = ECGFilesUtils.getFileByName(bean.fileName);
-                manager.updateToCloud(this, file, 0, i);
+                manager.updateToCloud(this, file, MTHttpManager.ECG, i);
             }
         } catch (JSONException e) {
             Log.i(TAG,"updateExc");

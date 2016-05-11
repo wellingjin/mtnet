@@ -1,18 +1,19 @@
 package com.welling.kinghacker.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
 import com.welling.kinghacker.bean.DoctorInfoBean;
-import com.welling.kinghacker.mtdata.AdapterStruct;
 import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
-import com.welling.kinghacker.tools.SystemTool;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,9 +24,8 @@ import java.util.List;
  * Created by KingHacker on 5/1/2016
  * 医生详细信息.
  */
-public class DoctorDetailActivity  extends MTActivity{
-    TextView doctorNmae,doctorPerfession,doctorHospital
-            ,doctorAge,sex,nation,address,tel,email,info;
+public class DoctorDetailActivity extends MTActivity {
+    TextView doctorNmae, doctorPerfession, doctorHospital, doctorAge, sex, nation, address, tel, email, info;
     int doctorID;
     final private String Tag = "doctorDetail";
 
@@ -43,8 +43,9 @@ public class DoctorDetailActivity  extends MTActivity{
 
 
     }
+
     @Override
-    protected void setOverFlowView(){
+    protected void setOverFlowView() {
 
         super.setOverFlowView();
         List<OverFlowItem> list = new ArrayList<>();
@@ -52,16 +53,29 @@ public class DoctorDetailActivity  extends MTActivity{
         list.add(new OverFlowItem(android.R.drawable.stat_notify_sync_noanim, "刷新"));
         setOverFlowViewItems(list);
     }
+
     @Override
-    protected void selectItem(String text){
-        if (text.equals("刷新")){
+    protected void selectItem(String text) {
+        if (text.equals("刷新")) {
             getDetail(doctorID);
-        }else if (text.equals("联系医生")){
+        } else if (text.equals("联系医生")) {
             call();
         }
     }
-    void call(){
 
+    void call() {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" +tel.getText().toString()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        startActivity(intent);
     }
     void initView(){
         doctorNmae = (TextView)findViewById(R.id.doctorName);

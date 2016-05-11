@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+<<<<<<< HEAD
     <file url="PROJECT" charset="UTF-8" />
+=======
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/welling/kinghacker/customView/OxygenMTDialog.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/welling/kinghacker/oxygenbean/OxygenDoctorInfoBean.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/welling/kinghacker/oxygenbean/OxygenMedicineBean.java" charset="UTF-8" />
+>>>>>>> e77abe8b702638467c37e2c5c19de5e28c960763
   </component>
 </project>

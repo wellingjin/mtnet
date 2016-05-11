@@ -42,4 +42,6 @@
     <dimen name="nameHeight">40dp</dimen>
     <dimen name="nameSize">25sp</dimen>
     <dimen name="descSize">20sp</dimen>
+
+    <dimen name="loadHeight">5dp</dimen>
 </resources>

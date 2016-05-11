@@ -11,6 +11,7 @@ import java.io.Serializable;
  * bean类
  */
 public abstract class MTBean {
+    static public final int YES = 1,NO = 0;
     protected Context context;
     protected DatabaseManager manager;
     protected MTBean(Context context){
@@ -19,4 +20,5 @@ public abstract class MTBean {
     }
     abstract public void insert();
     abstract protected void createTable();
+
 }
