@@ -1,23 +1,21 @@
-package com.welling.kinghacker.bean;
+package com.welling.kinghacker.oxygenbean;
 
 import android.content.Context;
 
 import com.welling.kinghacker.database.DatabaseManager;
 
-import java.io.Serializable;
-
 /**
- * Created by KingHacker on 4/30/2016.
- * bean类
+ * Created by zsw on 2016/5/7.
  */
-public abstract class MTBean {
+public abstract class OxygenMTBean {
     protected Context context;
     protected DatabaseManager manager;
-    protected MTBean(Context context){
+    protected OxygenMTBean(Context context){
         manager = new DatabaseManager(context);
         createTable();
     }
     abstract public void insert();
     abstract protected void createTable();
-
+    abstract public int getRecentlyOneData();
+    abstract public int[] getRecentlySevenData();
 }

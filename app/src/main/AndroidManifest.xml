@@ -32,13 +32,9 @@
         <activity android:name=".HeartAllActivity"/>
         <activity android:name=".RegisterActivity"/>
 
-        <activity android:name=".MedicionActicity"/>
-        <activity android:name=".MainDoctorActivity"/>
-        <activity android:name=".DoctorDetailActivity"/>
-        <activity android:name=".MedicineDetailActivity"/>
+        <activity android:name=".BloodOxygenUploadActivity"/>
 
-		
-		<activity android:name="com.example.bluetooth.le.DeviceScanActivity"/>
+        <activity android:name="com.example.bluetooth.le.DeviceScanActivity"/>
         <activity android:name="com.example.bluetooth.le.DeviceControlActivity"/>
         <service android:name="com.example.bluetooth.le.BluetoothLeService" android:enabled="true"/>
 

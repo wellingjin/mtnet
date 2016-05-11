@@ -16,14 +16,13 @@ import com.welling.kinghacker.tools.SystemTool;
 /**
  * Created by KingHacker on 3/10/2016.
  **/
-public class BloodOxygenView {
+public class BloodOxygenView{
     private TextView shadeLayout,valueLayout,valueView;
     private FrameLayout bloodOxygenView;
     private float bloodOxygenValue = 0;
     private ScaleAnimation down2UpAnimation;
     private float defaultBloodSugerWhiteHeight;
     public BloodOxygenView(Context context){
-
         defaultBloodSugerWhiteHeight = context.getResources().getDimension(R.dimen.blood_suger_Height);
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rootView = inflater.inflate(R.layout.blood_oxygen_layout,null);

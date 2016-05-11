@@ -142,7 +142,7 @@ public class BluetoothConnectUtils {
      * @return true or false
      */
     public static boolean checkName(String deviceName) {
-        return deviceName!=null && deviceName.equals("PC80B");
+        return deviceName!=null && (deviceName.equals("PC80B")||deviceName.equals("PC-60NW-1"));
     }
 
 

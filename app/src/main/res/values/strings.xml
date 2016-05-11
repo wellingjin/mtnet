@@ -85,4 +85,10 @@
     <string name="nation">国籍</string>
     <string name="detailPhone">手机</string>
     <string name="email">邮箱</string>
+    <string name="bloodOxygenNoValue">_ _</string>
+    <string name="bmp">脉率</string>
+    <string name="PI">PI</string>
+    <string name="upload_data_finishing">测量正在进行</string>
+    <string name="upload_data_finished">测量已经结束</string>
+    <string name="measure_record">最近测量记录</string>
 </resources>

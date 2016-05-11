@@ -9,11 +9,12 @@ import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.welling.kinghacker.oxygenbean.OxygenDataRecord;
 import com.welling.kinghacker.tools.FontTool;
 import com.welling.kinghacker.tools.SystemTool;
 
 public class BloodOxygenChartView extends View{
-    public int bloodOxyData[] = {96,95,90,87,96,90,99};
+    public int bloodOxyData[] = null;
     private Context context;
     private final Paint mPaint = new Paint();
     private final Path mPath = new Path();
@@ -22,6 +23,11 @@ public class BloodOxygenChartView extends View{
         super(context);
         // TODO Auto-generated constructor stub
         this.context = context;
+        //将最近几次的数据显示出来更新数据
+        bloodOxyData = new int[7];
+        for(int i=0;i<7;i++) bloodOxyData[i] = 90;
+        OxygenDataRecord oxygenDataRecord = new OxygenDataRecord(context);
+        bloodOxyData = oxygenDataRecord.getRecentlySevenData();
     }
     public BloodOxygenChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,17 +43,24 @@ public class BloodOxygenChartView extends View{
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
+        if(!mPath.isEmpty()){
+            mPath.rewind();
+        }
         mPaint.setAntiAlias(true);
-        mPaint.setStyle(Style.STROKE);
-        mPaint.setColor(Color.BLACK);
 
         float perHeight=1390/15*yratio;
         float perWidth=880/8*xratio;
         float startX=100*xratio,startY=1540*yratio;
-        mPaint.setTextSize(30*xratio);
-        //canvas.drawLine(startX, startY, stopX, stopY, paint)
-      //  canvas.drawText("0", 100*xratio, 1490*yratio, mPaint);
+        mPaint.setTextSize(30 * xratio);
 
+        //设置背景
+        mPaint.setStyle(Style.FILL);
+        mPaint.setColor(Color.DKGRAY);
+        mPaint.setAlpha(128);
+        canvas.drawRect(0, 0, 1080 * xratio, 1590 * yratio, mPaint);
+        mPaint.setStyle(Style.STROKE);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setAlpha(255);
         Path path=new Path();
         canvas.drawLine(startX, startY-perHeight*16, startX, startY-perHeight, mPaint);
         startY-=perHeight;
@@ -73,7 +86,7 @@ public class BloodOxygenChartView extends View{
         for(int i=0;i<7;i++){
             canvas.drawLine(startX, startY, startX, startY-30*yratio, mPaint);
             mPaint.setTextSize(30*xratio);
-            canvas.drawText("����"+i, startX-15*xratio, startY+60*yratio, mPaint);
+            canvas.drawText("前"+i+"次", startX-15*xratio, startY+60*yratio, mPaint);
             startX+=perWidth;
         }
         path.moveTo(startX, startY);
@@ -81,7 +94,7 @@ public class BloodOxygenChartView extends View{
         path.lineTo(startX - perHeight / 2, startY + 10 * xratio);
         path.close();
         canvas.drawPath(path, mPaint);
-        canvas.drawText("(��)", startX-40*xratio, startY+60*yratio, mPaint);
+        canvas.drawText("(次数)", startX-40*xratio, startY+60*yratio, mPaint);
 
         startX=100*xratio;
         startY=1540*yratio-perHeight;
