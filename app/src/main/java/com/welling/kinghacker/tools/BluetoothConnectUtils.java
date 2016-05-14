@@ -33,7 +33,6 @@ public class BluetoothConnectUtils {
 
     public BluetoothSocket socket;  //  建立的蓝牙连接
     BluetoothDevice device;  //  搜素到的蓝牙设备
-    private Dialog dialog;
 
     private OnBluetoothConnectedListener listener;
     public static boolean isPairedConnected = false;
@@ -60,19 +59,14 @@ public class BluetoothConnectUtils {
                     break;
                 //  连接失败
                 case CONNECT_FAILED:
-                    if (dialog != null && dialog.isShowing())
-                    dialog.dismiss();
                     break;
                 //  连接成功
                 case CONNECTED:
-                    if (dialog != null && dialog.isShowing())
-                        dialog.dismiss();
 
                     break;
                 //  延时关闭窗口
                 case 0x006:
-                    if (dialog != null && dialog.isShowing())
-                        dialog.dismiss();
+
                     break;
             }
         }
@@ -84,9 +78,13 @@ public class BluetoothConnectUtils {
         this.bluetoothOper = new BluetoothOpertion(context, new MyBluetoothCallback());
         connectParedDevice();
 
-//        initDialog();
     }
-
+    void showDevice(){
+        Log.i("tag","size"+bluetoothOper.getDeviceList().size());
+        for (BluetoothDevice device:bluetoothOper.getDeviceList()){
+            Log.i("tag","name:"+ device.getName() +" "+device.getAddress());
+        }
+    }
 
     public void setOnBluetoothConnectedListener(OnBluetoothConnectedListener listener) {
         this.listener = listener;
@@ -110,31 +108,14 @@ public class BluetoothConnectUtils {
         }
 
         bluetoothOper.discovery();
-        Log.i("tag","开始查询");
+        Log.i("tag", "开始查询");
         isPairedConnected = false;
 
 
     }
 
 
-    /**
-     * 初始化搜索进度窗口
-     */
-    private void initDialog() {
-        if (dialog == null){
-            dialog = new Dialog(context);
-            dialog.setTitle("正在查找...");
-            dialog.setCanceledOnTouchOutside(false);
-        }
-        dialog.show();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                bluetoothOper.stopDiscovery();
-            }
-        });
 
-    }
 
     /**
      * 检查搜索到的设备是否是目标设备型号，返回类型为是或否
@@ -144,7 +125,10 @@ public class BluetoothConnectUtils {
     public static boolean checkName(String deviceName) {
         return deviceName!=null && (deviceName.equals("PC80B")||deviceName.equals("PC-60NW-1"));
     }
-
+    public boolean isConneted(){
+        if (socket == null)return false;
+        return socket.isConnected();
+    }
 
     /**
      * 搜索设备回调接口
@@ -188,6 +172,7 @@ public class BluetoothConnectUtils {
             }
         }
 
+
         @Override
         public void OnConnected(BluetoothSocket bluetoothSocket) {
             Log.i(TAG, "连接成功");
@@ -225,6 +210,7 @@ public class BluetoothConnectUtils {
                 case BluetoothOpertion.ExceptionCode.DISCOVERYTIMEOUT:
                 //  搜索超时
                     msg.obj = "搜索超时";
+                    showDevice();
                     break;
                 case BluetoothOpertion.ExceptionCode.NOBLUETOOTHADAPTER:
                 //  无蓝牙

@@ -30,7 +30,7 @@ import com.welling.kinghacker.customView.MTDialog;
 import com.welling.kinghacker.customView.MTToast;
 import com.welling.kinghacker.database.DatabaseManager;
 import com.welling.kinghacker.mtdata.ECGFilesUtils;
-import com.welling.kinghacker.mtdata.MTECGFile;
+
 import com.welling.kinghacker.tools.BlueToothManager;
 import com.welling.kinghacker.tools.BluetoothConnectUtils;
 import com.welling.kinghacker.tools.MTHttpManager;
@@ -59,9 +59,11 @@ public class ElectorDragramActivity extends MTActivity {
     View rootView;
     MTToast mtToast;
     List<String> items;
-    int sumSize = 0;
+    int sumSize = 0,fileNum=0;
     MTDialog mtDialog;
     TextView ELCDate,ELCTime,ELCattr;
+
+    int retryNum = 0;
 
     BluetoothConnectUtils connectUtils;
     ECG ecg;
@@ -75,7 +77,7 @@ public class ElectorDragramActivity extends MTActivity {
             MTTRANS = 0x006;//实时传输
 
     Handler handler;
-    boolean isFinish = false;
+//    boolean isFinish = false;
     ElectrocarDiogram diogram;
     @Override
     protected void onCreate(Bundle saveBundle){
@@ -95,19 +97,21 @@ public class ElectorDragramActivity extends MTActivity {
                     case MTRESULT:
                         break;
                     case MTRECFILE:
-                        if (isFinish) break;
+//                        if (isFinish) break;
                         int size = msg.getData().getInt("fileSize",0);
                         sumSize += size;
-                        showAlertDialog("正在接收数据...", false, false,false,false);
+                        showAlertDialog("正在接收数据...("+fileNum+")", false, false,false,false);
                         if (sumSize >= mtDialog.getMAX()){
                             mtDialog.setMax(sumSize + size);
                         }
                         mtDialog.setProgress(sumSize);
                         break;
                     case MTFINISH:
-                        showAlertDialog("数据接收完成", true, false,true,true);
+                        fileNum++;
+                        showAlertDialog("数据接收完成(" + fileNum + ")", true, false,true,true);
                         mtDialog.setMax(sumSize);
                         mtDialog.setProgress(sumSize);
+                        sumSize = 0;
                         break;
                     case MTOUTOFTIME:
                        // showAlertDialog("文件接收超时", true, true,true,false);
@@ -225,7 +229,7 @@ public class ElectorDragramActivity extends MTActivity {
 
 
     private void discoverBlueTooth(){
-        isFinish = false;
+//        isFinish = false;
         if (blueToothManager == null) {
             blueToothManager = new BlueToothManager(this);
         }
@@ -246,11 +250,11 @@ public class ElectorDragramActivity extends MTActivity {
             // mBluetoothAdapter.enable();
             // mBluetoothAdapter.disable();//关闭蓝牙
         }else {
-            if (connectUtils!=null) {
+            /*if (connectUtils!=null) {
                 connectUtils.closeSocket();
                 connectUtils = null;
                 mtDialog = null;
-            }
+            }*/
             startSearchBlueTooth();
         }
 
@@ -263,6 +267,11 @@ public class ElectorDragramActivity extends MTActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
+                if (connectUtils!=null) {
+                    connectUtils.closeSocket();
+                    connectUtils = null;
+                    mtDialog = null;
+                }
                 startSearchBlueTooth();
             }
         }
@@ -270,7 +279,17 @@ public class ElectorDragramActivity extends MTActivity {
     }
     private void startSearchBlueTooth(){
         //   bluetooth
-        if (connectUtils != null) connectUtils = null;
+
+        if (connectUtils != null ) {
+            if (connectUtils.isConneted()) {
+                Log.i(TAG,"connect");
+                showAlertDialog("连接成功，等待接收文件...", false, true, true, false);
+                return;
+            }
+            Log.i(TAG,"not null");
+            connectUtils.closeSocket();
+            connectUtils = null;
+        }
         showAlertDialog("正在查找...", false, true, false, false);
         connectUtils = new BluetoothConnectUtils(this);
 
@@ -334,6 +353,17 @@ public class ElectorDragramActivity extends MTActivity {
                         break;
                     case BluetoothConnectUtils.CONNECT_FAILED:
                         showAlertDialog("连接失败...", true, true, true, false);
+                        retryNum++;
+                        if(retryNum <5) {
+                            Log.i(TAG,"retry"+retryNum);
+                            if (connectUtils!=null) {
+                                connectUtils.closeSocket();
+                                connectUtils = null;
+                            }
+                            discoverBlueTooth();
+                        }else {
+                            retryNum = 0;
+                        }
                         break;
                     case BluetoothConnectUtils.CONNECTED:
                         showAlertDialog("连接成功，等待接收文件...", false, true, true, false);
@@ -617,11 +647,11 @@ public class ElectorDragramActivity extends MTActivity {
         public void OnGetFileTransmit(int bFinish, Vector<Integer> srcByte) {
             Log.i(TAG, "文件接收..."+bFinish);
 
-            isFinish = false;
+//            isFinish = false;
             //    当bfinish值为1代表传输完成
             if (bFinish == 1 ){
                 Log.i(TAG,"完成");
-                isFinish = true;
+//                isFinish = true;
             }
             try {
                 if(srcByte.size()>0) {
@@ -634,6 +664,7 @@ public class ElectorDragramActivity extends MTActivity {
                     //  打包ecg文件到本地
                     bean.fileName = ECGFilesUtils.packECGFile(ecgFile);
                     saveFileToLocal(bean);
+
 //                    handler.sendEmptyMessage(MTFINISH);
 //                    setHR(ecgFile.nAverageHR);
 //                    setAnalysisResult(ecgFile.nAnalysis-1);
