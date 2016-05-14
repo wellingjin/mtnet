@@ -6,12 +6,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.welling.kinghacker.activities.R;
-import com.welling.kinghacker.tools.SystemTool;
-
 
 /**
  * Created by KingHacker on 3/10/2016.
@@ -22,23 +18,33 @@ public class BloodOxygenView{
     private float bloodOxygenValue = 0;
     private ScaleAnimation down2UpAnimation;
     private float defaultBloodSugerWhiteHeight;
+    private TextView textViewDate,textViewTime,textViewAttr;
+    private View rootView;
     public BloodOxygenView(Context context){
         defaultBloodSugerWhiteHeight = context.getResources().getDimension(R.dimen.blood_suger_Height);
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootView = inflater.inflate(R.layout.blood_oxygen_layout,null);
+        rootView = inflater.inflate(R.layout.blood_oxygen_layout,null);
         shadeLayout = (TextView)rootView.findViewById(R.id.bloodOxygenWhite);
         valueLayout = (TextView)rootView.findViewById(R.id.bloodOxygenGreen);
         valueView = (TextView)rootView.findViewById(R.id.bloodOxygenValue);
+
+        textViewDate = (TextView)rootView.findViewById(R.id.OxygenDate);
+        textViewTime = (TextView)rootView.findViewById(R.id.OxygenTime);
+        textViewAttr = (TextView)rootView.findViewById(R.id.OxygenAttr);
         bloodOxygenView = (FrameLayout)rootView.findViewById(R.id.bloodOxygen);
 
         shadeLayout.getLayoutParams().height = (int)defaultBloodSugerWhiteHeight;
         valueLayout.getLayoutParams().height = (int)defaultBloodSugerWhiteHeight;
         valueView.getLayoutParams().height = (int)defaultBloodSugerWhiteHeight;
+
         setBloodOxygenValue(0);
     }
 
     public FrameLayout getBloodOxygenView(){
         return bloodOxygenView;
+    }
+    public View getRootView(){
+        return rootView;
     }
     public void setBloodOxygenValue(float value){
         bloodOxygenValue = value;
@@ -51,6 +57,15 @@ public class BloodOxygenView{
         }
         setShadeLayoutHeight((int)bloodOxygenWhiteHeight);
         setAnimation();
+    }
+    public void setBloodOxygenTime(String time){
+        textViewTime.setText(time);
+    }
+    public void setBloodOxygenDate(String date){
+        textViewDate.setText(date);
+    }
+    public void setBloodOxygenAttr(String attr){
+        textViewAttr.setText(attr);
     }
     private void setShadeLayoutHeight(int height){
         shadeLayout.getLayoutParams().height = height;

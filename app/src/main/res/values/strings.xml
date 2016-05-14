@@ -14,7 +14,7 @@
     <string name="more">更多</string>
     <string name="normal">正常</string>
     <string name="abnormal">异常</string>
-    <string name="default_date">2016–2–3</string>
+    <string name="default_date">2016-2-3</string>
     <string name="default_time">19:23</string>
     <string name="electrocar_diogram">心电</string>
     <string name="blood_sugar">血糖</string>
@@ -91,4 +91,7 @@
     <string name="upload_data_finishing">测量正在进行</string>
     <string name="upload_data_finished">测量已经结束</string>
     <string name="measure_record">最近测量记录</string>
+
+    <string name="updatebyhand">手动上传</string>
+    <string name="updatebyautome">自动上传</string>
 </resources>

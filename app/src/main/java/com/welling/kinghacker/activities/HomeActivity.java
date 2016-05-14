@@ -28,6 +28,7 @@ public class HomeActivity extends MTActivity {
     private ElectrocarDiogram diogram;
     private TextView ELCTime,ELCattr,ELCDate;
 
+    private String time,attr,date;
     //全局变量定义
     enum cuteItem {ED,BS,BP,BO}//分别表示，心电，血糖，血压，血氧
     int screenWidth;
@@ -127,11 +128,26 @@ public class HomeActivity extends MTActivity {
     private void initBloodOxygen(){
         //获取最近一次测量记录的血氧值赋值给currentOxygenValue
         OxygenDataRecord oxygenDataRecord = new OxygenDataRecord(this);
-
-        currentOxygenValue = oxygenDataRecord.getRecentlyOneData();
+        String value = oxygenDataRecord.getRecentlyOneData();
+        if(value!=null) {
+            String[] dateTime = new String[3];
+            dateTime = value.split(",");
+            currentOxygenValue = Integer.parseInt(dateTime[0]);
+            date = dateTime[1];
+            time = dateTime[2];
+            attr = "异常";
+            if (currentOxygenValue >= 90) {
+                attr = "正常";
+            }
+        }
         if (bloodOxygenView == null)
             bloodOxygenView = new BloodOxygenView(this);
         bloodOxygenView.setBloodOxygenValue(currentOxygenValue);
+        if(value!=null) {
+            bloodOxygenView.setBloodOxygenDate(date);
+            bloodOxygenView.setBloodOxygenTime(time);
+            bloodOxygenView.setBloodOxygenAttr(attr);
+        }
         RippleView bloodOxygenButton = (RippleView)findViewById(R.id.bloodOxygenButton);
         bloodOxygenButton.setRippleDuration(bloodOxygenButton.getRippleDuration()/2);
         bloodOxygenButton.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
