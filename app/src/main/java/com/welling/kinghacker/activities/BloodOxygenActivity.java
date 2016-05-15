@@ -58,7 +58,7 @@ import java.util.List;
 public class BloodOxygenActivity extends MTActivity {
     List<OxygenDataRecord> timeList = new ArrayList<>();
     private  FrameLayout rootView;
-    private enum ViewType{single,multiple,all}
+    private enum ViewType{single,multiple,all,choose}
     private ViewType viewType;
     public  BloodOxygenView singleBloodOxygenView;
     private Animation rightInAnimation;
@@ -331,6 +331,9 @@ public class BloodOxygenActivity extends MTActivity {
                 if (bloodOxygenChartView == null){
                     drawLineChart();
                 }else{
+                    //默认展示最近10个数据
+                    BloodOxygenChartView.numberOfData = 10;
+                    bloodOxygenChartView.initDate();
                     rootView.removeView(bloodOxygenChartView);
                 }
                 rootView.startAnimation(rightInAnimation);
@@ -372,7 +375,7 @@ public class BloodOxygenActivity extends MTActivity {
                                 rootView.removeView(bloodOxygenChartView);
                                 rootView.startAnimation(rightInAnimation);
                                 rootView.addView(bloodOxygenChartView);
-                                viewType = ViewType.all;
+                                viewType = ViewType.choose;
                             }
                             filterView.dismiss();
                             break;
@@ -393,7 +396,7 @@ public class BloodOxygenActivity extends MTActivity {
                                 rootView.removeView(bloodOxygenChartView);
                                 rootView.startAnimation(rightInAnimation);
                                 rootView.addView(bloodOxygenChartView);
-                                viewType = ViewType.all;
+                                viewType = ViewType.choose;
                             }
                             filterView.dismiss();
                             break;
@@ -418,7 +421,7 @@ public class BloodOxygenActivity extends MTActivity {
                                 rootView.removeView(bloodOxygenChartView);
                                 rootView.startAnimation(rightInAnimation);
                                 rootView.addView(bloodOxygenChartView);
-                                viewType = ViewType.all;
+                                viewType = ViewType.choose;
                             }
                             filterView.dismiss();
                             break;
@@ -517,7 +520,7 @@ public class BloodOxygenActivity extends MTActivity {
                                 rootView.removeView(bloodOxygenChartView);
                                 rootView.startAnimation(rightInAnimation);
                                 rootView.addView(bloodOxygenChartView);
-                                viewType = ViewType.all;
+                                viewType = ViewType.choose;
                             }
                             filterView.dismiss();
                             break;
@@ -773,6 +776,7 @@ public class BloodOxygenActivity extends MTActivity {
                                 oxygenDataRecord.insert();
                                 init();
                                 if(bloodOxygenChartView!=null){
+                                    BloodOxygenChartView.numberOfData = 10;
                                     bloodOxygenChartView.initDate();
                                 }
                                 updateToCloud();//自动上传云端
@@ -792,6 +796,7 @@ public class BloodOxygenActivity extends MTActivity {
         super.onResume();
         init();
         if(bloodOxygenChartView!=null){
+            BloodOxygenChartView.numberOfData = 10;
             bloodOxygenChartView.initDate();
         }
         if(update){
