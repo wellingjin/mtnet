@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="cn.novacomm.igatelibtest.IGateActivity" >
+
+    <item android:id="@+id/scanning_start" android:title="搜索" android:orderInCategory="3" android:showAsAction="always|withText"></item>
+    <item android:id="@+id/scanning_stop" android:title="停止" android:orderInCategory="4" android:showAsAction="always|withText"></item>
+    <item android:id="@+id/scanning_indicator" android:orderInCategory="2" android:showAsAction="ifRoom"></item>
+
+</menu>
