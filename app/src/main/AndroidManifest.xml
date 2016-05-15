@@ -33,6 +33,7 @@
         <activity android:name=".ElectorDragramActivity"/>
         <activity android:name=".HeartAllActivity"/>
         <activity android:name=".RegisterActivity"/>
+        <activity android:name=".IGateActivity"/>
 
         <activity android:name=".BloodOxygenUploadActivity"/>
         <activity android:name=".MedicineDetailActivity"/>

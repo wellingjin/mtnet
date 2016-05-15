@@ -6,20 +6,19 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.welling.kinghacker.activities.R;
-import com.welling.kinghacker.tools.SystemTool;
 
 
 /**
  * Created by KingHacker on 3/10/2016.
  **/
 public class BloodSugerView {
-    private TextView shadeLayout,valueLayout,valueView;
+    private TextView shadeLayout,valueLayout,valueView,dateView;
     private FrameLayout bloodSugerView;
     private float bloodSugerValue = 0;
+    private String bloodSugerDate;
     private ScaleAnimation down2UpAnimation;
     private float defaultBloodSugerWhiteHeight;
     public BloodSugerView(Context context){
@@ -45,14 +44,20 @@ public class BloodSugerView {
         bloodSugerValue = value;
         valueView.setText(value + "");
         float bloodSugerWhiteHeight;
-        if (bloodSugerValue < 10) {
-            bloodSugerWhiteHeight = defaultBloodSugerWhiteHeight * (1 - bloodSugerValue / 10);
+        if (bloodSugerValue < 20) {
+            bloodSugerWhiteHeight = defaultBloodSugerWhiteHeight * (1 - bloodSugerValue / 20);
         }else{
-            bloodSugerWhiteHeight = defaultBloodSugerWhiteHeight * (1 - 9f / 10);
+            bloodSugerWhiteHeight = defaultBloodSugerWhiteHeight * (1 - 19f / 20);
         }
         setShadeLayoutHeight((int)bloodSugerWhiteHeight);
         setAnimation();
     }
+
+    public void setBloodSugerDate(String date){
+        bloodSugerDate = date;
+        dateView.setText(date);
+    }
+
     private void setShadeLayoutHeight(int height){
         shadeLayout.getLayoutParams().height = height;
     }
