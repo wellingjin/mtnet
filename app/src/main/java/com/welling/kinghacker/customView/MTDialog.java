@@ -17,7 +17,7 @@ import com.welling.kinghacker.tools.SystemTool;
  * 蓝牙数据获取状态显示
  */
 public class MTDialog {
-    private int MAX = 82400;
+    private int MAX = 25070;
     private AlertDialog alertDialog;
     private TextView stateText,percentText,recText;
     private ProgressBar recBar,progressBar;
@@ -66,7 +66,7 @@ public class MTDialog {
     }
     protected void setRecSize(int progress,int max){
         if (max <= 0) max = 1024;
-        recText.setText(String.format("%d kb/%d kb",progress,max));
+        recText.setText(String.format("%d B/%d B",progress,max));
 
         setPercentText(progress * 100 / max);
     }

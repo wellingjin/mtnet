@@ -6,9 +6,14 @@ import android.os.Message;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.creative.base.BaseDate;
 import com.welling.kinghacker.customView.BloodOxygenUpload;
 import com.welling.kinghacker.bean.OxygenDataRecord;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by 李双双 on 2016/5/1.
@@ -22,7 +27,7 @@ public class BloodOxygenUploadActivity extends MTActivity{
     public static boolean nStatus =true;//代表探头没有脱落
     public static BaseDate.Wave wave = null;
     public static int averageSpo2 = 0,averagePR = 0;//取oxygenDataRecord平均值
-
+    public static String time =null;
     public OxygenDataRecord oxygenDataRecord = null;
     public static Handler mHandler=new Handler()
     {
@@ -44,6 +49,7 @@ public class BloodOxygenUploadActivity extends MTActivity{
                             averageSpo2=(averageSpo2+nSpO2)/2;
                             averagePR=(averagePR+nPR)/2;
                         }
+
                     }
                     break;
                 case 2:
@@ -80,14 +86,17 @@ public class BloodOxygenUploadActivity extends MTActivity{
                     if(getProgressBar()==100){
                         //System.out.println("测量结果：  血氧：" + averageSpo2 + "  心率：" + averagePR);
                         //将测量结果保存
-                        oxygenDataRecord = new OxygenDataRecord(BloodOxygenUploadActivity.this,averageSpo2,averagePR);
+                        setProgressBar();
+                        SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
+                        Date curDate =new  Date(System.currentTimeMillis());
+                        time = formatter.format(curDate);
+                        oxygenDataRecord = new OxygenDataRecord(BloodOxygenUploadActivity.this,averageSpo2,averagePR,time);
                         //创建表  当然有分析 如果表存在就不创建
                         oxygenDataRecord.createTable();
                         //将信息插入
                         oxygenDataRecord.insert();
-                        //更新展示的血氧值
-                        BloodOxygenActivity.currentOxygenValue = averageSpo2;
-                        BloodOxygenActivity.myHandler.sendEmptyMessage(1);//更新数据
+
+                        BloodOxygenActivity.update = true;
                         //finish();
                         break;
                     }

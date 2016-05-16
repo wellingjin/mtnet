@@ -135,7 +135,11 @@ public class MTActivity extends AppCompatActivity {
 
     }
 
-
+    public void setRightButtonHidden(){
+        if(actionBarView!=null){
+            actionBarView.setRightButtonHidden();
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -51,7 +51,8 @@ public class PublicRes{
                     bloodOxygen,
                     bloodSugerItem1,
                     bloodSugerItem2,
-                    bloodSugerItem3;
+                    bloodSugerItem3,
+                    bloodSugerItem4;
 
 
     private PublicRes(){
@@ -63,6 +64,7 @@ public class PublicRes{
         bloodSugerItem1 = "单次";
         bloodSugerItem2 = "全部";
         bloodSugerItem3 = "筛选";
+        bloodSugerItem4 = "同步";
         File file = new File(ROOTPATH);
         if (!file.exists()){
             file.mkdir();

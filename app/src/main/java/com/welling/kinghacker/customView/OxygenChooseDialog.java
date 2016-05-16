@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,31 +11,23 @@ import android.widget.TextView;
 import com.welling.kinghacker.activities.R;
 
 /**
- * Created by li on 2016/5/7.
+ * Created by li on 2016/5/14.
  */
-public class OxygenMTDialog {
+public class OxygenChooseDialog {
     private AlertDialog alertDialog;
-    private TextView titleView,bloodOxygen;
-    private EditText editText;
-    private Button cancleButton,comfireButton;
+    private Button AutomeButton,HandButton;
     private boolean isListening = false;
     private OnButtonClickListener onButtonClickListener;
-    public OxygenMTDialog(Context context){
+    public OxygenChooseDialog(Context context){
         alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setView(new EditText(context));
         show();
         alertDialog.setCanceledOnTouchOutside(false);
         Window rootView = alertDialog.getWindow();
-        rootView.setContentView(R.layout.layout_blood_oxygen_mtdialog);
+        rootView.setContentView(R.layout.layout_blood_oxygen_choosedialog);
 
-        bloodOxygen = (TextView)rootView.findViewById(R.id.dialogText);
-        titleView = (TextView)rootView.findViewById(R.id.titleTextView);
-        editText = (EditText)rootView.findViewById(R.id.editText);
-        editText.setEnabled(true);
-
-        cancleButton = (Button)rootView.findViewById(R.id.cancelUpdate);
-        comfireButton = (Button)rootView.findViewById(R.id.updateCloud);
-        cancleButton.setOnClickListener(new View.OnClickListener() {
+        AutomeButton = (Button)rootView.findViewById(R.id.updatebyautome);
+        HandButton = (Button)rootView.findViewById(R.id.updatebyhand);
+        AutomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isListening){
@@ -45,7 +35,7 @@ public class OxygenMTDialog {
                 }
             }
         });
-        comfireButton.setOnClickListener(new View.OnClickListener() {
+        HandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isListening){
@@ -55,11 +45,6 @@ public class OxygenMTDialog {
         });
 //        alertDialog.setOnDismissListener(new                                                                                  );
     }
-
-    public void setdialogText(){
-        bloodOxygen.setText("血糖值：");
-    }
-
     private void show(){
         if (!alertDialog.isShowing()) {
             alertDialog.show();
@@ -75,8 +60,5 @@ public class OxygenMTDialog {
     }
     public interface OnButtonClickListener{
         void onButtonClick(int which);
-    }
-    public String getText(){
-        return  editText.getText().toString();
     }
 }

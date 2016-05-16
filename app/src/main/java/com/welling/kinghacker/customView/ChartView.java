@@ -6,15 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.welling.kinghacker.activities.R;
 import com.welling.kinghacker.tools.FontTool;
-import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
 
 import java.util.ArrayList;
@@ -44,7 +41,7 @@ public class ChartView extends View {
     private String descTextY,descTextX;
 
 //    Paint
-    private Paint linePaint,asixPaint,pointPaint,textPaint,arrowPaint,desPaint;
+    private Paint linePaint,linePaintH,linePaintL,asixPaint,pointPaint,textPaint,arrowPaint,desPaint;
 
 
     public ChartView(Context context) {
@@ -91,8 +88,16 @@ public class ChartView extends View {
     private void initPaint() {
 //        折线paint
         linePaint =  new Paint();
-        linePaint.setColor(Color.RED);
+        linePaint.setColor(Color.GREEN);
         linePaint.setStrokeWidth(asixPaintWidth/2);
+
+        linePaintH =  new Paint();
+        linePaintH.setColor(Color.RED);
+        linePaintH.setStrokeWidth(asixPaintWidth/2);
+
+        linePaintL =  new Paint();
+        linePaintL.setColor(Color.GRAY);
+        linePaintL.setStrokeWidth(asixPaintWidth/2);
 //        坐标paint
         asixPaint = new Paint();
         asixPaint.setColor(Color.BLACK);
@@ -201,7 +206,93 @@ public class ChartView extends View {
         int pointSize = points.size();
         if (pointSize < 2) return;
         for (int i = 0;i < pointSize-1;i++){
-            canvas.drawLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y,linePaint);
+            double xm,ym,xn,yn;
+            float  y1 = getY(intervalY * Yaxis.get(i)),y2= getY(intervalY * Yaxis.get(i+1));
+            double x=150;  //数据到折线图的X轴偏移为150
+            ym=3.9;    //低血糖上限
+            yn=16;     //高血糖下限
+
+            //低于低血糖上限画灰线
+             if(Yaxis.get(i)<ym&&Yaxis.get(i+1)<ym) canvas.drawLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y,linePaintL);
+
+            //高出高血糖下限画红线
+             else if(Yaxis.get(i)>yn&&Yaxis.get(i+1)>yn) canvas.drawLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y,linePaintH);
+
+             else if(Yaxis.get(i)<ym&&Yaxis.get(i+1)<yn&&Yaxis.get(i+1)>ym){ //跨低血糖区画双色线（升线）
+                //低于低血糖上限画灰线
+                xm=points.get(i).x+(points.get(i+1).x-points.get(i).x)*(ym-Yaxis.get(i))/(Yaxis.get(i+1)-Yaxis.get(i));
+                float xm1=(float)xm;
+                double ym2 = y2-(Yaxis.get(i+1)-ym)*(y2-y1)/(Yaxis.get(i+1)-Yaxis.get(i));
+                 float ym1=(float)ym2;
+                canvas.drawLine(points.get(i).x,points.get(i).y,xm1,ym1,linePaintL);
+
+                //处于正常血糖区画绿线
+                canvas.drawLine(xm1,ym1,points.get(i+1).x,points.get(i+1).y,linePaint);
+            }
+            else if(Yaxis.get(i)<ym&&Yaxis.get(i+1)>yn){ //跨高低血糖区画三色线（升线）
+                //低于低血糖上限画灰线
+                xm=points.get(i).x+(points.get(i+1).x-points.get(i).x)*(ym-Yaxis.get(i))/(Yaxis.get(i+1)-Yaxis.get(i));
+                float xm1=(float)xm;
+                 double ym2 = y2-(Yaxis.get(i+1)-ym)*(y2-y1)/(Yaxis.get(i+1)-Yaxis.get(i));
+                 float ym1=(float)ym2;
+                canvas.drawLine(points.get(i).x,points.get(i).y,xm1,ym1,linePaintL);
+
+                //高出高血糖下限画红线
+                xn=points.get(i).x+(points.get(i+1).x-points.get(i).x)*(yn-Yaxis.get(i))/(Yaxis.get(i+1)-Yaxis.get(i));
+                float xn1=(float)xn;
+                 double yn2 = y2-(Yaxis.get(i+1)-yn)*(y2-y1)/(Yaxis.get(i+1)-Yaxis.get(i));
+                 float yn1=(float)yn2;
+                canvas.drawLine(xn1,yn1,points.get(i+1).x,points.get(i+1).y,linePaintH);
+
+                //处于正常血糖区画绿线
+                canvas.drawLine(xm1,ym1,xn1,yn1,linePaint);
+            }
+            else if(Yaxis.get(i)>ym&&Yaxis.get(i)<yn&&Yaxis.get(i+1)>yn){ //跨高血糖区画双色线（升线）
+                xn=points.get(i).x+(points.get(i+1).x-points.get(i).x)*(yn-Yaxis.get(i))/(Yaxis.get(i+1)-Yaxis.get(i));
+                float xn1=(float)xn;
+                 double yn2 = y2-(Yaxis.get(i+1)-yn)*(y2-y1)/(Yaxis.get(i+1)-Yaxis.get(i));
+                 float yn1=(float)yn2;
+                canvas.drawLine(points.get(i).x,points.get(i).y,xn1,yn1,linePaint);   //处于正常血糖区画绿线
+                canvas.drawLine(xn1,yn1,points.get(i+1).x,points.get(i+1).y,linePaintH);   //高出高血糖下限画红线
+            }
+            else if(Yaxis.get(i)>yn&&Yaxis.get(i+1)<yn&&Yaxis.get(i+1)>ym){ //跨高血糖区画双色线（降线）
+                xn=points.get(i+1).x-(points.get(i+1).x-points.get(i).x)*(yn-Yaxis.get(i+1))/(Yaxis.get(i)-Yaxis.get(i+1));
+                float xn1=(float)xn;
+                 double yn2 = y1-(Yaxis.get(i)-yn)*(y1-y2)/(Yaxis.get(i)-Yaxis.get(i+1));
+                 float yn1=(float)yn2;
+                canvas.drawLine(points.get(i).x,points.get(i).y,xn1,yn1,linePaintH);    //高出高血糖下限画红线
+                canvas.drawLine(xn1,yn1,points.get(i+1).x,points.get(i+1).y,linePaint);   //处于正常血糖区画绿线
+            }
+            else if(Yaxis.get(i)>yn&&Yaxis.get(i+1)<ym){ //跨高低血糖区画三色线（降线）
+                //高出高血糖下限画红线
+                xn=points.get(i+1).x-(points.get(i+1).x-points.get(i).x)*(yn-Yaxis.get(i+1))/(Yaxis.get(i)-Yaxis.get(i+1));
+                float xn1=(float)xn;
+                 double yn2 = y1-(Yaxis.get(i)-yn)*(y1-y2)/(Yaxis.get(i)-Yaxis.get(i+1));
+                 float yn1=(float)yn2;
+                canvas.drawLine(points.get(i).x,points.get(i).y,xn1,yn1,linePaintH);
+
+                //低于低血糖上限画灰线
+                xm=points.get(i+1).x-(points.get(i+1).x-points.get(i).x)*(ym-Yaxis.get(i+1))/(Yaxis.get(i)-Yaxis.get(i+1));
+                float xm1=(float)xm;
+                 double ym2 = y1-(Yaxis.get(i)-ym)*(y1-y2)/(Yaxis.get(i)-Yaxis.get(i+1));
+                 float ym1=(float)ym2;
+                canvas.drawLine(xm1,ym1,points.get(i+1).x,points.get(i+1).y,linePaintL);
+
+                //处于正常血糖区画绿线
+                canvas.drawLine(xn1,yn1,xm1,ym1,linePaint);
+            }
+            else if(Yaxis.get(i)>ym&&Yaxis.get(i)<yn&&Yaxis.get(i+1)<ym){ //跨低血糖区画双色线（降线）
+                xm=points.get(i+1).x-(points.get(i+1).x-points.get(i).x)*(ym-Yaxis.get(i+1))/(Yaxis.get(i)-Yaxis.get(i+1));
+                float xm1=(float)xm;
+                 double ym2 = y1-(Yaxis.get(i)-ym)*(y1-y2)/(Yaxis.get(i)-Yaxis.get(i+1));
+                 float ym1=(float)ym2;
+                canvas.drawLine(points.get(i).x,points.get(i).y,xm1,ym1,linePaint);   //处于正常血糖区画绿线
+                canvas.drawLine(xm1,ym1,points.get(i+1).x,points.get(i+1).y,linePaintL);    //低于低血糖上限画灰线
+            }
+
+            //处于正常血糖区画绿线
+            else/* if(points.get(i).y>ym&&points.get(i+1).y<yn) */
+                canvas.drawLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y,linePaint);
         }
     }
     public LinearLayout getRootView(){
