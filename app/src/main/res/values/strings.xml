@@ -23,6 +23,7 @@
     <string name="blood_oxygen">血氧</string>
     <string name="amount">mmol/L</string>
     <string name="sync_blood_suger">同步血糖仪数据</string>
+    <string name="sendbutton">手动输入血糖仪数据</string>
     <string name="query_medicine">用药查询</string>
     <string name="doctor_info">主治医生信息</string>
     <string name="filterItem1">最近一周</string>
@@ -69,6 +70,15 @@
     <string name="disconnected">未连接</string>
     <string name="title_devices">可用设备</string>
     <string name="error_bluetooth_not_supported">该设备不支持蓝牙</string>
+    <string name="textViewState">没发现 iGate 设备</string>
+    <string name="button_send">下载蓝牙数据</string>
+    <string name="finish">下载完成，返回</string>
+    <string name="cleandata">清除数据</string>
+    <string name="dataup">上传数据</string>
+    <string name="str_connected">iGate设备连接:</string>
+    <string name="str_scanning">正在查找iGate设备...</string>
+    <string name="str_idle">iGate 闲置中...</string>
+    <string name="str_found">找到iGate设备:</string>
 
     <string name="measure_blood">测量血压</string>
     <string name="scan">扫描</string>

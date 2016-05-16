@@ -55,6 +55,11 @@ public class OxygenMTDialog {
         });
 //        alertDialog.setOnDismissListener(new                                                                                  );
     }
+
+    public void setdialogText(){
+        bloodOxygen.setText("血糖值：");
+    }
+
     private void show(){
         if (!alertDialog.isShowing()) {
             alertDialog.show();
