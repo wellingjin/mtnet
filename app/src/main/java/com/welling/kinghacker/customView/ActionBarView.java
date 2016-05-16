@@ -78,6 +78,12 @@ public class ActionBarView {
         return rootView;
     }
 
+    public void setRightButtonHidden(){
+        if(rightButton!=null){
+            rightButton.setVisibility(View.GONE);
+        }
+    }
+
     public void setOnclickListener(OnclickListener onclickListener){
         this.onclickListener = onclickListener;
     }
