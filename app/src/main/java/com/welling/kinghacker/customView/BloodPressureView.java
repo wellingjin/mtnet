@@ -20,6 +20,7 @@ import com.welling.kinghacker.activities.R;
 public class BloodPressureView {
     private TextView highPressure,lowPressure,heartBeat,highPressurelong;
     private TextView highPressurelongtwo,lowPressurelongtwo,heartBeatlongtwo;
+    private TextView measure_date,measure_time,blood_statu;
     private FrameLayout bloodPressureView;
     private LinearLayout linearlong;
     private int highPressureValue,lowPressureValue,heartBeatValue,trueLong;
@@ -30,12 +31,15 @@ public class BloodPressureView {
         highPressure=(TextView)rootView.findViewById(R.id.highPressure);
         lowPressure=(TextView)rootView.findViewById(R.id.lowPressure);
         heartBeat=(TextView)rootView.findViewById(R.id.heartBeat);
+        measure_date=(TextView)rootView.findViewById(R.id.measure_date);
+        measure_time=(TextView)rootView.findViewById(R.id.measure_time);
         bloodPressureView=(FrameLayout)rootView.findViewById(R.id.bloodPressure);
         linearlong=(LinearLayout)rootView.findViewById(R.id.linearlong);
         highPressurelong=(TextView)rootView.findViewById(R.id.highPressurelong);
         highPressurelongtwo=(TextView)rootView.findViewById(R.id.highPressurelongtwo);
         lowPressurelongtwo=(TextView)rootView.findViewById(R.id.lowPressurelongtwo);
         heartBeatlongtwo=(TextView)rootView.findViewById(R.id.heartBeatlongtwo);
+        blood_statu=(TextView)rootView.findViewById(R.id.blood_statu);
         measuresize();
     }
     private void measuresize(){
@@ -48,7 +52,7 @@ public class BloodPressureView {
     }
     public FrameLayout getBloodPressureView(){return bloodPressureView;}
 
-    public void setValues(int highPressureValue,int lowPressureValue,int heartBeatValue){
+    public void setValues(int highPressureValue,int lowPressureValue,int heartBeatValue,String updatetime,String statu){
         trueLong=bloodPressureView.getMeasuredWidth()-highPressurelong.getMeasuredWidth()-highPressurelongtwo.getMeasuredWidth();
         highPressurelongtwo.setText(" "+highPressureValue+"(mmHg)");
         lowPressurelongtwo.setText(" " + lowPressureValue + "(mmHg)");
@@ -67,7 +71,10 @@ public class BloodPressureView {
         sani.setDuration(600);
         Log.i("valuesof--1", highPressure.getLayoutParams().width+" "+(float)highPressurelongtwo.getMeasuredWidth());
         Log.i("valuesof->", -highPressure.getLayoutParams().width / ((float) highPressurelongtwo.getMeasuredWidth()) + "");
-
+        measure_date.setText(updatetime.split("-")[0]);
+        measure_time.setText(updatetime.split("-")[1]);
+        blood_statu.setText(statu);
+        startAnimation();
     }
     public void startAnimation(){
         Log.i("valuesof",trueLong+" |");

@@ -1,7 +1,6 @@
 package com.example.bluetooth.le;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,19 +12,19 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.welling.kinghacker.activities.MTActivity;
 import com.welling.kinghacker.activities.R;
+import com.welling.kinghacker.bean.BloodPressureBean;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -36,9 +35,12 @@ import com.welling.kinghacker.activities.R;
  */
 @SuppressLint("NewApi")
 public class DeviceControlActivity extends MTActivity {
-	
+
+	private Button sendtoserver=null;
+	private TextView sendtoservertext=null;
 	private Button start_to_measure=null;
 	private TextView status_dev=null;
+	private TextView showtime=null;
 	private TextView high_blood=null;
 	private TextView low_blood=null;
 	private TextView heart_rate=null;
@@ -56,7 +58,7 @@ public class DeviceControlActivity extends MTActivity {
 	private String mDeviceAddress;
 	private BluetoothLeService mBluetoothLeService;
 	private boolean mConnected = false;
-
+	public BloodPressureBean bpbean;
 
 	// Code to manage Service lifecycle.
 	private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -109,12 +111,15 @@ public class DeviceControlActivity extends MTActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.blood_measure);
 		setActionBarTitle(getResources().getString(R.string.measure_blood));
+		sendtoserver=(Button)findViewById(R.id.sendtoserver);
+		sendtoservertext=(TextView)findViewById(R.id.sendtoservertext);
 		start_to_measure=(Button)findViewById(R.id.start_to_measure);
 		status_dev=(TextView)findViewById(R.id.status_dev);
 		high_blood=(TextView)findViewById(R.id.high_blood);
 		low_blood=(TextView)findViewById(R.id.low_blood);
 		heart_rate=(TextView)findViewById(R.id.heart_rate);
 		heart_rate_pro=(TextView)findViewById(R.id.heart_rate_pro);
+		showtime=(TextView)findViewById(R.id.showtime);
 		pressure_bar=(ProgressBar)findViewById(R.id.pressure_bar);
 		heart_rate_pro.setVisibility(View.GONE);
 		final Intent intent = getIntent();
@@ -141,6 +146,7 @@ public class DeviceControlActivity extends MTActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		showtime.setText(new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
 		registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 		Log.i("asdfg", "DeviceControlActivity->onresume");
 	}
@@ -178,6 +184,19 @@ public class DeviceControlActivity extends MTActivity {
 		intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
 		return intentFilter;
 	}
+	public void sendToServer(View view){
+		int hrp=BluetoothLeService.heart_rate_problem?1:0;
+		if(bpbean==null)bpbean=new BloodPressureBean(this);
+		bpbean.setData(
+				BluetoothLeService.high_blood,
+				BluetoothLeService.low_blood,
+				BluetoothLeService.heart_rate,
+				hrp);
+		bpbean.insert();
+		UptoServer uptoServer=new UptoServer(this);
+		uptoServer.upToServer();
+		Toast.makeText(DeviceControlActivity.this,"成功上传",Toast.LENGTH_SHORT).show();
+	}
 	class MyHandler extends Handler{
 
 		@Override
@@ -194,10 +213,14 @@ public class DeviceControlActivity extends MTActivity {
 				heart_rate.setText(""+BluetoothLeService.heart_rate);
 				if(BluetoothLeService.heart_rate_problem)heart_rate_pro.setVisibility(View.VISIBLE);
 				else heart_rate_pro.setVisibility(View.GONE);
+				sendtoserver.setVisibility(View.VISIBLE);
+				sendtoservertext.setVisibility(View.VISIBLE);
 				break;	
 			case SETBAR2ZERO:
 				pressure_bar.setProgress(0);
 				heart_rate_pro.setVisibility(View.GONE);
+				sendtoserver.setVisibility(View.GONE);
+				sendtoservertext.setVisibility(View.GONE);
 				break;
 			case BluetoothLeService.LOW_BATTERY:
 				Toast.makeText(DeviceControlActivity.this, "电量过低，请更换电池或插上电源", Toast.LENGTH_LONG).show();;

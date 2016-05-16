@@ -26,4 +26,7 @@
 
     <color name="unSelectTabColor">#458B00</color>
     <color name="selectColor">#81DFE4</color>
+    <color name="highred">#D73F3F</color>
+    <color name="gray">#808080</color>
+    <color name="near_white">#F7F7F7</color>
 </resources>
