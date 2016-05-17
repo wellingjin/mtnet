@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,26 +89,24 @@ public class DeviceScanActivity extends MTActivity{
             Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
+        Log.i("qwert","dsa_onCreate");
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("qwert", "dsa_onResume");
 
-        if (!mBluetoothAdapter.isEnabled()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
-
-        // Initializes list view adapter.
         mLeDeviceListAdapter = new LeDeviceListAdapter();
         device_list.setAdapter(mLeDeviceListAdapter);
         device_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("==position=="+position);
+                System.out.println("==position==" + position);
                 final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
                 if (device == null) return;
                 final Intent intent = new Intent(DeviceScanActivity.this, DeviceControlActivity.class);
@@ -120,7 +119,6 @@ public class DeviceScanActivity extends MTActivity{
                 startActivity(intent);
             }
         });
-        scanLeDevice(true);
     }
 
     @Override
@@ -128,7 +126,9 @@ public class DeviceScanActivity extends MTActivity{
         // User chose not to enable Bluetooth.
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
             finish();
-            return;
+        }
+        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_OK) {
+            scanLeDevice(true);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

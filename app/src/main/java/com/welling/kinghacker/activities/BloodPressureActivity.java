@@ -1,5 +1,6 @@
 package com.welling.kinghacker.activities;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -153,7 +154,21 @@ public class BloodPressureActivity extends MTActivity {
                 lineBlood.invalidate();
             }
         }
+        Log.i("qwert","bpa_onResume");
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("qwert","bpa_onStop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("qwert", "bpa_onPause");
+    }
+
     public void onPrevious_page(View v){
         LineBlood.previous_page();
         lineBlood.invalidate();
