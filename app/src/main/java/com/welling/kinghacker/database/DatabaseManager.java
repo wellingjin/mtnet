@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.welling.kinghacker.bean.BloodPressureBean;
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +25,10 @@ import java.util.Date;
 public class DatabaseManager {
     private DatabaseHelper helper;
     final String Tag = "database";
+    private String account;
     public DatabaseManager(Context context){
         helper = new DatabaseHelper(context);
+        account = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
     //创建一个表
     public void createTable(String tableName,ArrayList<TableItem> fields){
@@ -88,7 +92,7 @@ public class DatabaseManager {
     public JSONObject getOneRawByFieldEqual(String table,String field,String value){
         Log.i(Tag,"getOne");
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+ table +" where "+ field+" =?", new String[]{value});
+        Cursor cursor = db.rawQuery("select * from "+ table +" where "+ field+" =? and account =?", new String[]{value,account});
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("size",cursor.getColumnCount());
@@ -119,15 +123,15 @@ public class DatabaseManager {
         int index = 0;
         Cursor cursor;
         if (field == null){
-            cursor = db.rawQuery("select * from "+ table , null);
+            cursor = db.rawQuery("select * from "+ table +" where account =?", new String[]{account});
         }else if (start == null && end == null){
-            cursor = db.rawQuery("select "+ field +" from "+ table , null);
+            cursor = db.rawQuery("select "+ field +" from "+ table +" where account =?", new String[]{account});
         }else if (end == null){
-            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? ", new String[]{start});
+            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? and account =?", new String[]{start,account});
         }else if (start == null){
-            cursor = db.rawQuery("select * from "+ table +" where " + field+" <=? ", new String[]{end});
+            cursor = db.rawQuery("select * from "+ table +" where " + field+" <=? and account =?", new String[]{end,account});
         }else {
-            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? and "+field+" <=?", new String[]{start,end});
+            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? and "+field+" <=? and account =?", new String[]{start,end,account});
         }
 
         try {

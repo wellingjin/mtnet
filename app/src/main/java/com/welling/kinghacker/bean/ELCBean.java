@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.creative.filemanage.ECGFile;
 import com.welling.kinghacker.database.TableItem;
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
 
 import java.util.ArrayList;
 
@@ -19,10 +21,12 @@ public class ELCBean  extends MTBean{
             TABLENAME = "ELC",
             FILENAME = "filename",
             ISUPDATE = "isupdate",
-            CREATETIME = "createTime";
+            CREATETIME = "createTime",
+            ACCOUNT = "account";
     public String fileName;
     public int isUpdate = NO;
     public String createTime;
+    public String account;
     public ELCBean(Context context){
         super(context);
     }
@@ -41,8 +45,9 @@ public class ELCBean  extends MTBean{
         manager.deleteByFieldEqual(TABLENAME, FILENAME, fileName);
         ContentValues cv = new ContentValues();
         cv.put(FILENAME,fileName);
-        cv.put(ISUPDATE,isUpdate);
+        cv.put(ISUPDATE,NO);
         cv.put(CREATETIME,createTime);
+        cv.put(ACCOUNT, SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT));
         manager.insert(TABLENAME,cv);
     }
 
@@ -51,10 +56,12 @@ public class ELCBean  extends MTBean{
         TableItem item1 = new TableItem(FILENAME,TableItem.M_VARCHAR,50);
         TableItem item2 = new TableItem(ISUPDATE,TableItem.M_INTEGER,1);
         TableItem item3 = new TableItem(CREATETIME,TableItem.M_VARCHAR,30);
+        TableItem item4 = new TableItem(ACCOUNT,TableItem.M_VARCHAR,30);
         ArrayList<TableItem> items = new ArrayList<>();
         items.add(item1);
         items.add(item2);
         items.add(item3);
+        items.add(item4);
         Log.i("data", item1.toString());
         manager.createTable(TABLENAME, items);
     }

@@ -417,12 +417,13 @@ public class ElectorDragramActivity extends MTActivity {
             public void onSuccess(int requestId, JSONObject JSONResponse) {
                 if (requestId < beans.size()) {
                     beans.get(requestId).update();
+                    makeToast("上传成功");
                 }
             }
 
             @Override
             public void onFailure(int requestId, int errorCode) {
-
+                makeToast("上传失败，请稍后再试");
             }
         });
 
@@ -432,6 +433,11 @@ public class ElectorDragramActivity extends MTActivity {
         try {
             int count = object.getInt("count");
             Log.i(TAG,"count:"+count);
+            if(count <= 0){
+                makeToast("没有可上传数据");
+            }else{
+                makeToast("开始上传");
+            }
             for(int i=0;i<count;i++){
                 ELCBean bean = new ELCBean(this);
                 bean.fileName = object.getJSONObject(""+i).getString(ELCBean.FILENAME);
