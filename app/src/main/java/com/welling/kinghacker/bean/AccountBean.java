@@ -21,6 +21,12 @@ public class AccountBean extends MTBean{
     public AccountBean(Context context){
         super(context);
     }
+
+    @Override
+    public void init() {
+
+    }
+
     public AccountBean(Context context,String account,String password){
         super(context);
         this.account = account;

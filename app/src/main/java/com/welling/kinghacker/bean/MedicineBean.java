@@ -51,6 +51,12 @@ public class MedicineBean extends MTBean {
     public MedicineBean(Context context){
         super(context);
     }
+
+    @Override
+    public void init() {
+
+    }
+
     public MedicineBean(Context context,int medicineID){
         this(context);
         this.medicineID = medicineID;

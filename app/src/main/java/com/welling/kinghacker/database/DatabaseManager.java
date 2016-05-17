@@ -92,7 +92,7 @@ public class DatabaseManager {
     public JSONObject getOneRawByFieldEqual(String table,String field,String value){
         Log.i(Tag,"getOne");
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+ table +" where "+ field+" =? and account =?", new String[]{value,account});
+        Cursor cursor = db.rawQuery("select * from "+ table +" where "+ field+" =? ", new String[]{value});
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("size",cursor.getColumnCount());
@@ -123,15 +123,15 @@ public class DatabaseManager {
         int index = 0;
         Cursor cursor;
         if (field == null){
-            cursor = db.rawQuery("select * from "+ table +" where account =?", new String[]{account});
+            cursor = db.rawQuery("select * from "+ table, null);
         }else if (start == null && end == null){
-            cursor = db.rawQuery("select "+ field +" from "+ table +" where account =?", new String[]{account});
+            cursor = db.rawQuery("select "+ field +" from "+ table, null);
         }else if (end == null){
-            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? and account =?", new String[]{start,account});
+            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=?", new String[]{start});
         }else if (start == null){
-            cursor = db.rawQuery("select * from "+ table +" where " + field+" <=? and account =?", new String[]{end,account});
+            cursor = db.rawQuery("select * from "+ table +" where " + field+" <=?", new String[]{end});
         }else {
-            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? and "+field+" <=? and account =?", new String[]{start,end,account});
+            cursor = db.rawQuery("select * from "+ table +" where " + field+" >=? and "+field+" <=? ", new String[]{start,end});
         }
 
         try {

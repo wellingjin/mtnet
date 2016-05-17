@@ -15,6 +15,7 @@ import java.util.Date;
 
 /**
  * Created by zsw on 2016/5/13.
+ *
  */
 public class BloodPressureBean extends MTBean {
     private int highblood,lowblood,heartrate,heartproblem,isupdate;
@@ -33,6 +34,12 @@ public class BloodPressureBean extends MTBean {
     public BloodPressureBean(Context context){
         super(context);
     }
+
+    @Override
+    public void init() {
+
+    }
+
     public void setData(int highblood,int lowblood,int heartrate,int heartproblem){
         this.highblood = highblood;
         this.lowblood = lowblood;

@@ -428,7 +428,7 @@ public class ElectorDragramActivity extends MTActivity {
         });
 
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.ISUPDATE,null, "0");
+        JSONObject object = dbManager.getMultiRaw(new ELCBean(this).TABLENAME, ELCBean.ISUPDATE,null, "0");
 
         try {
             int count = object.getInt("count");
@@ -457,7 +457,7 @@ public class ElectorDragramActivity extends MTActivity {
     void getLocalTimeList(){
         timeList.clear();
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.CREATETIME, null, null);
+        JSONObject object = dbManager.getMultiRaw(new ELCBean(this).TABLENAME, ELCBean.CREATETIME, null, null);
 
         try {
             int count = object.getInt("count");
@@ -534,7 +534,7 @@ public class ElectorDragramActivity extends MTActivity {
     boolean getLocalELC(String chooseTime){
         Log.i(TAG,"getLocal");
         DatabaseManager manager = new DatabaseManager(this);
-        JSONObject object = manager.getOneRawByFieldEqual(ELCBean.TABLENAME, ELCBean.CREATETIME, chooseTime);
+        JSONObject object = manager.getOneRawByFieldEqual(new ELCBean(this).TABLENAME, ELCBean.CREATETIME, chooseTime);
         try {
             int count = object.getInt("count");
             Log.i(TAG,"local count:"+count);
