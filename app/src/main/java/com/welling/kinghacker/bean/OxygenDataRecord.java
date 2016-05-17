@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.welling.kinghacker.bean.MTBean;
 import com.welling.kinghacker.database.TableItem;
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,13 +22,12 @@ import java.util.Date;
  */
 public class OxygenDataRecord extends MTBean {
     static public String
-            TABLENAME = "OxygenDataRecord1",
-            UPDATETIME ="UpdateTime",
+            UPDATETIME ="time",
             OXYGENVALUE = "OxygenValue",
             ISUPDATE = "isupdate",
             BMPVALUE = "bmpValue";
 
-
+    public String tableName;
     public String updatetime;
     public int oxygenvalue;
     public int bmpvalue ;
@@ -34,19 +36,22 @@ public class OxygenDataRecord extends MTBean {
     public String time[] = null;
     public OxygenDataRecord(Context context){
         super(context);
+        init();
     }
 
     @Override
     public void init() {
-
+        this.tableName = "BloodOxygenData"+SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
 
     public OxygenDataRecord(Context context,int number){
         super(context);
+        init();
         this.numberOfDate = number;
     }
     public OxygenDataRecord(Context context,int oxygenvalue,int bmpvalue,String time){
         super(context);
+        init();
         this.oxygenvalue = oxygenvalue;
         this.bmpvalue = bmpvalue;
         this.updatetime = time;
@@ -56,17 +61,17 @@ public class OxygenDataRecord extends MTBean {
         ContentValues cv = new ContentValues();
         isUpdate = YES;
         cv.put(ISUPDATE,isUpdate);
-        manager.updateByFieldEqual(TABLENAME, UPDATETIME, updatetime, cv);
+        manager.updateByFieldEqual(tableName, UPDATETIME, updatetime, cv);
     }
     @Override
     public void insert() {
-        manager.deleteByFieldEqual(TABLENAME, UPDATETIME, updatetime);
+        manager.deleteByFieldEqual(tableName, UPDATETIME, updatetime);
         ContentValues cv = new ContentValues();
         cv.put(UPDATETIME,updatetime);
         cv.put(OXYGENVALUE,oxygenvalue);
         cv.put(BMPVALUE, bmpvalue);
         cv.put(ISUPDATE,isUpdate);
-        manager.insert(TABLENAME, cv);
+        manager.insert(tableName, cv);
        // Log.i("123", "数据插入成功");
     }
 
@@ -77,7 +82,7 @@ public class OxygenDataRecord extends MTBean {
         items.add(new TableItem(OXYGENVALUE, TableItem.M_INTEGER));
         items.add(new TableItem(BMPVALUE, TableItem.M_INTEGER));
         items.add(new TableItem(ISUPDATE, TableItem.M_INTEGER));
-        manager.createTable(TABLENAME, items);
+        manager.createTable(tableName, items);
        // Log.i("123", "表创建成功");
     }
     //得到最近一次测量的血氧值
@@ -88,7 +93,7 @@ public class OxygenDataRecord extends MTBean {
         String value =null;
         String date =null;
         String time =null;
-        JSONObject jsonObject =  manager.getMultiRaw(TABLENAME, null, null, null);
+        JSONObject jsonObject =  manager.getMultiRaw(tableName, null, null, null);
         try{
             int row = (int)jsonObject.get("count");
             if(row>0) {
@@ -106,7 +111,7 @@ public class OxygenDataRecord extends MTBean {
     public int[] getRecentlyMoreChooseData(String endTime){
         int data[]=null;
         boolean start = false;
-        JSONObject jsonObject =  manager.getMultiRaw(TABLENAME, null, null, null);
+        JSONObject jsonObject =  manager.getMultiRaw(tableName, null, null, null);
         try{
             int row = (int)jsonObject.get("count");
             data= new int[this.numberOfDate];
@@ -133,7 +138,7 @@ public class OxygenDataRecord extends MTBean {
     public int[] getRecentlyMoreData(){
         int data[]=null;
 
-        JSONObject jsonObject =  manager.getMultiRaw(TABLENAME, null, null, null);
+        JSONObject jsonObject =  manager.getMultiRaw(tableName, null, null, null);
         try{
             int row = (int)jsonObject.get("count");
             data= new int[this.numberOfDate];
