@@ -26,7 +26,7 @@ import cz.msebera.android.httpclient.util.EntityUtils;
 **/
 public class MTHttpManager {
     private String url = PublicRes.IP;
-    static public int ECG=0,BO=1,BP=2,BS=3;
+    static public int ECG=0,BO=1,BP=3,BS=2;
     private AsyncHttpClient client;
     private HttpResponseListener httpResponseListener;
     private int requestID;
@@ -137,7 +137,7 @@ public class MTHttpManager {
         params.put("username",account);
         params.put("data",data);
         params.put("type",type);
-        post(params,requestID,"uploadHdRecord.do");
+        post(params,requestID,"uploadRecord.do");
     }
 
     public int getRequestID(){
