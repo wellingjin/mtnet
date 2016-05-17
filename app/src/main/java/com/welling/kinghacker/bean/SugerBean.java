@@ -30,6 +30,11 @@ public class SugerBean extends MTBean {
         super(context);
     }
 
+    @Override
+    public void init() {
+
+    }
+
     public SugerBean(Context context, float sugervalue) {
         super(context);
         this.sugervalue = sugervalue;

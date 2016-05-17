@@ -38,6 +38,11 @@ public class PersonalInfo extends MTBean{
         super(context);
     }
 
+    @Override
+    public void init() {
+
+    }
+
     public PersonalInfo(Context context,String  account){
         this(context);
         this.account = account;

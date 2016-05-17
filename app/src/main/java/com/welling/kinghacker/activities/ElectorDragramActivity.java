@@ -417,21 +417,27 @@ public class ElectorDragramActivity extends MTActivity {
             public void onSuccess(int requestId, JSONObject JSONResponse) {
                 if (requestId < beans.size()) {
                     beans.get(requestId).update();
+                    makeToast("上传成功");
                 }
             }
 
             @Override
             public void onFailure(int requestId, int errorCode) {
-
+                makeToast("上传失败，请稍后再试");
             }
         });
 
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.ISUPDATE,null, "0");
+        JSONObject object = dbManager.getMultiRaw(new ELCBean(this).TABLENAME, ELCBean.ISUPDATE,null, "0");
 
         try {
             int count = object.getInt("count");
             Log.i(TAG,"count:"+count);
+            if(count <= 0){
+                makeToast("没有可上传数据");
+            }else{
+                makeToast("开始上传");
+            }
             for(int i=0;i<count;i++){
                 ELCBean bean = new ELCBean(this);
                 bean.fileName = object.getJSONObject(""+i).getString(ELCBean.FILENAME);
@@ -451,7 +457,7 @@ public class ElectorDragramActivity extends MTActivity {
     void getLocalTimeList(){
         timeList.clear();
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.CREATETIME, null, null);
+        JSONObject object = dbManager.getMultiRaw(new ELCBean(this).TABLENAME, ELCBean.CREATETIME, null, null);
 
         try {
             int count = object.getInt("count");
@@ -528,7 +534,7 @@ public class ElectorDragramActivity extends MTActivity {
     boolean getLocalELC(String chooseTime){
         Log.i(TAG,"getLocal");
         DatabaseManager manager = new DatabaseManager(this);
-        JSONObject object = manager.getOneRawByFieldEqual(ELCBean.TABLENAME, ELCBean.CREATETIME, chooseTime);
+        JSONObject object = manager.getOneRawByFieldEqual(new ELCBean(this).TABLENAME, ELCBean.CREATETIME, chooseTime);
         try {
             int count = object.getInt("count");
             Log.i(TAG,"local count:"+count);

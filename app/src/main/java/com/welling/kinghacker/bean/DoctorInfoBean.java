@@ -44,6 +44,12 @@ public class DoctorInfoBean extends MTBean {
     public DoctorInfoBean(Context context){
         super(context);
     }
+
+    @Override
+    public void init() {
+
+    }
+
     public DoctorInfoBean(Context context,int doctorID){
         this(context);
         this.doctorID = doctorID;

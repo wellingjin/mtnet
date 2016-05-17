@@ -35,6 +35,12 @@ public class OxygenDataRecord extends MTBean {
     public OxygenDataRecord(Context context){
         super(context);
     }
+
+    @Override
+    public void init() {
+
+    }
+
     public OxygenDataRecord(Context context,int number){
         super(context);
         this.numberOfDate = number;
