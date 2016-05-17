@@ -7,10 +7,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.welling.kinghacker.bean.BloodPressureBean;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by KingHacker on 4/29/2016.
@@ -49,7 +53,6 @@ public class DatabaseManager {
         }catch (SQLException e){
             Log.i(Tag,e.toString());
         }
-
     }
     //更新记录
     public boolean updateByFieldEqual(String table,String field,String value,ContentValues cv){
@@ -104,7 +107,7 @@ public class DatabaseManager {
         }
         cursor.close();
         db.close();
-        Log.i(Tag,jsonObject.toString());
+        Log.i(Tag, jsonObject.toString());
         return jsonObject;
     }
     //查询多行数据，如果start 或 end 为null，查询所有field数据
@@ -149,9 +152,7 @@ public class DatabaseManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
-
         cursor.close();
         db.close();
         Log.i(Tag, jsonObject.toString());
@@ -168,7 +169,47 @@ public class DatabaseManager {
         }catch (SQLException e){
             return false;
         }
-
+    }
+    //query语句
+    public JSONObject query(String table, String[] columns,
+                      String selection, String[] selectionArgs,
+                      String groupBy, String having, String orderBy, String limit){
+        Log.i(Tag, "执行query");
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor=db.query(table, columns,
+                        selection, selectionArgs,
+                        groupBy, having, orderBy, limit);
+        JSONObject jsonObject = new JSONObject();
+        int index = 0;
+        try {
+            jsonObject.put("size",cursor.getColumnCount());
+            //Log.i(Tag, cursor.getColumnCount()+"");
+            jsonObject.put("count", cursor.getCount());
+            //Log.i(Tag, cursor.getCount()+"");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        while (cursor.moveToNext()){
+            JSONObject item = new JSONObject();
+            for (int i=0;i<cursor.getColumnCount();i++){
+                try {
+                    item.put(cursor.getColumnName(i), cursor.getString(i));
+                } catch (JSONException e) {
+                    Log.i(Tag,"exception");
+                    e.printStackTrace();
+                }
+            }
+            try {
+                jsonObject.put(index+"",item);
+                index++;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+        db.close();
+        Log.i(Tag, jsonObject.toString());
+        return jsonObject;
     }
     //关闭数据库，释放资源
     public void close(){
@@ -177,6 +218,4 @@ public class DatabaseManager {
             db.close();
         }
     }
-
-
 }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.creative.filemanage.ECGFile;
+import com.welling.kinghacker.bean.BloodPressureBean;
 import com.welling.kinghacker.customView.BloodOxygenView;
 import com.welling.kinghacker.customView.BloodPressureView;
 import com.welling.kinghacker.customView.BloodSugerView;
@@ -49,9 +50,9 @@ public class HomeActivity extends MTActivity {
 //        正文布局
         setContentView(R.layout.home_layout);
         setParentView(findViewById(R.id.homeRootView));
-        initBloodSuger();
-        initBloodPressure();
         initBloodOxygen();
+        initBloodPressure();
+        initBloodSuger();
         initElectocarDiagram();
         setPagerView();
     }
@@ -108,11 +109,13 @@ public class HomeActivity extends MTActivity {
         bloodSugerView = new BloodSugerView(this);
 //        设置血糖值和容器高度
         bloodSugerView.setBloodSugerValue(bloodSugerValue);
-
     }
     private void initBloodPressure(){
-        bloodPressureView = new BloodPressureView(this);
-        bloodPressureView.setValues(100, 120, 140);
+        if(bloodPressureView==null)bloodPressureView = new BloodPressureView(this);
+        BloodPressureBean bpbean=new BloodPressureBean(this);
+        bpbean.setLatestRecordFromlocal();
+        bloodPressureView.setValues(bpbean.getHighblood(), bpbean.getLowblood()
+                , bpbean.getHeartrate(),bpbean.getUpdatetime(),BloodPressureBean.blood_status[BloodPressureBean.statu]);
         RippleView bloodPressureButton = (RippleView)findViewById(R.id.bloodPressureButton);
         bloodPressureButton.setRippleDuration(bloodPressureButton.getRippleDuration() / 2);
         bloodPressureButton.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
@@ -261,5 +264,6 @@ public class HomeActivity extends MTActivity {
     protected void onResume() {
         super.onResume();
         initBloodOxygen();
+        initBloodPressure();
     }
 }
