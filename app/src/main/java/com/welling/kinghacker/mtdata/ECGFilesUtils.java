@@ -29,7 +29,7 @@ public class ECGFilesUtils {
 
 
     public static String packECGFile(ECGFile ecgFile) throws JSONException, IOException {
-
+        Log.i("file","createFile");
         JSONObject object = new JSONObject();
         object.put("time", ecgFile.time);
         object.put("nAverageHR", ecgFile.nAverageHR);

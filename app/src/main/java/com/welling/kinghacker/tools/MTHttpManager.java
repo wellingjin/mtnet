@@ -137,7 +137,7 @@ public class MTHttpManager {
         params.put("username",account);
         params.put("data",data);
         params.put("type",type);
-        post(params,requestID,"uploadHdRecord.do");
+        post(params,requestID,"uploadRecord.do");
     }
 
     public int getRequestID(){

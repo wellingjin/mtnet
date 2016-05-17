@@ -93,7 +93,7 @@ public class MedicionActicity extends  MTActivity{
 
     private void getLocalMedicineList() {
         DatabaseManager manager = new DatabaseManager(this);
-        JSONObject jsonMedicineList = manager.getMultiRaw(MedicineBean.TABLENAME, null, null, null);
+        JSONObject jsonMedicineList = manager.getMultiRaw(new MedicineBean(this).TABLENAME, null, null, null);
 
         listData.clear();
         try {
