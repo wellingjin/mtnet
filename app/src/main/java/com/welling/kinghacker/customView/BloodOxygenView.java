@@ -51,10 +51,11 @@ public class BloodOxygenView{
         bloodOxygenValue = value;
         valueView.setText(value + "");
         float bloodOxygenWhiteHeight;
-        if (value < 100) {
-            bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - value / 100);
+        value/=5;
+        if (value < 20) {
+            bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - value / 20);
         }else{
-            bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - 90f / 100);
+            bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - 19f /20);
         }
         setShadeLayoutHeight((int)bloodOxygenWhiteHeight);
         setAnimation();
@@ -72,11 +73,11 @@ public class BloodOxygenView{
         shadeLayout.getLayoutParams().height = height;
     }
     private void setAnimation(){
-        float scale = 100;
-        if (bloodOxygenValue < 100) {
-            scale = 100 / (100 - bloodOxygenValue);
+        float scale = 10;
+        if (bloodOxygenValue/5 < 10) {
+            scale = 10 / (10 - bloodOxygenValue/5);
         }else{
-            scale = 100 / (100 - 90f);
+            scale = 10 / (10 - 9f);
         }
         Log.i("ok", scale + "");
         if(down2UpAnimation!=null)
