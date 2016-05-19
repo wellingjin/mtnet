@@ -38,11 +38,11 @@ public class FilterView {
         rootView = inflater.inflate(R.layout.filter_layout,null);
         endDate = (TextView)rootView.findViewById(R.id.endDate);
         recentOneWeekButton = (Button)rootView.findViewById(R.id.recentOneWeek);
-        recentOneWeekButton.setText("最近一天");
+
         recentOneMonthButton = (Button)rootView.findViewById(R.id.recentOneMonth);
-        recentOneMonthButton.setText("最近两天");
+
         recentThreeMonthButton = (Button)rootView.findViewById(R.id.recentThreeMonth);
-        recentThreeMonthButton.setText("最近三天");
+
         sureButton = (Button)rootView.findViewById(R.id.sure);
         recentOneWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +103,11 @@ public class FilterView {
             }
         });
     }
-
+    public void changeToBOValue(){
+        recentOneWeekButton.setText("最近一天");
+        recentOneMonthButton.setText("最近两天");
+        recentThreeMonthButton.setText("最近三天");
+    }
     public void showFilter(View parentView) {
         if (popWind == null) {
             popWind = new PopupWindow(rootView,

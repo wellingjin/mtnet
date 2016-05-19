@@ -1,6 +1,7 @@
 package com.welling.kinghacker.customView;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,7 +17,7 @@ public class BloodOxygenView{
     private TextView shadeLayout,valueLayout,valueView;
     private FrameLayout bloodOxygenView;
     private float bloodOxygenValue = 0;
-    private ScaleAnimation down2UpAnimation;
+    private ScaleAnimation down2UpAnimation=null;
     private float defaultBloodSugerWhiteHeight;
     private TextView textViewDate,textViewTime,textViewAttr;
     private View rootView;
@@ -50,8 +51,8 @@ public class BloodOxygenView{
         bloodOxygenValue = value;
         valueView.setText(value + "");
         float bloodOxygenWhiteHeight;
-        if (bloodOxygenValue < 100) {
-            bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - bloodOxygenValue / 100);
+        if (value < 100) {
+            bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - value / 100);
         }else{
             bloodOxygenWhiteHeight = defaultBloodSugerWhiteHeight * (1 - 90f / 100);
         }
@@ -77,7 +78,11 @@ public class BloodOxygenView{
         }else{
             scale = 100 / (100 - 90f);
         }
-        down2UpAnimation = new ScaleAnimation(10,10,scale,0, Animation.RELATIVE_TO_SELF,0.5F,Animation.RELATIVE_TO_SELF,0);
+        Log.i("ok", scale + "");
+        if(down2UpAnimation!=null)
+            down2UpAnimation.reset();
+        down2UpAnimation = new ScaleAnimation(1,1,scale,0, Animation.RELATIVE_TO_SELF,0.5F,Animation.RELATIVE_TO_SELF,0);
+
         down2UpAnimation.setDuration(1000);
 
         final Animation up2DownAnimation = new ScaleAnimation(1,1,0,1, Animation.RELATIVE_TO_SELF,0.5F,Animation.RELATIVE_TO_SELF,0);
@@ -104,5 +109,4 @@ public class BloodOxygenView{
     public void startAnimation(){
         shadeLayout.startAnimation(down2UpAnimation);
     }
-
 }
