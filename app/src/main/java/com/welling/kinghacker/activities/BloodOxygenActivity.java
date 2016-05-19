@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -541,18 +542,21 @@ public class BloodOxygenActivity extends MTActivity {
             public void onSuccess(int requestId, JSONObject JSONResponse) {
                 if (requestId < beans.size()) {
                     beans.get(requestId).update();
-                    Toast.makeText(BloodOxygenActivity.this, "上传云端成功", Toast.LENGTH_LONG).show();
+                    if(requestId==beans.size()-1)
+                        makeToast("上传云端成功");
                 }
             }
 
             @Override
             public void onFailure(int requestId, int errorCode) {
-                Toast.makeText(BloodOxygenActivity.this, "上传云端失败", Toast.LENGTH_LONG).show();
+                //Toast.makeText(BloodOxygenActivity.this, "上传云端失败", Toast.LENGTH_LONG).show();
+                if(requestId==beans.size()-1)
+                    makeToast("上传云端失败");
             }
         });
 
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(OxygenDataRecord.TABLENAME, OxygenDataRecord.ISUPDATE,null, "0");
+        JSONObject object = dbManager.getMultiRaw(new OxygenDataRecord(this).tableName, OxygenDataRecord.ISUPDATE,null, "0");
 
         try {
             int count = object.getInt("count");
@@ -561,7 +565,22 @@ public class BloodOxygenActivity extends MTActivity {
                 OxygenDataRecord bean = new OxygenDataRecord(this);
                 bean.updatetime = object.getJSONObject(""+i).getString(OxygenDataRecord.UPDATETIME);
                 beans.add(bean);
-                manager.updateToCloud(this, object.getJSONObject("" + i).toString(), MTHttpManager.BO, i);
+                String time =null;
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("bmpValue",object.getJSONObject(""+i).getInt(OxygenDataRecord.BMPVALUE));
+                jsonObject.put("OxygenValue",object.getJSONObject(""+i).getInt(OxygenDataRecord.OXYGENVALUE));
+                SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
+                try {
+                    long st = formatter.parse(object.getJSONObject("" + i).getString(OxygenDataRecord.UPDATETIME)).getTime();
+                    formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    time =formatter.format(st);
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
+
+                jsonObject.put("time",time);
+                manager.updateToCloud(this, jsonObject.toString(), MTHttpManager.BO, i);
+                Log.i("123", jsonObject.toString());
             }
         } catch (JSONException e) {
             Log.i("123","updateExc");
@@ -571,7 +590,7 @@ public class BloodOxygenActivity extends MTActivity {
     void getLocalTimeList(){
         timeList.clear();
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(OxygenDataRecord.TABLENAME, OxygenDataRecord.UPDATETIME, null, null);
+        JSONObject object = dbManager.getMultiRaw(new OxygenDataRecord(this).tableName, OxygenDataRecord.UPDATETIME, null, null);
 
         try {
             int count = object.getInt("count");
@@ -647,7 +666,7 @@ public class BloodOxygenActivity extends MTActivity {
     boolean getLocalOxygen(String chooseTime){
         Log.i("123", "getLocal");
         DatabaseManager manager = new DatabaseManager(this);
-        JSONObject object = manager.getOneRawByFieldEqual(OxygenDataRecord.TABLENAME, OxygenDataRecord.UPDATETIME, chooseTime);
+        JSONObject object = manager.getOneRawByFieldEqual(new OxygenDataRecord(this).tableName, OxygenDataRecord.UPDATETIME, chooseTime);
         try {
             int count = object.getInt("count");
             Log.i("123","local count:"+count);
@@ -697,7 +716,7 @@ public class BloodOxygenActivity extends MTActivity {
             params.put("username", SystemTool.getSystem(this).getStringValue(PublicRes.ACCOUNT));
             params.put("startTime", timeList.get(which).updatetime);
             params.put("endTime", timeList.get(which).updatetime);
-            manager.post(params, manager.getRequestID(), "getHdPatientRecords.do");
+            manager.post(params, manager.getRequestID(), "getPatientRecords.do");
         }
     }
     void dealWithOxygen(JSONObject object){
@@ -707,13 +726,14 @@ public class BloodOxygenActivity extends MTActivity {
         try {
             state = object.getInt(PublicRes.STATE);
             error = object.getString(PublicRes.EXCEPTION);
-            JSONArray array = object.getJSONArray("list");
-            if (array.length() >0){
-                Log.i("123","0");
-                JSONObject fileObject=array.getJSONObject(0);
-                //处理完数据要展示
-                Log.i("123待处理数据",fileObject.toString());
-            }
+            Log.i("123",object.toString());
+           // JSONArray array = object.getJSONArray("list");
+//            if (array.length() >0){
+//                Log.i("123","0");
+//                JSONObject fileObject=array.getJSONObject(0);
+//                //处理完数据要展示
+//                Log.i("123待处理数据",fileObject.toString());
+//            }
 
         } catch (JSONException e) {
             Log.i("123","excshow");

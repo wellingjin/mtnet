@@ -17,7 +17,7 @@ import com.welling.kinghacker.tools.SystemTool;
  * 蓝牙数据获取状态显示
  */
 public class MTDialog {
-    private int MAX = 25070;
+    private int MAX = 10700;
     private AlertDialog alertDialog;
     private TextView stateText,percentText,recText;
     private ProgressBar recBar,progressBar;
