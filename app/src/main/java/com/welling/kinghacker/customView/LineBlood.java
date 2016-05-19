@@ -109,6 +109,7 @@ public class LineBlood extends View {
             }
             for(int j=i;j<7*scale;j++){
                 y[j%7]=0;y1[j%7]=0;y2[j%7]=0;
+                dates[j%7]="";
                 Log.i("database","y="+y[j%7]+" y1="+y1[j%7]+" y2="+y2[j%7]);
             }
         }catch (Exception e)
@@ -197,19 +198,18 @@ public class LineBlood extends View {
         paint.setPathEffect(null);
         paint.setStrokeWidth(5 * xratio);
         if(xshow!=0){
-            canvas.drawText((int)(y[xshow-1])+"", xvalue - 600 * xratio, yvalue + 100 * yratio, paint);
-            canvas.drawText((int)(y1[xshow-1])+"",xvalue - 350*xratio,yvalue + 100*yratio,paint);
-            if(heart_pro[xshow-1]==1)paint.setColor(0xffDA413E);
-            canvas.drawText((int)(y2[xshow-1])+"",xvalue - 125*xratio,yvalue + 100*yratio,paint);
-            if(isupdate[xshow-1]==0)paint.setColor(0xffCF5B56);
-            canvas.drawText(dates[xshow-1], xvalue - 300*xratio, 220 * yratio, paint);
+            canvas.drawText((int) (y[xshow - 1]) + "", xvalue - 600 * xratio, yvalue + 100 * yratio, paint);
+            canvas.drawText((int) (y1[xshow - 1]) + "", xvalue - 350 * xratio, yvalue + 100 * yratio, paint);
+            paint.setColor(0xff000000);if(heart_pro[xshow-1]==1)paint.setColor(0xffDA413E);
+            canvas.drawText((int) (y2[xshow - 1]) + "", xvalue - 125 * xratio, yvalue + 100 * yratio, paint);
+            paint.setColor(0xff000000);if(isupdate[xshow-1]==0)paint.setColor(0xffCF5B56);
+            canvas.drawText(dates[xshow - 1], xvalue - 300 * xratio, 220 * yratio, paint);
             paint.setColor(0xff000000);
             if(y[xshow-1]!=0){
                 String text=BloodPressureBean.blood_status[BloodPressureBean.getBloodStatu((int)y[xshow-1])];
                 canvas.drawText(text, xvalue - 300*xratio, 280 * yratio, paint);
             }
         }
-
         canvas.drawLine(110 * xratio, yvalue - 55 * yratio, xvalue - 40 * xratio, yvalue - 55 * yratio, paint);//x轴
         canvas.drawText("(时间)", xvalue - 100 * xratio, yvalue - 100 * yratio, paint);
         canvas.drawText("高血压:", xvalue - 700 * xratio, yvalue + 100 * yratio, paint);

@@ -166,7 +166,7 @@ public class DatabaseManager {
     public boolean execSQL(String sql){
         SQLiteDatabase db = helper.getWritableDatabase();
         try {
-            Log.i(Tag,"execSQL");
+            Log.i(Tag,"execSQL:"+sql);
             db.execSQL(sql);
             db.close();
             return true;
