@@ -33,7 +33,7 @@ public class PublicRes{
     static public final String ROOTPATH = Environment.getExternalStorageDirectory() + "/NetMT";
     static public final String ECGPATH = ROOTPATH + "/ECG";
 
-    static public final String IP = "http://172.18.43.64:8080/HCP2/mobile/";
+    static public final String IP = "http://120.76.45.51:8080/HCP2/mobile/";
 
     static public final String Syn_Clound = "同步服务器";
 

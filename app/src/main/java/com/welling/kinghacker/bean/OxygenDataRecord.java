@@ -12,6 +12,7 @@ import com.welling.kinghacker.tools.SystemTool;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,8 +100,15 @@ public class OxygenDataRecord extends MTBean {
             if(row>0) {
                 JSONObject item = jsonObject.getJSONObject((row - 1) + "");
                 data = item.getInt(OXYGENVALUE);
-                date = item.getString(UPDATETIME).split("日")[0];
-                time = item.getString(UPDATETIME).split("日")[1];
+                SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
+                try {
+                    long st = formatter.parse(item.getString(UPDATETIME)).getTime();
+                    formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    date = formatter.format(st).split(" ")[0];
+                    time = formatter.format(st).split(" ")[1];
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
                 value =data+","+date+","+time;
             }
         }catch(JSONException j){
