@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.welling.kinghacker.database.TableItem;
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
 
 import org.json.JSONObject;
 
@@ -23,8 +25,8 @@ public class BloodPressureBean extends MTBean {
     public static String[] blood_status=new String[]{"低血压","理想血压","正常血压",
             "正常偏高值血压","轻度高血压","中度高血压","重度高血压"};
     public static int statu=0;
+    public String TABLENAME,startTime,endTime;
     public static String
-            TABLENAME = "BloodpressureDataRecord",
             UPDATETIME ="UpdateTime",
             HIGHBLOOD = "highblood",
             LOWBLOOD = "lowblood",
@@ -37,7 +39,7 @@ public class BloodPressureBean extends MTBean {
 
     @Override
     public void init() {
-
+        TABLENAME= "BloodpressureDataRecord"+SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
 
     public void setData(int highblood,int lowblood,int heartrate,int heartproblem){
@@ -97,18 +99,23 @@ public class BloodPressureBean extends MTBean {
         }catch (Exception e){
             e.printStackTrace();
         }
-        if(highblood<=99)statu=0;
-        else if(highblood>=100&&highblood<=119)statu=1;
-        else if(highblood>=120&&highblood<=129)statu=2;
-        else if(highblood>=130&&highblood<=139)statu=3;
-        else if(highblood>=140&&highblood<=159)statu=4;
-        else if(highblood>=160&&highblood<=179)statu=5;
-        else if(highblood>=180)statu=6;
+        statu=getBloodStatu(highblood);
+    }
+    public static int getBloodStatu(int highblood){
+        int statu_temp=0;
+        if(highblood<=99)statu_temp=0;
+        else if(highblood>=100&&highblood<=119)statu_temp=1;
+        else if(highblood>=120&&highblood<=129)statu_temp=2;
+        else if(highblood>=130&&highblood<=139)statu_temp=3;
+        else if(highblood>=140&&highblood<=159)statu_temp=4;
+        else if(highblood>=160&&highblood<=179)statu_temp=5;
+        else if(highblood>=180)statu_temp=6;
+        return statu_temp;
     }
     public JSONObject setWeekRecordFromlocal(){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss");
         setLatestRecordFromlocal();
-        String endTime=this.getUpdatetime(),startTime=null;
+        endTime=this.getUpdatetime();
         try{
             long st=formatter.parse(endTime).getTime()-6*86400000;
             startTime=formatter.format(st).split("-")[0]+"-00:00:00";
