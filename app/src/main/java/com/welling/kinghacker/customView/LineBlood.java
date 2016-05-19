@@ -24,14 +24,16 @@ import java.text.ParseException;
 public class LineBlood extends View {
     Paint paint;
     float xratio=1,yratio=1;
-    int xstart,xshow=2;//x轴开始的位置
+    int xstart,xshow=1;//x轴开始的位置
     private static float y[]=new float[7],y1[]=new float[7],y2[]=new float[7];
     private static float y_t[]=new float[7],y1_t[]=new float[7],y2_t[]=new float[7];
-    private static String dates[]=new String[7];
-    private static int heart_pro[]=new int[7];
-    private static int isupdate[]=new int[7];
+    private static String dates[]=new String[]{"","","","","","",""};
+    private static int heart_pro[]=new int[]{0,0,0,0,0,0,0};
+    private static int isupdate[]=new int[]{0,0,0,0,0,0,0};
     private static JSONObject jsonObject=null;
     private static int scale=1;
+    public String startTime,endTime;
+    public static int count=0;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int x=(int)event.getX();
@@ -47,7 +49,6 @@ public class LineBlood extends View {
         this.invalidate();
         Log.i("valuesofx", x + "");
         return false;
-
     }
 
     public LineBlood(Context context) {
@@ -63,6 +64,8 @@ public class LineBlood extends View {
     public void initdata(Context context){
         BloodPressureBean bpbean=new BloodPressureBean(context);
         jsonObject=bpbean.setWeekRecordFromlocal();
+        startTime=bpbean.startTime.split("-")[0];
+        endTime=bpbean.endTime.split("-")[0];
         setdatafromjson();
         Log.i("database", "one");
     }
@@ -77,8 +80,8 @@ public class LineBlood extends View {
     private static void setdatafromjson(){
         int i=0;
         try{
-            int count=(int)jsonObject.get("count");
-            Log.i("database","count="+count);
+            count=(int)jsonObject.get("count");
+            Log.i("database","LineBlood_count="+count);
             JSONObject temp=null;
             int start=0,end=0;
             if(count==0){
@@ -145,22 +148,22 @@ public class LineBlood extends View {
 
         paint.setStrokeWidth(5*xratio);
         paint.setStyle(Paint.Style.FILL);
-        path.moveTo(110*xratio, 140*yratio);//y轴上的箭头，此处是最上面的点
-        path.lineTo(100*xratio, 150*yratio);
-        path.lineTo(120*xratio,150*yratio);
-        path.lineTo(110*xratio, 140*yratio);
+        path.moveTo(110*xratio, 190*yratio);//y轴上的箭头，此处是最上面的点
+        path.lineTo(100*xratio, 200*yratio);
+        path.lineTo(120*xratio,200*yratio);
+        path.lineTo(110*xratio, 190*yratio);
         canvas.drawPath(path, paint);
 
         paint.setTextSize(30*xratio);
-        canvas.drawText("血压(mmHg)", 150*xratio, 170 * yratio, paint);
-        canvas.drawText("心率(次/min)", 150*xratio, 230*yratio, paint);
-        int yvalue=(int)(200*yratio),ytext=200;
+        canvas.drawText("血压(mmHg)", 150*xratio, 220 * yratio, paint);
+        canvas.drawText("心率(次/min)", 150*xratio, 280*yratio, paint);
+        int yvalue=(int)(250*yratio),ytext=200;//这里修改200的值
         for(int i=0;i<11;i++){
             if(i<10)canvas.drawLine(110*xratio,yvalue+50*yratio,130*xratio,yvalue+50*yratio,paint);
             canvas.drawText(ytext+"",35*xratio,yvalue+65*yratio,paint);
             yvalue+=110*yratio;ytext-=20;
         }//从此处可以得出：yvalue-60*yratio则为0点，间隔为110*yratio
-        canvas.drawLine(110*xratio,150*yratio,110*xratio,yvalue-50*yratio,paint);//y轴
+        canvas.drawLine(110*xratio,200*yratio,110*xratio,yvalue-50*yratio,paint);//y轴
         int xvalue=(int)(110*xratio);
         xstart=xvalue;
         Rect rect = new Rect();
@@ -173,7 +176,7 @@ public class LineBlood extends View {
             if(xshow==i){
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth(2 * xratio);
-                canvas.drawLine(xvalue, yvalue - 65 * yratio, xvalue, yvalue - 1100 * yratio, paint);
+                canvas.drawLine(xvalue, yvalue - 65 * yratio, xvalue, yvalue - 1150 * yratio, paint);
                 PathEffect effect = new DashPathEffect(new float[] {3*xratio,5*xratio},1);
                 paint.setPathEffect(effect);
                 path=new Path();
@@ -192,16 +195,21 @@ public class LineBlood extends View {
             }
         }
         paint.setPathEffect(null);
-        paint.setStrokeWidth(5*xratio);
+        paint.setStrokeWidth(5 * xratio);
         if(xshow!=0){
             canvas.drawText((int)(y[xshow-1])+"", xvalue - 600 * xratio, yvalue + 100 * yratio, paint);
             canvas.drawText((int)(y1[xshow-1])+"",xvalue - 350*xratio,yvalue + 100*yratio,paint);
             if(heart_pro[xshow-1]==1)paint.setColor(0xffDA413E);
             canvas.drawText((int)(y2[xshow-1])+"",xvalue - 125*xratio,yvalue + 100*yratio,paint);
             if(isupdate[xshow-1]==0)paint.setColor(0xffCF5B56);
-            canvas.drawText(dates[xshow-1], xvalue - 300*xratio, 170 * yratio, paint);
+            canvas.drawText(dates[xshow-1], xvalue - 300*xratio, 220 * yratio, paint);
+            paint.setColor(0xff000000);
+            if(y[xshow-1]!=0){
+                String text=BloodPressureBean.blood_status[BloodPressureBean.getBloodStatu((int)y[xshow-1])];
+                canvas.drawText(text, xvalue - 300*xratio, 280 * yratio, paint);
+            }
         }
-        paint.setColor(0xff000000);
+
         canvas.drawLine(110 * xratio, yvalue - 55 * yratio, xvalue - 40 * xratio, yvalue - 55 * yratio, paint);//x轴
         canvas.drawText("(时间)", xvalue - 100 * xratio, yvalue - 100 * yratio, paint);
         canvas.drawText("高血压:", xvalue - 700 * xratio, yvalue + 100 * yratio, paint);

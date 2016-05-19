@@ -33,9 +33,10 @@ public class UptoServer {
         for(int i=0;i<(int)jsonObject.get("count");i++){
             JSONObject item=(JSONObject)jsonObject.get(i+"");
             String updatetime=(String)item.get("UpdateTime");
-            String sql="UPDATE "+BloodPressureBean.TABLENAME+" SET "+BloodPressureBean.ISUPDATE+
-                    "='1' WHERE "+BloodPressureBean.UPDATETIME+"="+updatetime;
+
             BloodPressureBean bpbean=new BloodPressureBean(this.context);
+            String sql="UPDATE "+bpbean.TABLENAME+" SET "+bpbean.ISUPDATE+
+                    "='1' WHERE "+bpbean.UPDATETIME+"="+updatetime;
             bpbean.update_data(sql);
         }
     }

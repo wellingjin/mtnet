@@ -31,7 +31,7 @@ public class BloodPressureActivity extends MTActivity {
     private Animation rightInAnimation;
     private LineBlood lineBlood;
     private BloodPressureBean bpbean;
-    private Button previous_page,next_page;
+    private Button previous_page,next_page,show_info;
     private int currpage=0;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -39,8 +39,10 @@ public class BloodPressureActivity extends MTActivity {
         setContentView(R.layout.blood_universal_moudle_layout);
         previous_page=(Button)findViewById(R.id.previous_page);
         next_page=(Button)findViewById(R.id.next_page);
+        show_info=(Button)findViewById(R.id.show_info);
         previous_page.setVisibility(View.GONE);
         next_page.setVisibility(View.GONE);
+        show_info.setVisibility(View.GONE);
         init();
     }
     private void init(){
@@ -116,6 +118,7 @@ public class BloodPressureActivity extends MTActivity {
             currpage=0;
             previous_page.setVisibility(View.GONE);
             next_page.setVisibility(View.GONE);
+            show_info.setVisibility(View.GONE);
         }else if (text.contentEquals("历史查询")){
             if (viewType != ViewType.all){
                 rootView.removeAllViews();
@@ -129,12 +132,16 @@ public class BloodPressureActivity extends MTActivity {
             previous_page.setVisibility(View.VISIBLE);
             previous_page.setText("<");
             next_page.setVisibility(View.VISIBLE);
+            show_info.setVisibility(View.VISIBLE);
+            if(lineBlood!=null)
+                show_info.setText(lineBlood.startTime+"-"+lineBlood.endTime+" 有效记录: "+LineBlood.count);
             currpage=1;
         }else if (text.contentEquals(PublicRes.getInstance().bloodSugerItem3)){
             FilterView filterView = new FilterView(this);
             filterView.showFilter(findViewById(R.id.universalMoudleRootView));
             previous_page.setVisibility(View.GONE);
             next_page.setVisibility(View.GONE);
+            show_info.setVisibility(View.GONE);
             currpage=2;
         }
     }
