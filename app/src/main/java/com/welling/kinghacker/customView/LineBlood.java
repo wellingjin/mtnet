@@ -60,12 +60,20 @@ public class LineBlood extends View {
         super(context, attrs);
         initdata(context);
     }
+    public LineBlood(Context context,String sTime,String eTime,int numofday){
+        super(context);
+        BloodPressureBean bpbean=new BloodPressureBean(context);
+        jsonObject=bpbean.pickDayRecordFromlocal(sTime,eTime,numofday);
+        startTime=bpbean.startTime.split(" ")[0];
+        endTime=bpbean.endTime.split(" ")[0];
+        setdatafromjson();
+    }
 
     public void initdata(Context context){
         BloodPressureBean bpbean=new BloodPressureBean(context);
         jsonObject=bpbean.setWeekRecordFromlocal();
-        startTime=bpbean.startTime.split("-")[0];
-        endTime=bpbean.endTime.split("-")[0];
+        startTime=bpbean.startTime.split(" ")[0];
+        endTime=bpbean.endTime.split(" ")[0];
         setdatafromjson();
         Log.i("database", "one");
     }
@@ -101,7 +109,7 @@ public class LineBlood extends View {
                     y[i%7]=Float.parseFloat((String) temp.get("highblood"));
                     y1[i%7]=Float.parseFloat((String) temp.get("lowblood"));
                     y2[i%7]=Float.parseFloat((String) temp.get("heartrate"));
-                    dates[i%7]=(String)temp.get("UpdateTime");
+                    dates[i%7]=(String)temp.get("time");
                     heart_pro[i%7]=Integer.parseInt((String)temp.get("heartproblem"));
                     isupdate[i%7]=Integer.parseInt((String)temp.get("isupdate"));
                 }

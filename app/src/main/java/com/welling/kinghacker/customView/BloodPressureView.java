@@ -25,9 +25,10 @@ public class BloodPressureView {
     private LinearLayout linearlong;
     private int highPressureValue,lowPressureValue,heartBeatValue,trueLong;
     private Animation sani,tani;
+    public View rootView;
     public BloodPressureView(Context context){
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootView=inflater.inflate(R.layout.blood_pressure_layout,null);
+        rootView=inflater.inflate(R.layout.blood_pressure_layout,null);
         highPressure=(TextView)rootView.findViewById(R.id.highPressure);
         lowPressure=(TextView)rootView.findViewById(R.id.lowPressure);
         heartBeat=(TextView)rootView.findViewById(R.id.heartBeat);
@@ -41,6 +42,9 @@ public class BloodPressureView {
         heartBeatlongtwo=(TextView)rootView.findViewById(R.id.heartBeatlongtwo);
         blood_statu=(TextView)rootView.findViewById(R.id.blood_statu);
         measuresize();
+    }
+    public View getRootView(){
+        return rootView;
     }
     private void measuresize(){
         int w=View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
@@ -71,8 +75,8 @@ public class BloodPressureView {
         sani.setDuration(600);
         Log.i("valuesof--1", highPressure.getLayoutParams().width+" "+(float)highPressurelongtwo.getMeasuredWidth());
         Log.i("valuesof->", -highPressure.getLayoutParams().width / ((float) highPressurelongtwo.getMeasuredWidth()) + "");
-        measure_date.setText(updatetime.split("-")[0]);
-        measure_time.setText(updatetime.split("-")[1]);
+        measure_date.setText(updatetime.split(" ")[0]);
+        measure_time.setText(updatetime.split(" ")[1]);
         blood_statu.setText(statu);
         startAnimation();
     }

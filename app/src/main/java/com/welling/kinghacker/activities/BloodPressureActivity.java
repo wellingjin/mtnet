@@ -1,28 +1,43 @@
 package com.welling.kinghacker.activities;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 
 import com.example.bluetooth.le.DeviceScanActivity;
+import com.loopj.android.http.RequestParams;
 import com.welling.kinghacker.bean.BloodPressureBean;
 import com.welling.kinghacker.customView.BloodPressureView;
 import com.welling.kinghacker.customView.FilterView;
 import com.welling.kinghacker.customView.LineBlood;
 import com.welling.kinghacker.customView.OverFlowView;
+import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zsw on 2016/3/19.
  **/
-public class BloodPressureActivity extends MTActivity {
+public class BloodPressureActivity extends MTActivity implements FilterView.OnButtonClickListener{
 
     BloodPressureView singleBloodPressureView;
     FrameLayout rootView;
@@ -33,6 +48,8 @@ public class BloodPressureActivity extends MTActivity {
     private BloodPressureBean bpbean;
     private Button previous_page,next_page,show_info;
     private int currpage=0;
+    private FilterView filterView;
+    private ListView show_data;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -50,7 +67,31 @@ public class BloodPressureActivity extends MTActivity {
         singleBloodPressureView = new BloodPressureView(this);
         rootView = (FrameLayout)findViewById(R.id.universalUpView);
         rootView.addView(singleBloodPressureView.getBloodPressureView());
+        LinearLayout timeChoose = (LinearLayout)singleBloodPressureView.getRootView().findViewById(R.id.bloodPressure_pick);
+        timeChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("database_click", "you click");
+                MTHttpManager manager=new MTHttpManager();
+                manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
+                    @Override
+                    public void onSuccess(int requestId, JSONObject JSONResponse) {
+                        Log.i("database_getdata_s", requestId + " " + JSONResponse.toString());
+                        dealwith_bpdata(JSONResponse);
+                    }
 
+                    @Override
+                    public void onFailure(int requestId, int errorCode) {
+                        Log.i("database_getdata_f",requestId+" "+errorCode);
+                    }
+                });
+                RequestParams params=new RequestParams();
+                params.put("username", SystemTool.getSystem(BloodPressureActivity.this).getStringValue(PublicRes.ACCOUNT));
+                params.put("startTime", "2016-05-01 00:00:00");
+                params.put("endTime", "2016-05-31 23:59:59");
+                manager.post(params, manager.getRequestID(), "getHtnPatientRecords.do");
+            }
+        });
         viewType = ViewType.single;
 
         rightInAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
@@ -81,8 +122,69 @@ public class BloodPressureActivity extends MTActivity {
             }
         });
     }
-
-
+    private List<Map<String,Object>> getData(JSONObject jsonObject){
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        try{
+            JSONArray jsonArray=jsonObject.getJSONArray("list");
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject object=jsonArray.getJSONObject(i);
+                Map<String, Object> map = new HashMap<String, Object>();
+                String string=object.get("measureTime").toString();
+                string=string.substring(0,string.length()-2);
+                map.put("time",string);
+                map.put("blood_info","高压 "+object.get("systolicPressure").toString()+
+                                " 低压 "+object.get("diastolicPressure").toString()+
+                                " 心率 "+object.get("heartRate").toString());
+                if(object.getInt("heartRateState")==1)
+                    map.put("blood_state","心率不齐");
+                else map.put("blood_state","");
+                list.add(map);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    private void dealwith_bpdata(final JSONObject jsonObject){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(BloodPressureActivity.this);
+        LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view=inflater.inflate(R.layout.bloodpress_data,null);
+        alertDialog.setView(view);
+        show_data=(ListView)view.findViewById(R.id.show_data);
+        SimpleAdapter adapter=new SimpleAdapter(this,getData(jsonObject),R.layout.bloodpress_vlist,
+                new String[]{"time","blood_info","blood_state"},
+                new int[]{R.id.vlist_time,R.id.vlist_bloodinfo,R.id.vlist_bloodstate});
+        show_data.setAdapter(adapter);
+        alertDialog.setTitle("血压测量记录");
+        alertDialog.setPositiveButton("更新到本地", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                JSONObject object = new JSONObject();
+                JSONObject item;
+                try {
+                    JSONArray jsonArray = jsonObject.getJSONArray("list");
+                    object.put("count", jsonArray.length());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        item = new JSONObject();
+                        JSONObject temp = jsonArray.getJSONObject(i);
+                        item.put("time", temp.get("measureTime").toString());
+                        item.put("highblood", temp.get("systolicPressure").toString());
+                        item.put("lowblood", temp.get("diastolicPressure").toString());
+                        item.put("heartrate", temp.get("heartRate").toString());
+                        item.put("heartproblem", temp.get("heartRateState").toString());
+                        item.put("isupdate", "1");
+                        object.put(i + "", item);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                BloodPressureBean bpbean=new BloodPressureBean(BloodPressureActivity.this);
+                bpbean.putDataintoLocal(object);
+                setLatestRecord();
+            }
+        });
+        alertDialog.show();
+    }
     @Override
     protected void onPostCreate(Bundle saveBundle){
         super.onPostCreate(saveBundle);
@@ -120,15 +222,12 @@ public class BloodPressureActivity extends MTActivity {
             next_page.setVisibility(View.GONE);
             show_info.setVisibility(View.GONE);
         }else if (text.contentEquals("历史查询")){
-            if (viewType != ViewType.all){
-                rootView.removeAllViews();
-                if (lineBlood == null){
-                    lineBlood=new LineBlood(this);
-                }
-                rootView.startAnimation(rightInAnimation);
-                rootView.addView(lineBlood);
-                viewType = ViewType.all;
-            }
+            rootView.removeAllViews();
+            lineBlood=null;
+            lineBlood=new LineBlood(this);
+            rootView.startAnimation(rightInAnimation);
+            rootView.addView(lineBlood);
+            viewType = ViewType.all;
             previous_page.setVisibility(View.VISIBLE);
             previous_page.setText("<");
             next_page.setVisibility(View.VISIBLE);
@@ -137,8 +236,9 @@ public class BloodPressureActivity extends MTActivity {
                 show_info.setText(lineBlood.startTime+"-"+lineBlood.endTime+" 有效记录: "+LineBlood.count);
             currpage=1;
         }else if (text.contentEquals(PublicRes.getInstance().bloodSugerItem3)){
-            FilterView filterView = new FilterView(this);
+            filterView = new FilterView(this);
             filterView.showFilter(findViewById(R.id.universalMoudleRootView));
+            filterView.setOnButtonClickListener(this);
             previous_page.setVisibility(View.GONE);
             next_page.setVisibility(View.GONE);
             show_info.setVisibility(View.GONE);
@@ -149,6 +249,10 @@ public class BloodPressureActivity extends MTActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setLatestRecord();
+    }
+
+    public void setLatestRecord(){
         bpbean=new BloodPressureBean(this);
         bpbean.setLatestRecordFromlocal();
         if(currpage==0) {
@@ -163,7 +267,6 @@ public class BloodPressureActivity extends MTActivity {
         }
         Log.i("qwert","bpa_onResume");
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -183,5 +286,42 @@ public class BloodPressureActivity extends MTActivity {
     public void onNext_page(View v){
         LineBlood.next_page();
         lineBlood.invalidate();
+    }
+
+    @Override
+    public void onButtonClick(int which) {
+        switch (which){
+            case 0:
+                setnumofday(null,null,1);
+                break;
+            case 1:
+                setnumofday(null,null,2);
+                break;
+            case 2:
+                setnumofday(null,null,3);
+                break;
+            case 3:
+                Log.i("database_day",filterView.getStartTime()+" "+filterView.getEndTime());
+                setnumofday(filterView.getStartTime(), filterView.getEndTime(), -1);
+                break;
+        }
+    }
+    public void setnumofday(String sTime,String eTime,int num){
+        Log.i("database_day_sure",sTime+" "+eTime);
+        rootView.removeAllViews();
+        lineBlood=null;
+        lineBlood=new LineBlood(this,sTime,eTime,num);
+        rootView.startAnimation(rightInAnimation);
+        rootView.addView(lineBlood);
+        viewType = ViewType.all;
+        previous_page.setVisibility(View.VISIBLE);
+        previous_page.setText("<");
+        next_page.setVisibility(View.VISIBLE);
+        show_info.setVisibility(View.VISIBLE);
+        if(lineBlood!=null){
+            Log.i("database_day_sureof",lineBlood.startTime+" "+lineBlood.endTime);
+            show_info.setText(lineBlood.startTime + "|" + lineBlood.endTime + " 有效记录: " + LineBlood.count);
+        }
+        currpage=1;
     }
 }

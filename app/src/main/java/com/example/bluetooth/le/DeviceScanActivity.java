@@ -55,6 +55,7 @@ public class DeviceScanActivity extends MTActivity{
     private final int CONTENT_CHILD_1=1;
     private EditText handin_highblood,handin_lowblood,handin_heartrate;
     private CheckBox handin_heartproblem;
+    private ProgressBar showuptoservernow;
     public BloodPressureBean bpbean;
 
     @Override
@@ -74,6 +75,7 @@ public class DeviceScanActivity extends MTActivity{
         handin_lowblood=(EditText)findViewById(R.id.handin_lowblood);
         handin_heartrate=(EditText)findViewById(R.id.handin_heartrate);
         handin_heartproblem=(CheckBox)findViewById(R.id.handin_heartproblem);
+        showuptoservernow=(ProgressBar)findViewById(R.id.showuptoservernow);
         mHandler = new MyHandler();
         mHandler.sendEmptyMessage(CONTENT_CHILD_0);
 
@@ -292,10 +294,13 @@ public class DeviceScanActivity extends MTActivity{
             if(bpbean==null)bpbean=new BloodPressureBean(this);
             bpbean.setData(highblood, lowblood, heartrate, heartproblem);
             bpbean.insert();
-            UptoServer uptoServer=new UptoServer(this);
+            UptoServer uptoServer=new UptoServer(this,mHandler);
             uptoServer.upToServer();
-            Toast.makeText(DeviceScanActivity.this,"成功上传",Toast.LENGTH_SHORT).show();
+            mHandler.sendEmptyMessage(SampleGattAttributes.UPING);
         }
+    }
+    public Handler getmHandler(){
+        return mHandler;
     }
     class MyHandler extends Handler{
         @Override
@@ -316,6 +321,17 @@ public class DeviceScanActivity extends MTActivity{
                     blood_device.setTextColor(getResources().getColor(R.color.gray));
                     blood_device.setBackgroundColor(getResources().getColor(R.color.near_white));
                     showtimeinhandin.setText(new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                    break;
+                case SampleGattAttributes.UPING:
+                    showuptoservernow.setVisibility(View.VISIBLE);
+                    break;
+                case SampleGattAttributes.SUCCESS:
+                    showuptoservernow.setVisibility(View.GONE);
+                    Toast.makeText(DeviceScanActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+                    break;
+                case SampleGattAttributes.FAILED:
+                    showuptoservernow.setVisibility(View.GONE);
+                    Toast.makeText(DeviceScanActivity.this,"上传失败",Toast.LENGTH_SHORT).show();
                     break;
             }
         }

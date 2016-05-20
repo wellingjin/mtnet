@@ -46,6 +46,7 @@ public class DeviceControlActivity extends MTActivity {
 	private TextView heart_rate=null;
 	private TextView heart_rate_pro=null;
 	private ProgressBar pressure_bar=null;
+	private ProgressBar showuptoservernow_1;
     private MyHandler handler=new MyHandler();
     private final int UPDATE_PRESSURE=0,SHOWBLOODPRESSURE=1,SETBAR2ZERO=2;
 	private final static String TAG = DeviceControlActivity.class
@@ -121,6 +122,7 @@ public class DeviceControlActivity extends MTActivity {
 		heart_rate_pro=(TextView)findViewById(R.id.heart_rate_pro);
 		showtime=(TextView)findViewById(R.id.showtime);
 		pressure_bar=(ProgressBar)findViewById(R.id.pressure_bar);
+		showuptoservernow_1=(ProgressBar)findViewById(R.id.showuptoservernow_1);
 		heart_rate_pro.setVisibility(View.GONE);
 		final Intent intent = getIntent();
 		mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -193,9 +195,9 @@ public class DeviceControlActivity extends MTActivity {
 				BluetoothLeService.heart_rate,
 				hrp);
 		bpbean.insert();
-		UptoServer uptoServer=new UptoServer(this);
+		UptoServer uptoServer=new UptoServer(this,handler);
 		uptoServer.upToServer();
-		Toast.makeText(DeviceControlActivity.this,"成功上传",Toast.LENGTH_SHORT).show();
+		handler.sendEmptyMessage(SampleGattAttributes.UPING);
 	}
 	class MyHandler extends Handler{
 
@@ -240,6 +242,17 @@ public class DeviceControlActivity extends MTActivity {
 			case BluetoothLeService.ERROR_5:
 				Toast.makeText(DeviceControlActivity.this, "测量失败，测量的结果高压与低压相差太大", Toast.LENGTH_LONG).show();
 				break;
+				case SampleGattAttributes.UPING:
+					showuptoservernow_1.setVisibility(View.VISIBLE);
+					break;
+				case SampleGattAttributes.SUCCESS:
+					showuptoservernow_1.setVisibility(View.GONE);
+					Toast.makeText(DeviceControlActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+					break;
+				case SampleGattAttributes.FAILED:
+					showuptoservernow_1.setVisibility(View.GONE);
+					Toast.makeText(DeviceControlActivity.this,"上传失败",Toast.LENGTH_SHORT).show();
+					break;
 			}
 		}		
 	}

@@ -25,6 +25,7 @@
                 android:textSize="40sp"
                 android:textColor="@color/colorWhite" />
             <LinearLayout
+                android:id="@+id/bloodPressure_pick"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -78,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
                     android:layout_gravity="center"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:text="100(mmHg)"/>
             </LinearLayout>
             <LinearLayout
@@ -104,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:layout_gravity="center"
                     android:text="100(mmHg)"/>
             </LinearLayout>
@@ -131,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:layout_gravity="center"
                     android:text="100(bpm)"/>
             </LinearLayout>

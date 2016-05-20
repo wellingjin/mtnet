@@ -8,6 +8,7 @@ import com.welling.kinghacker.database.TableItem;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -27,7 +28,7 @@ public class BloodPressureBean extends MTBean {
     public static int statu=0;
     public String TABLENAME,startTime,endTime;
     public static String
-            UPDATETIME ="UpdateTime",
+            UPDATETIME ="time",
             HIGHBLOOD = "highblood",
             LOWBLOOD = "lowblood",
             HEARTRATE = "heartrate",
@@ -47,7 +48,7 @@ public class BloodPressureBean extends MTBean {
         this.lowblood = lowblood;
         this.heartrate=heartrate;
         this.heartproblem=heartproblem;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis());
         this.UpdateTime = formatter.format(curDate);
         this.isupdate=0;
@@ -60,10 +61,28 @@ public class BloodPressureBean extends MTBean {
         cv.put(LOWBLOOD, lowblood);
         cv.put(HEARTRATE, heartrate);
         cv.put(HEARTPROBLEM, heartproblem);
-        cv.put(ISUPDATE,isupdate);
+        cv.put(ISUPDATE, isupdate);
         manager.insert(TABLENAME, cv);
     }
-
+    public void putDataintoLocal(JSONObject jsonObject){
+        try{
+            for(int i=0;i<(int)jsonObject.get("count");i++){
+                JSONObject item=(JSONObject)jsonObject.get(i+"");
+                String time=(String)item.get("time");
+                JSONObject t=manager.query(TABLENAME, new String[]{UPDATETIME}, "time=?", new String[]{time}, null, null, null, null);
+                if(((int)t.get("count"))==0){
+                    ContentValues cv = new ContentValues();
+                    cv.put(UPDATETIME, (String)item.get("time"));
+                    cv.put(HIGHBLOOD, (String)item.get("highblood"));
+                    cv.put(LOWBLOOD, (String)item.get("lowblood"));
+                    cv.put(HEARTRATE, (String)item.get("heartrate"));
+                    cv.put(HEARTPROBLEM, (String)item.get("heartproblem"));
+                    cv.put(ISUPDATE, (String)item.get("isupdate"));
+                    manager.insert(TABLENAME, cv);
+                }
+            }
+        }catch (Exception e){e.printStackTrace();}
+    }
     @Override
     protected void createTable() {
         ArrayList<TableItem> items = new ArrayList<>();
@@ -87,18 +106,19 @@ public class BloodPressureBean extends MTBean {
                 this.lowblood=90;
                 this.heartrate=80;
                 this.heartproblem=1;
-                this.UpdateTime="2016.01.01-00:00:00";
+                this.UpdateTime="2016-01-01 00:00:00";
             }else{
                 jsonObject=(JSONObject)jsonObject.get("0");
                 this.highblood=Integer.parseInt((String)jsonObject.get("highblood"));
                 this.lowblood=Integer.parseInt((String)jsonObject.get("lowblood"));
                 this.heartrate=Integer.parseInt((String)jsonObject.get("heartrate"));
                 this.heartproblem=Integer.parseInt((String)jsonObject.get("heartproblem"));
-                this.UpdateTime=(String)jsonObject.get("UpdateTime");
+                this.UpdateTime=(String)jsonObject.get("time");
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+        manager.close();
         statu=getBloodStatu(highblood);
     }
     public static int getBloodStatu(int highblood){
@@ -113,26 +133,58 @@ public class BloodPressureBean extends MTBean {
         return statu_temp;
     }
     public JSONObject setWeekRecordFromlocal(){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         setLatestRecordFromlocal();
         endTime=this.getUpdatetime();
         try{
             long st=formatter.parse(endTime).getTime()-6*86400000;
-            startTime=formatter.format(st).split("-")[0]+"-00:00:00";
+            startTime=formatter.format(st).split(" ")[0]+" 00:00:00";
         }catch(ParseException e){e.printStackTrace();}
         String[] columns=new String[]{UPDATETIME, HIGHBLOOD, LOWBLOOD, HEARTRATE, HEARTPROBLEM,ISUPDATE};
         String selection=UPDATETIME+" >= ?"+
                 " AND "+UPDATETIME+" <= ?";
         String[] args=new String[]{startTime,endTime};
         JSONObject jsonObject=manager.query(TABLENAME, columns, selection, args, null, null, null, null);
+        manager.close();
         Log.i("database","执行完query后");
+        return jsonObject;
+    }
+    public JSONObject pickDayRecordFromlocal(String sTime,String eTime,int numofday){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-M-dd HH:mm:ss");
+        if(sTime==null) {
+            endTime= formatter.format(System.currentTimeMillis());
+            try {
+                long st = formatter.parse(endTime).getTime() - (long)numofday * 86400000;
+                startTime = formatter.format(st).split(" ")[0] + " 00:00:00";
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            try{
+                sTime+=" 00:00:00";eTime+=" 23:59:59";
+                startTime=formatter.format(form.parse(sTime).getTime());
+                endTime = formatter.format(form.parse(eTime).getTime());
+            }catch (ParseException e){e.printStackTrace();}
+        }
+        String[] columns = new String[]{UPDATETIME, HIGHBLOOD, LOWBLOOD, HEARTRATE, HEARTPROBLEM, ISUPDATE};
+        String selection = UPDATETIME + " >= ?" +
+                " AND " + UPDATETIME + " <= ?";
+        String[] args = new String[]{startTime, endTime};
+
+        JSONObject jsonObject = manager.query(TABLENAME, columns, selection, args, null, null, null, null);
+        manager.close();
+        Log.i("database", startTime + " " + endTime + " 执行完query后");
         return jsonObject;
     }
     public JSONObject getNotUptoServer(){
         String[] columns=new String[]{UPDATETIME, HIGHBLOOD, LOWBLOOD, HEARTRATE, HEARTPROBLEM,ISUPDATE};
-        String selection=ISUPDATE+" == ?";
+        String selection=ISUPDATE+" = ?";
         String[] args=new String[]{"0"};
         JSONObject jsonObject=manager.query(TABLENAME, columns, selection, args, null, null, null, null);
+        manager.close();
+        Log.i("database_jsonobject",jsonObject.toString());
         return jsonObject;
     }
     public int getHighblood() {

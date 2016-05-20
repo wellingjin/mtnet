@@ -39,7 +39,7 @@ public class SampleGattAttributes {
     public static String TEST_7_2="00002901-0000-1000-8000-00805f9b34fb";
     public static String TEST_8="0000fff3-0000-1000-8000-00805f9b34fb";//read|write
     public static String TEST_8_1="00002901-0000-1000-8000-00805f9b34fb";
-
+    public static final int UPING=14,SUCCESS=12,FAILED=13;
 
     static {
         // Sample Services.
