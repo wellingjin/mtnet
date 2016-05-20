@@ -211,7 +211,6 @@ public class DatabaseManager {
             }
         }
         cursor.close();
-        db.close();
         Log.i(Tag, jsonObject.toString());
         return jsonObject;
     }

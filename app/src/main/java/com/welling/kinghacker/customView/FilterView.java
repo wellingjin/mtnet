@@ -79,12 +79,13 @@ public class FilterView {
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Calendar c=Calendar.getInstance();
                 DatePickerDialog pickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         endDate.setText(year + "-" + (monthOfYear+1) +"-" + dayOfMonth);
                     }
-                },2016,4,14);
+                },c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DATE));
                 pickerDialog.show();
                 ;
             }
@@ -94,12 +95,13 @@ public class FilterView {
 
             @Override
             public void onClick(View v) {
+                Calendar c=Calendar.getInstance();
                 new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         startDate.setText(year + "-" + (monthOfYear+1) +"-" + dayOfMonth);
                     }
-                },2016,4,13).show();
+                },c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DATE)).show();
             }
         });
     }
@@ -133,5 +135,4 @@ public class FilterView {
     public interface OnButtonClickListener{
         void onButtonClick(int which);
     }
-
 }

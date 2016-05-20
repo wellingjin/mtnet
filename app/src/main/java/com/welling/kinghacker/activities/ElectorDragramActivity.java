@@ -471,7 +471,6 @@ public class ElectorDragramActivity extends MTActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-
                 }
                 if (state == 0){
                     makeToast("获取历史列表失败");
@@ -743,5 +742,4 @@ public class ElectorDragramActivity extends MTActivity {
         msg.arg1 = hr;
         handler.sendMessage(msg);
     }
-
 }
