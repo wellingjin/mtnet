@@ -18,17 +18,22 @@ public class BloodSugerView {
     private TextView shadeLayout,valueLayout,valueView,dateView;
     private FrameLayout bloodSugerView;
     private float bloodSugerValue = 0;
-    private String bloodSugerDate;
+    private TextView textViewDate,textViewTime,textViewAttr;
     private ScaleAnimation down2UpAnimation;
+    private View rootView;
     private float defaultBloodSugerWhiteHeight;
     public BloodSugerView(Context context){
 
         defaultBloodSugerWhiteHeight = context.getResources().getDimension(R.dimen.blood_suger_Height);
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootView = inflater.inflate(R.layout.blood_suger_layout,null);
+         rootView = inflater.inflate(R.layout.blood_suger_layout,null);
         shadeLayout = (TextView)rootView.findViewById(R.id.bloodSugerWhite);
         valueLayout = (TextView)rootView.findViewById(R.id.bloodSugerGreen);
         valueView = (TextView)rootView.findViewById(R.id.bloodSugerValue);
+
+        textViewDate = (TextView)rootView.findViewById(R.id.SugerDate);
+        textViewTime = (TextView)rootView.findViewById(R.id.SugerTime);
+        textViewAttr = (TextView)rootView.findViewById(R.id.SugerAttr);
         bloodSugerView = (FrameLayout)rootView.findViewById(R.id.bloodSuger);
 
         shadeLayout.getLayoutParams().height = (int)defaultBloodSugerWhiteHeight;
@@ -40,6 +45,11 @@ public class BloodSugerView {
     public FrameLayout getBloodSugerView(){
         return bloodSugerView;
     }
+
+    public View getRootView(){
+        return rootView;
+    }
+
     public void setBloodSugerValue(float value){
         bloodSugerValue = value;
         valueView.setText(value + "");
@@ -53,9 +63,19 @@ public class BloodSugerView {
         setAnimation();
     }
 
+    public void setBloodSugerTime(String time){
+        if (time == null)
+        System.out.println("1dd23");
+        else{
+            System.out.println("12ddd3");
+            textViewTime.setText(time);
+        }
+    }
     public void setBloodSugerDate(String date){
-        bloodSugerDate = date;
-        dateView.setText(date);
+        textViewDate.setText(date);
+    }
+    public void setBloodSugerAttr(String attr){
+        textViewAttr.setText(attr);
     }
 
     private void setShadeLayoutHeight(int height){
