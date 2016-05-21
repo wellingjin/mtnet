@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.welling.kinghacker.database.TableItem;
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
  */
 public class DoctorInfoBean extends MTBean {
     static public String
-            TABLENAME = "DoctorInfo",
+
             USERNAME = "username",
             HOSPITAL = "hospital",
             DOCTORID = "ID",
@@ -30,6 +32,7 @@ public class DoctorInfoBean extends MTBean {
             EMAIL = "email",
             PERFESSION = "persion";
 
+    public String TABLENAME ;
     public String name;
     public String hospital;
     public int doctorID;
@@ -44,6 +47,12 @@ public class DoctorInfoBean extends MTBean {
     public DoctorInfoBean(Context context){
         super(context);
     }
+
+    @Override
+    public void init() {
+        TABLENAME = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT) + "DoctorInfo";
+    }
+
     public DoctorInfoBean(Context context,int doctorID){
         this(context);
         this.doctorID = doctorID;

@@ -38,6 +38,4 @@ public class TableItem {
     public String toString(){
         return "name:"+fieldName+" type:"+fieldType+" length:"+length+" attribute:"+attribute;
     }
-
-
 }

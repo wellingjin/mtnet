@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.creative.filemanage.ECGFile;
 import com.welling.kinghacker.database.TableItem;
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
 
 import java.util.ArrayList;
 
@@ -16,15 +18,20 @@ import java.util.ArrayList;
 public class ELCBean  extends MTBean{
 
     static public String
-            TABLENAME = "ELC",
             FILENAME = "filename",
             ISUPDATE = "isupdate",
             CREATETIME = "createTime";
+    public String TABLENAME;
     public String fileName;
     public int isUpdate = NO;
     public String createTime;
     public ELCBean(Context context){
         super(context);
+    }
+
+    @Override
+    public void init() {
+        TABLENAME = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT)+"ECG";
     }
 
     public void update(){
@@ -41,7 +48,7 @@ public class ELCBean  extends MTBean{
         manager.deleteByFieldEqual(TABLENAME, FILENAME, fileName);
         ContentValues cv = new ContentValues();
         cv.put(FILENAME,fileName);
-        cv.put(ISUPDATE,isUpdate);
+        cv.put(ISUPDATE,NO);
         cv.put(CREATETIME,createTime);
         manager.insert(TABLENAME,cv);
     }

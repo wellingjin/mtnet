@@ -180,8 +180,8 @@ public class DatabaseManager {
         Log.i(Tag, "执行query");
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor=db.query(table, columns,
-                selection, selectionArgs,
-                groupBy, having, orderBy, limit);
+                        selection, selectionArgs,
+                        groupBy, having, orderBy, limit);
         JSONObject jsonObject = new JSONObject();
         int index = 0;
         try {

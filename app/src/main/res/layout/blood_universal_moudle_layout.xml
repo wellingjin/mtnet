@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/universal_moudle_layout"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/show_info"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:background="#30000000"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_weight="3"/>
+        <Button
+            android:gravity="center"
+            android:id="@+id/previous_page"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:text=""
+            android:background="@drawable/left_right_btn"
+            android:onClick="onPrevious_page"/>
+        <Button
+            android:gravity="center"
+            android:id="@+id/next_page"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:text=">"
+            android:background="@drawable/left_right_btn"
+            android:onClick="onNext_page"/>
+    </LinearLayout>
+</FrameLayout>

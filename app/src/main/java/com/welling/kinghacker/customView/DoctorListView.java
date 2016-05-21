@@ -49,8 +49,9 @@ public class DoctorListView extends ListView{
     }
     void setDocList(){
         DatabaseManager manager = new DatabaseManager(getContext());
-        JSONObject jsonDocList = manager.getMultiRaw(DoctorInfoBean.TABLENAME, null, null, null);
         DoctorInfoBean doctorInfoBean = new DoctorInfoBean(getContext());
+        JSONObject jsonDocList = manager.getMultiRaw(doctorInfoBean.TABLENAME, null, null, null);
+
         data.clear();
         try {
             int count = jsonDocList.getInt("count");

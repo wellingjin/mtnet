@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="#36A548"/>
+            <solid android:color="#58AD00"/>
             <corners
                 android:topRightRadius="5dp"
                 android:bottomLeftRadius="5dp"
@@ -15,7 +15,7 @@
 
     <item>
         <shape>
-            <solid android:color="#4FCA65"/>
+            <solid android:color="#66CD00"/>
             <corners
                 android:topRightRadius="5dp"
                 android:bottomLeftRadius="5dp"

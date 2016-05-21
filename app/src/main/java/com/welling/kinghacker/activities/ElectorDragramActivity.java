@@ -33,6 +33,7 @@ import com.welling.kinghacker.mtdata.ECGFilesUtils;
 
 import com.welling.kinghacker.tools.BlueToothManager;
 import com.welling.kinghacker.tools.BluetoothConnectUtils;
+import com.welling.kinghacker.tools.MTBLUReader;
 import com.welling.kinghacker.tools.MTHttpManager;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
@@ -107,6 +108,7 @@ public class ElectorDragramActivity extends MTActivity {
                         mtDialog.setProgress(sumSize);
                         break;
                     case MTFINISH:
+                        Log.i(TAG,"donedone");
                         fileNum++;
                         showAlertDialog("数据接收完成(" + fileNum + ")", true, false,true,true);
                         mtDialog.setMax(sumSize);
@@ -299,46 +301,21 @@ public class ElectorDragramActivity extends MTActivity {
                 try {
                     InputStream is = bluetoothSocket.getInputStream();
                     OutputStream os = bluetoothSocket.getOutputStream();
-                    final InputStream iss = is;
-                    ecg = new ECG(new BLUReader(is), new BLUSender(os), new HeartAllECGCallBack());
-
+                    MTBLUReader reader = new MTBLUReader(is);
+                    ecg = new ECG(reader, new BLUSender(os), new HeartAllECGCallBack());
                     ecg.Start();
-                    new Thread(new Runnable() {
+                    reader.setResultListener(new MTBLUReader.ReadResultListener() {
                         @Override
-                        public void run() {
-                            boolean isRun = true;
-                            int count = 0;
-                            while (isRun) {
-                                byte[] buff = new byte[128];
-                                int state;
-                                try {
-                                    if (iss == null) {
-                                        isRun = false;
-                                        break;
-                                    }
-
-                                    state = iss.read(buff);
-                                    if (state == -1) {
-                                        isRun = false;
-                                    } else {
-                                        Message msg = new Message();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putInt("fileSize", state);
-                                        msg.setData(bundle);
-                                        msg.what = MTRECFILE;
-                                        handler.sendMessage(msg);
-                                    }
-                                } catch (Exception e) {
-                                    count++;
-                                    if (count > 10) {
-                                        isRun = false;
-                                    }
-                                }
-
-                            }
-                            // handler.sendEmptyMessage(MTFINISH);
+                        public void readSize(int size) {
+                            Message msg = new Message();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("fileSize", size);
+                            msg.setData(bundle);
+                            msg.what = MTRECFILE;
+                            handler.sendMessage(msg);
+//                            Log.i(TAG,"fileSize:"+size);
                         }
-                    }).start();
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -417,21 +394,27 @@ public class ElectorDragramActivity extends MTActivity {
             public void onSuccess(int requestId, JSONObject JSONResponse) {
                 if (requestId < beans.size()) {
                     beans.get(requestId).update();
+                    makeToast("上传成功");
                 }
             }
 
             @Override
             public void onFailure(int requestId, int errorCode) {
-
+                makeToast("上传失败，请稍后再试,错误码"+errorCode);
             }
         });
 
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.ISUPDATE,null, "0");
+        JSONObject object = dbManager.getMultiRaw(new ELCBean(this).TABLENAME, ELCBean.ISUPDATE,null, "0");
 
         try {
             int count = object.getInt("count");
             Log.i(TAG,"count:"+count);
+            if(count <= 0){
+                makeToast("没有可上传数据");
+            }else{
+                makeToast("开始上传");
+            }
             for(int i=0;i<count;i++){
                 ELCBean bean = new ELCBean(this);
                 bean.fileName = object.getJSONObject(""+i).getString(ELCBean.FILENAME);
@@ -451,7 +434,7 @@ public class ElectorDragramActivity extends MTActivity {
     void getLocalTimeList(){
         timeList.clear();
         DatabaseManager dbManager = new DatabaseManager(this);
-        JSONObject object = dbManager.getMultiRaw(ELCBean.TABLENAME, ELCBean.CREATETIME, null, null);
+        JSONObject object = dbManager.getMultiRaw(new ELCBean(this).TABLENAME, ELCBean.CREATETIME, null, null);
 
         try {
             int count = object.getInt("count");
@@ -528,7 +511,7 @@ public class ElectorDragramActivity extends MTActivity {
     boolean getLocalELC(String chooseTime){
         Log.i(TAG,"getLocal");
         DatabaseManager manager = new DatabaseManager(this);
-        JSONObject object = manager.getOneRawByFieldEqual(ELCBean.TABLENAME, ELCBean.CREATETIME, chooseTime);
+        JSONObject object = manager.getOneRawByFieldEqual(new ELCBean(this).TABLENAME, ELCBean.CREATETIME, chooseTime);
         try {
             int count = object.getInt("count");
             Log.i(TAG,"local count:"+count);
@@ -555,16 +538,11 @@ public class ElectorDragramActivity extends MTActivity {
             error = object.getString(PublicRes.EXCEPTION);
             JSONArray array = object.getJSONArray("list");
             if (array.length() >0){
-                Log.i(TAG,"0");
                 JSONObject fileObject=array.getJSONObject(0);
                 ECGFile file = new ECGFile();
-                Log.i(TAG,"1");
                 file.time = fileObject.getString("measureTime");
-                Log.i(TAG,"2");
                 file.nAnalysis = fileObject.getInt("analysis");
-                Log.i(TAG,"3");
                 String ecgDataArray = fileObject.getString("ecg");
-                Log.i(TAG,"4");
                 List<Integer> ecgData = new ArrayList<>();
                 ecgDataArray = ecgDataArray.substring(1,ecgDataArray.length()-1);
                 Log.i(TAG, ecgDataArray);
@@ -611,7 +589,7 @@ public class ElectorDragramActivity extends MTActivity {
         manager.post(params, manager.getRequestID(), "getHdPatientRecords.do");
     }
     void saveFileToLocal(ELCBean bean){
-        Log.i(TAG,"fileName:"+bean.fileName);
+        Log.i(TAG,"fileName:"+bean.fileName + " isUpdate:"+bean.isUpdate);
         bean.insert();
     }
 
@@ -654,8 +632,14 @@ public class ElectorDragramActivity extends MTActivity {
 //                isFinish = true;
             }
             try {
+                if(srcByte == null){
+                    Log.i(TAG, " null null" );
+                }else {
+                    Log.i(TAG, " not not null" );
+                }
+                Log.i(TAG, " size:" + srcByte.size());
                 if(srcByte.size()>0) {
-                    Log.i(TAG, " size:" + bFinish);
+                    Log.i(TAG, " bbb:" + bFinish);
 
                     ECGFile ecgFile = FileOperation.AnalyseSCPFile(srcByte);
 
@@ -664,6 +648,7 @@ public class ElectorDragramActivity extends MTActivity {
                     //  打包ecg文件到本地
                     bean.fileName = ECGFilesUtils.packECGFile(ecgFile);
                     saveFileToLocal(bean);
+                    handler.sendEmptyMessage(MTFINISH);
 
 //                    handler.sendEmptyMessage(MTFINISH);
 //                    setHR(ecgFile.nAverageHR);
@@ -674,10 +659,7 @@ public class ElectorDragramActivity extends MTActivity {
                 }
 
             } catch (Exception e) {
-                Log.i(TAG, "exc:"+bFinish);
-                if (bFinish == 3){
-                    handler.sendEmptyMessage(MTFINISH);
-                }
+                Log.i(TAG, "exc:"+e.getMessage());
                 e.printStackTrace();
             }
         }

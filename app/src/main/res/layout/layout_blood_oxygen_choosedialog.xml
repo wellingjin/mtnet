@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/startX"
         android:gravity="center"
+        android:orientation="vertical"
         >
         <Button
             android:id="@+id/updatebyautome"
