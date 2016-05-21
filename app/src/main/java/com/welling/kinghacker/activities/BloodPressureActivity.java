@@ -5,14 +5,15 @@ import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 
 import com.example.bluetooth.le.DeviceScanActivity;
@@ -29,6 +30,8 @@ import com.welling.kinghacker.tools.SystemTool;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +53,7 @@ public class BloodPressureActivity extends MTActivity implements FilterView.OnBu
     private int currpage=0;
     private FilterView filterView;
     private ListView show_data;
+    private ProgressBar upload_data_progress;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -57,6 +61,7 @@ public class BloodPressureActivity extends MTActivity implements FilterView.OnBu
         previous_page=(Button)findViewById(R.id.previous_page);
         next_page=(Button)findViewById(R.id.next_page);
         show_info=(Button)findViewById(R.id.show_info);
+        upload_data_progress=(ProgressBar)findViewById(R.id.upload_data_progress);
         previous_page.setVisibility(View.GONE);
         next_page.setVisibility(View.GONE);
         show_info.setVisibility(View.GONE);
@@ -72,23 +77,36 @@ public class BloodPressureActivity extends MTActivity implements FilterView.OnBu
             @Override
             public void onClick(View v) {
                 Log.i("database_click", "you click");
+                upload_data_progress.setVisibility(View.VISIBLE);
                 MTHttpManager manager=new MTHttpManager();
                 manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
                     @Override
                     public void onSuccess(int requestId, JSONObject JSONResponse) {
                         Log.i("database_getdata_s", requestId + " " + JSONResponse.toString());
                         dealwith_bpdata(JSONResponse);
+                        upload_data_progress.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onFailure(int requestId, int errorCode) {
                         Log.i("database_getdata_f",requestId+" "+errorCode);
+                        upload_data_progress.setVisibility(View.GONE);
+                        Toast.makeText(BloodPressureActivity.this,"连接服务器失败 errorCode="+errorCode,Toast.LENGTH_SHORT).show();
                     }
                 });
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String endTime= formatter.format(System.currentTimeMillis());
+                String startTime=null;
+                try {
+                    long st = formatter.parse(endTime).getTime() - (long)100 * 86400000;
+                    startTime = formatter.format(st).split(" ")[0] + " 00:00:00";
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 RequestParams params=new RequestParams();
                 params.put("username", SystemTool.getSystem(BloodPressureActivity.this).getStringValue(PublicRes.ACCOUNT));
-                params.put("startTime", "2016-05-01 00:00:00");
-                params.put("endTime", "2016-05-31 23:59:59");
+                params.put("startTime", startTime);
+                params.put("endTime", endTime);
                 manager.post(params, manager.getRequestID(), "getHtnPatientRecords.do");
             }
         });

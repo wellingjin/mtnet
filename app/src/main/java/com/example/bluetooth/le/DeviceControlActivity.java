@@ -45,6 +45,7 @@ public class DeviceControlActivity extends MTActivity {
 	private TextView low_blood=null;
 	private TextView heart_rate=null;
 	private TextView heart_rate_pro=null;
+	private TextView bloodpressure_state=null;
 	private ProgressBar pressure_bar=null;
 	private ProgressBar showuptoservernow_1;
     private MyHandler handler=new MyHandler();
@@ -119,6 +120,7 @@ public class DeviceControlActivity extends MTActivity {
 		high_blood=(TextView)findViewById(R.id.high_blood);
 		low_blood=(TextView)findViewById(R.id.low_blood);
 		heart_rate=(TextView)findViewById(R.id.heart_rate);
+		bloodpressure_state=(TextView)findViewById(R.id.bloodpressure_state);
 		heart_rate_pro=(TextView)findViewById(R.id.heart_rate_pro);
 		showtime=(TextView)findViewById(R.id.showtime);
 		pressure_bar=(ProgressBar)findViewById(R.id.pressure_bar);
@@ -210,19 +212,21 @@ public class DeviceControlActivity extends MTActivity {
 				int result=(int) (BluetoothLeService.pressure_value/300.*100);
 				pressure_bar.setProgress(result);break;
 			case SHOWBLOODPRESSURE:
-				high_blood.setText(""+BluetoothLeService.high_blood);
-				low_blood.setText(""+BluetoothLeService.low_blood);
-				heart_rate.setText(""+BluetoothLeService.heart_rate);
+				high_blood.setText("" + BluetoothLeService.high_blood);
+				low_blood.setText("" + BluetoothLeService.low_blood);
+				heart_rate.setText("" + BluetoothLeService.heart_rate);
 				if(BluetoothLeService.heart_rate_problem)heart_rate_pro.setVisibility(View.VISIBLE);
 				else heart_rate_pro.setVisibility(View.GONE);
 				sendtoserver.setVisibility(View.VISIBLE);
 				sendtoservertext.setVisibility(View.VISIBLE);
+				bloodpressure_state.setText(BloodPressureBean.blood_status[BloodPressureBean.getBloodStatu(BluetoothLeService.high_blood)]);
 				break;	
 			case SETBAR2ZERO:
 				pressure_bar.setProgress(0);
 				heart_rate_pro.setVisibility(View.GONE);
 				sendtoserver.setVisibility(View.GONE);
 				sendtoservertext.setVisibility(View.GONE);
+				bloodpressure_state.setText("");
 				break;
 			case BluetoothLeService.LOW_BATTERY:
 				Toast.makeText(DeviceControlActivity.this, "电量过低，请更换电池或插上电源", Toast.LENGTH_LONG).show();;
