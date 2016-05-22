@@ -81,7 +81,7 @@ public class SugerBean extends MTBean {
         items.add(new TableItem(SUGERVALUE, TableItem.M_BLOB));
         items.add(new TableItem(ISUPDATE, TableItem.M_VARCHAR));
         manager.createTable(tableName, items);
-        // Log.i("123", "表创建成功");
+        Log.i("123", "表创建成功");
     }
 
     //得到最近一次测量的血糖值

@@ -379,9 +379,7 @@ public class ChartView extends View {
         bloodSugerData1 = sugerbean.getRecentlyMoreData();
         bloodUpdateTime1 = sugerbean.getRecentlyMoreTime();
         //展示的数据
-        leftI = 0;
-        rightI = 6;
-        setData(leftI, rightI);
+        setData(numberOfData);
     }
     public void initDateAnother(String endTime){
         //存储数据
@@ -392,14 +390,12 @@ public class ChartView extends View {
         bloodSugerData1 = (float[])sugerbean.getRecentlyMoreChooseData(endTime);
         bloodUpdateTime1 = sugerbean.getRecentlyMoreTime();
         //展示的数据
-        leftI = 0;
-        rightI = 6;
-        setData(leftI,rightI);
+        setData(numberOfData);
     }
-    public void setData(int leftI,int rightI){
-        bloodSugerData = new float[7];
-        bloodUpdateTime = new String [7];
-        for(int i=leftI,j=0;i<rightI+1;i++,j++) {
+    public void setData(int rightI){
+        bloodSugerData = new float[rightI];
+        bloodUpdateTime = new String [rightI];
+        for(int i=0,j=0;i<rightI+1;i++,j++) {
             if(i<numberOfData) {
                 bloodSugerData[j] = bloodSugerData1[i];
                 bloodUpdateTime[j] = bloodUpdateTime1[i];

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.loopj.android.http.RequestParams;
 import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.customView.BloodOxygenChartView;
+import com.welling.kinghacker.customView.BloodOxygenView;
 import com.welling.kinghacker.customView.BloodSugerView;
 import com.welling.kinghacker.customView.ChartView;
 import com.welling.kinghacker.customView.FilterView;
@@ -34,11 +35,6 @@ import com.welling.kinghacker.tools.SystemTool;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +60,6 @@ public class BloodSugerActivity extends MTActivity {
     List<String> items;
     MTDialog mtDialog;
     OxygenMTDialog oxygenMTDialog;
-    public  ChartView ChartView;
     public static boolean update = false;
     public SugerBean sugerBean = null;
     public float currentSugerValue = 0;
@@ -99,6 +94,9 @@ public class BloodSugerActivity extends MTActivity {
 
         setParentView(findViewById(R.id.universalMoudleRootView1));
         rootView = (FrameLayout)findViewById(R.id.universalUpView1);
+        if(singleBloodSugerView==null)
+            singleBloodSugerView = new BloodSugerView(this);
+        else rootView.removeView(singleBloodSugerView.getBloodSugerView());
         rootView.addView(singleBloodSugerView.getBloodSugerView());
         if(singleBloodSugerView==null)
             singleBloodSugerView = new BloodSugerView(this);
@@ -171,12 +169,6 @@ public class BloodSugerActivity extends MTActivity {
                 gotoActivity(MainDoctorActivity.class);
             }
         });
-
-        mtToast = new MTToast(this);
-        items = new ArrayList<>();
-        getAllTimeList();
-        if(ChartView==null)
-            drawLineChart();
     }
     @Override
     protected void onPostCreate(Bundle saveBundle){
@@ -207,13 +199,12 @@ public class BloodSugerActivity extends MTActivity {
         multipleView.setOriginPoint(originPointX, originPointY);
         multipleView.setYLength((int)(originPointY - getResources().getDimension(R.dimen.originalY)/2));
         List<String> xaxis = new ArrayList<>();
-        int count = 50;
-        for (int i= 1;i<count;i++){
+        for (int i= 1;i<numberOfData;i++){
             xaxis.add(bloodUpdateTime1[i]);
         }
         multipleView.setXaxis(xaxis);
         List<Float> yaxis = new ArrayList<>();
-        for (int i= 1;i<count;i++){
+        for (int i= 1;i<numberOfData;i++){
             float num = bloodSugerData1[i]*10;
             int num1 = (int) num;
             double num3=num1*0.1;
@@ -259,16 +250,19 @@ public class BloodSugerActivity extends MTActivity {
                 if (multipleView == null){
                     drawLineChart();
                 }
+                rootView.startAnimation(rightInAnimation);
+                rootView.addView(multipleView.getRootView());
 
-                else{
+                viewType = ViewType.all;
+/*                else{
                     //默认展示最近10个数据
                     ChartView.numberOfData = 10;
-                    ChartView.initDate();
-                    rootView.removeView(ChartView);
+                    multipleView.initDate();
+                    rootView.removeView(multipleView);
                 }
                 rootView.startAnimation(rightInAnimation);
-                rootView.addView(ChartView);
-                viewType = ViewType.all;
+                rootView.addView(multipleView);
+                viewType = ViewType.all;  */
             }
         }else if (text.contentEquals(PublicRes.getInstance().bloodSugerItem3)){
             final FilterView filterView = new FilterView(this);
@@ -299,12 +293,12 @@ public class BloodSugerActivity extends MTActivity {
                                 }
                             }
                             ChartView.numberOfData = number;//改变最大容量
-                            if(ChartView!=null){
+                            if(multipleView!=null){
                                 rootView.removeAllViews();
-                                ChartView.initDate();
-                                rootView.removeView(ChartView);
+                                multipleView.initDate();
+                                rootView.removeView(multipleView);
                                 rootView.startAnimation(rightInAnimation);
-                                rootView.addView(ChartView);
+                                rootView.addView(multipleView);
                                 viewType = ViewType.choose;
                             }
                             filterView.dismiss();
@@ -320,12 +314,12 @@ public class BloodSugerActivity extends MTActivity {
                                 }
                             }
                             ChartView.numberOfData = number;//改变最大容量
-                            if(ChartView!=null){
+                            if(multipleView!=null){
                                 rootView.removeAllViews();
-                                ChartView.initDate();
-                                rootView.removeView(ChartView);
+                                multipleView.initDate();
+                                rootView.removeView(multipleView);
                                 rootView.startAnimation(rightInAnimation);
-                                rootView.addView(ChartView);
+                                rootView.addView(multipleView);
                                 viewType = ViewType.choose;
                             }
                             filterView.dismiss();
@@ -345,12 +339,12 @@ public class BloodSugerActivity extends MTActivity {
                                 }
                             }
                             ChartView.numberOfData = number;//改变最大容量
-                            if(ChartView!=null){
+                            if(multipleView!=null){
                                 rootView.removeAllViews();
-                                ChartView.initDate();
-                                rootView.removeView(ChartView);
+                                multipleView.initDate();
+                                rootView.removeView(multipleView);
                                 rootView.startAnimation(rightInAnimation);
-                                rootView.addView(ChartView);
+                                rootView.addView(multipleView);
                                 viewType = ViewType.choose;
                             }
                             filterView.dismiss();
@@ -444,12 +438,12 @@ public class BloodSugerActivity extends MTActivity {
                             }
                             Log.i("日期",number+"");
                             ChartView.numberOfData = number;//改变最大容量
-                            if(ChartView!=null){
+                            if(multipleView!=null){
                                 rootView.removeAllViews();
-                                ChartView.initDateAnother(endTime);
-                                rootView.removeView(ChartView);
+                                multipleView.initDateAnother(endTime);
+                                rootView.removeView(multipleView);
                                 rootView.startAnimation(rightInAnimation);
-                                rootView.addView(ChartView);
+                                rootView.addView(multipleView);
                                 viewType = ViewType.choose;
                             }
                             filterView.dismiss();
@@ -512,10 +506,8 @@ public class BloodSugerActivity extends MTActivity {
 
                 jsonObject.put("time",time);
                 manager.updateToCloud(this, jsonObject.toString(), MTHttpManager.BS, i);
-                Log.i("123", jsonObject.toString());
             }
         } catch (JSONException e) {
-            Log.i("123","updateExc");
             e.printStackTrace();
         }
     }
@@ -596,7 +588,7 @@ public class BloodSugerActivity extends MTActivity {
                             }catch (NumberFormatException e){
                                 e.printStackTrace();
                             }
-                            if (data != 0) {
+                            if (data<=30&&data>0) {
                                 //将测量结果保存
                                 SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
                                 Date curDate =new  Date(System.currentTimeMillis());
@@ -607,11 +599,13 @@ public class BloodSugerActivity extends MTActivity {
                                 //将信息插入
                                 sugerBean.insert();
                                 init();
-                                if(ChartView!=null){
+                                if(multipleView!=null){
                                     ChartView.numberOfData = 10;
-                                    ChartView.initDate();
+                                    multipleView.initDate();
                                 }
                                 updateToCloud();
+                            }else{
+                                Toast.makeText(BloodSugerActivity.this,"数据不合法",Toast.LENGTH_LONG).show();
                             }
 
                             oxygenMTDialog.dismiss();
@@ -626,9 +620,9 @@ public class BloodSugerActivity extends MTActivity {
     protected void onResume() {
         super.onResume();
         init();
-        if(ChartView!=null){
-            BloodOxygenChartView.numberOfData = 10;
-            ChartView.initDate();
+        if(multipleView!=null){
+            ChartView.numberOfData = 10;
+//            multipleView.initDate();
         }
         if(update){
             updateToCloud();
@@ -669,8 +663,7 @@ public class BloodSugerActivity extends MTActivity {
             manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
                 @Override
                 public void onSuccess(int requestId, JSONObject JSONResponse) {
-                    Log.i("123", "success");
-                    dealWithOxygen(JSONResponse);
+//                    Log.i("123", "success");dealWithOxygen(JSONResponse);
                 }
 
                 @Override
@@ -687,7 +680,7 @@ public class BloodSugerActivity extends MTActivity {
         }
     }
 
-    void dealWithOxygen(JSONObject object){
+/*    void dealWithOxygen(JSONObject object){
         int state = 0;
         String error;
         Log.i("123", object.toString());
@@ -706,7 +699,7 @@ public class BloodSugerActivity extends MTActivity {
             Log.i("123","excshow");
             e.printStackTrace();
         }
-    }
+    }  */
 
     boolean getLocalSuger(String chooseTime){
         Log.i("123", "getLocal");
