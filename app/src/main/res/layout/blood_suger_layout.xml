@@ -12,6 +12,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         >
         <TextView
+            android:id="@+id/SugerAttr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -20,12 +21,14 @@
             android:textColor="@color/colorWhite"
             />
         <LinearLayout
+            android:id="@+id/SugerTimeChoose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             >
             <TextView
+                android:id="@+id/SugerDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -35,6 +38,7 @@
                 android:gravity="end"
                 />
             <TextView
+                android:id="@+id/SugerTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"

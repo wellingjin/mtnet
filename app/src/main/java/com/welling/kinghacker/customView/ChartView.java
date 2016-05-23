@@ -11,6 +11,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.welling.kinghacker.activities.R;
+import com.welling.kinghacker.bean.OxygenDataRecord;
+import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.tools.FontTool;
 import com.welling.kinghacker.tools.SystemTool;
 
@@ -22,8 +24,13 @@ import java.util.List;
  **/
 public class ChartView extends View {
 
+    public float bloodSugerData[] = null,bloodSugerData1[] = null;
+    public String bloodUpdateTime[] = null,bloodUpdateTime1[] = null;
+    private Context context;
     private LinearLayout rootView;
 
+    public static int numberOfData = 10;
+    public int leftI,rightI;
     private List<String> Xaxis;
     private List<Float> Yaxis;
     private int diagramWidth,diagramHeight;
@@ -361,6 +368,47 @@ public class ChartView extends View {
         }
         return max;
     }
+    }
+
+    public void initDate(){
+        //存储数据
+        bloodSugerData1 = new float[numberOfData];
+        bloodUpdateTime1 =new String [numberOfData];
+        for(int i=0;i<numberOfData;i++) bloodSugerData1[i] = 100-i;
+        SugerBean sugerbean = new SugerBean(context,numberOfData);
+        bloodSugerData1 = sugerbean.getRecentlyMoreData();
+        bloodUpdateTime1 = sugerbean.getRecentlyMoreTime();
+        //展示的数据
+        leftI = 0;
+        rightI = 6;
+        setData(leftI, rightI);
+    }
+    public void initDateAnother(String endTime){
+        //存储数据
+        bloodSugerData1 = new float[numberOfData];
+        bloodUpdateTime1 =new String [numberOfData];
+        for(int i=0;i<numberOfData;i++) bloodSugerData1[i] = 100-i;
+        SugerBean sugerbean = new SugerBean(context,numberOfData);
+        bloodSugerData1 = (float[])sugerbean.getRecentlyMoreChooseData(endTime);
+        bloodUpdateTime1 = sugerbean.getRecentlyMoreTime();
+        //展示的数据
+        leftI = 0;
+        rightI = 6;
+        setData(leftI,rightI);
+    }
+    public void setData(int leftI,int rightI){
+        bloodSugerData = new float[7];
+        bloodUpdateTime = new String [7];
+        for(int i=leftI,j=0;i<rightI+1;i++,j++) {
+            if(i<numberOfData) {
+                bloodSugerData[j] = bloodSugerData1[i];
+                bloodUpdateTime[j] = bloodUpdateTime1[i];
+            }
+            else{
+                bloodSugerData[j] = 0;
+                bloodUpdateTime[j]=null;
+            }
+        }
     }
 
 }
