@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.customView.BloodSugerView;
@@ -336,7 +337,8 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                     final float data = bloodGlusoce;
                                     mDataUp.setOnClickListener(new OnClickListener() {
                                         public void onClick(View v) {
-                                            if (data != 0) {
+                                            BloodSugerActivity ACT = new BloodSugerActivity();
+                                            if (data<=30&&data>0) {
                                                 //将测量结果保存
                                                 SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
                                                 Date curDate =new  Date(System.currentTimeMillis());
@@ -346,12 +348,14 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                                 sugerBean.createTable();
                                                 //将信息插入
                                                 sugerBean.insert();
-                                                sugerAct.init();
+                                                ACT.init();
                                                 if(ChartView!=null){
                                                     ChartView.numberOfData = 10;
                                                     ChartView.initDate();
                                                 }
-                                                sugerAct.updateToCloud();
+                                                ACT.updateToCloud();
+                                            }else{
+                                                Toast.makeText(IGateActivity.this,"数据不合法",Toast.LENGTH_LONG).show();
                                             }
                                             AlertDialog.Builder builder  = new AlertDialog.Builder(IGateActivity.this);
                                             builder.setTitle("提示" ) ;
