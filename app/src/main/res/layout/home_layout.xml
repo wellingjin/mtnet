@@ -24,6 +24,7 @@
             >
             <com.welling.kinghacker.customView.RippleView
                 android:layout_weight="1"
+                android:id="@+id/bloodSugerButton"
                 >
                 <Button
                     android:layout_width="match_parent"

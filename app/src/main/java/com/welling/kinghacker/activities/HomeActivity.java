@@ -2,12 +2,12 @@ package com.welling.kinghacker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.creative.filemanage.ECGFile;
 import com.welling.kinghacker.bean.BloodPressureBean;
+import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.customView.BloodOxygenView;
 import com.welling.kinghacker.customView.BloodPressureView;
 import com.welling.kinghacker.customView.BloodSugerView;
@@ -30,6 +30,7 @@ public class HomeActivity extends MTActivity {
     private ElectrocarDiogram diogram;
     private TextView ELCTime,ELCattr,ELCDate;
 
+    private String stime,sattr,sdate;
     private String time,attr,date;
     //全局变量定义
     enum cuteItem {ED,BS,BP,BO}//分别表示，心电，血糖，血压，血氧
@@ -38,6 +39,7 @@ public class HomeActivity extends MTActivity {
     String [] titleText = new String[5];
     int[] color = new int[5];
     private BloodSugerView bloodSugerView;
+    public  Float currentSugerValue = 0f;
     float bloodSugerValue = 8f;
     private BloodPressureView bloodPressureView;
     private boolean isExit = false;
@@ -107,9 +109,44 @@ public class HomeActivity extends MTActivity {
     }
 
     private void initBloodSuger(){
-        bloodSugerView = new BloodSugerView(this);
+//        bloodSugerView = new BloodSugerView(this);
 //        设置血糖值和容器高度
-        bloodSugerView.setBloodSugerValue(bloodSugerValue);
+//        bloodSugerView.setBloodSugerValue(bloodSugerValue);
+        float high = 16f;
+        float low = 3.9f;
+        SugerBean suger = new SugerBean(this);
+        String value =  suger.getRecentlyOneData();
+        if(value!=null) {
+            String[] dateTime = new String[3];
+            dateTime = value.split(",");
+            currentSugerValue = Float.parseFloat(dateTime[0]);
+            sdate = dateTime[1];
+            stime = dateTime[2];
+            sattr = "正常";
+            if (currentSugerValue >= high) {
+                sattr = "高血糖";
+            }
+            else if (currentSugerValue <= low) {
+                sattr = "低血糖";
+            }
+        }
+        if (bloodSugerView == null)
+            bloodSugerView = new BloodSugerView(this);
+        bloodSugerView.setBloodSugerValue(currentSugerValue);
+        if(value!=null) {
+            bloodSugerView.setBloodSugerDate(sdate);
+            bloodSugerView.setBloodSugerTime(stime);
+            bloodSugerView.setBloodSugerAttr(sattr);
+        }
+        RippleView bloodOxygenButton = (RippleView)findViewById(R.id.bloodSugerButton);
+        bloodOxygenButton.setRippleDuration(bloodOxygenButton.getRippleDuration()/2);
+        bloodOxygenButton.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView rippleView) {
+                Intent intent = new Intent(HomeActivity.this, BloodSugerActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     private void initBloodPressure(){
         if(bloodPressureView==null)bloodPressureView = new BloodPressureView(this);
@@ -226,7 +263,7 @@ public class HomeActivity extends MTActivity {
                 if (position == cuteItem.BS.ordinal()) {
                     bloodSugerView.startAnimation();
                 }else if (position == cuteItem.BP.ordinal()){
-                   bloodPressureView.startAnimation();
+                    bloodPressureView.startAnimation();
                 }else if (position == cuteItem.BO.ordinal()){
                     bloodOxygenView.startAnimation();
                 }
@@ -266,5 +303,6 @@ public class HomeActivity extends MTActivity {
         super.onResume();
         initBloodOxygen();
         initBloodPressure();
+        initBloodSuger();
     }
 }

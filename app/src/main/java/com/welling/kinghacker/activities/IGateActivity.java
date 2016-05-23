@@ -15,12 +15,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.customView.BloodSugerView;
+import com.welling.kinghacker.customView.ChartView;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 import cn.novacomm.ble.iGate;
@@ -29,6 +33,7 @@ import cn.novacomm.ble.iGateCallBacks;
 public class IGateActivity extends MTActivity implements iGateCallBacks {
     private static final int ENABLE_BT_REQUEST_ID = 1;
 
+    public  ChartView ChartView;
     private BloodSugerView singleBloodSugerView;
     private Intent intentdata;
     private boolean dataRevice = false;
@@ -163,7 +168,7 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
             Log.i("------", String.format("iGate disconnect %s", mConnectedBluetoothDevicesAddress.get(i)));
             mIgate.iGateDeviceDisconnect(mConnectedBluetoothDevicesAddress.get(i));
         }
-        if(mIgate.getIGateState()== iGateCallBacks.iGateHostState.iGateHostStateSearching){
+        if(mIgate.getIGateState()== iGateHostState.iGateHostStateSearching){
             mIgate.stopScanning();
         }
         super.onBackPressed();
@@ -332,14 +337,26 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                     final float data = bloodGlusoce;
                                     mDataUp.setOnClickListener(new OnClickListener() {
                                         public void onClick(View v) {
-                                            //将测量结果保存
-                                            sugerBean = new SugerBean(IGateActivity.this,data);
-                                            //创建表  当然有分析 如果表存在就不创建
-                                            sugerBean.createTable();
-                                            //将信息插入
-                                            sugerBean.insert();
-                                            sugerAct.currentSugerValue = data;
-                                            sugerAct.myHandler.sendEmptyMessage(1);
+                                            BloodSugerActivity ACT = new BloodSugerActivity();
+                                            if (data<=30&&data>0) {
+                                                //将测量结果保存
+                                                SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
+                                                Date curDate =new  Date(System.currentTimeMillis());
+                                                String time1 = formatter.format(curDate);
+                                                sugerBean = new SugerBean(IGateActivity.this,data,time1);
+                                                //创建表  当然有分析 如果表存在就不创建
+                                                sugerBean.createTable();
+                                                //将信息插入
+                                                sugerBean.insert();
+                                                ACT.init();
+                                                if(ChartView!=null){
+                                                    ChartView.numberOfData = 10;
+                                                    ChartView.initDate();
+                                                }
+                                                ACT.updateToCloud();
+                                            }else{
+                                                Toast.makeText(IGateActivity.this,"数据不合法",Toast.LENGTH_LONG).show();
+                                            }
                                             AlertDialog.Builder builder  = new AlertDialog.Builder(IGateActivity.this);
                                             builder.setTitle("提示" ) ;
                                             builder.setMessage("数据上传成功" ) ;
