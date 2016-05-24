@@ -262,7 +262,7 @@ public class HomeActivity extends MTActivity {
                 setActionBarTitle(titleText[position]);
                 if (position == cuteItem.BS.ordinal()) {
                     bloodSugerView.startAnimation();
-                }else if (position == cuteItem.BP.ordinal()){
+               }else if (position == cuteItem.BP.ordinal()){
                     bloodPressureView.startAnimation();
                 }else if (position == cuteItem.BO.ordinal()){
                     bloodOxygenView.startAnimation();

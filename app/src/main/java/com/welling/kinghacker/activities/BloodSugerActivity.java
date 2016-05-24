@@ -3,8 +3,6 @@ package com.welling.kinghacker.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,14 +14,12 @@ import android.widget.Toast;
 
 import com.loopj.android.http.RequestParams;
 import com.welling.kinghacker.bean.SugerBean;
-import com.welling.kinghacker.customView.BloodOxygenChartView;
 import com.welling.kinghacker.customView.BloodSugerView;
 import com.welling.kinghacker.customView.ChartView;
 import com.welling.kinghacker.customView.FilterView;
 import com.welling.kinghacker.customView.MTDialog;
 import com.welling.kinghacker.customView.MTToast;
 import com.welling.kinghacker.customView.OverFlowView;
-
 import com.welling.kinghacker.customView.OxygenMTDialog;
 import com.welling.kinghacker.database.DatabaseManager;
 import com.welling.kinghacker.tools.FontTool;
@@ -35,14 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -58,19 +49,19 @@ public class BloodSugerActivity extends MTActivity {
     private enum ViewType{single,multiple,all,choose}
     private ViewType viewType;
     public BloodSugerView singleBloodSugerView;
-    private ChartView multipleView;
+    private com.welling.kinghacker.customView.ChartView multipleView;
     private Animation rightInAnimation;
     MTToast mtToast;
     List<String> items;
     MTDialog mtDialog;
     OxygenMTDialog oxygenMTDialog;
-    public  ChartView ChartView;
+    public com.welling.kinghacker.customView.ChartView ChartView;
     public static boolean update = false;
     public SugerBean sugerBean = null;
     public float currentSugerValue = 0;
     float high = 16f;
     float low = 3.9f;
-
+    public static boolean isupdate = false;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -638,11 +629,6 @@ public class BloodSugerActivity extends MTActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        init();
-        if(ChartView!=null){
-            BloodOxygenChartView.numberOfData = 10;
-            ChartView.initDate();
-        }
         if(update){
             updateToCloud();
             update = false;
@@ -655,7 +641,7 @@ public class BloodSugerActivity extends MTActivity {
         builder.setTitle("选择一个时间的血糖数据");
         //    指定下拉列表的显示数据
 
-        final String[] cities ;
+         String[] cities ;
 
         cities = new String[timeList.size()];
         for (int i=0;i<timeList.size();i++){
