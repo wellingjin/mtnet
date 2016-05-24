@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
-import com.welling.kinghacker.bean.MTBean;
 import com.welling.kinghacker.database.TableItem;
 import com.welling.kinghacker.tools.PublicRes;
 import com.welling.kinghacker.tools.SystemTool;
@@ -15,7 +14,6 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by 13wlli on 2016/5/13.
@@ -42,13 +40,13 @@ public class SugerBean extends MTBean {
         this.tableName = "BloodSugerData"+ SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
 
-    public SugerBean(Context context,int number){
+    public SugerBean(Context context, int number){
         super(context);
         init();
         this.numberOfDate = number;
     }
 
-    public SugerBean(Context context,float sugervalue,String time){
+    public SugerBean(Context context, float sugervalue, String time){
         super(context);
         init();
         this.sugervalue = sugervalue;

@@ -11,7 +11,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.welling.kinghacker.activities.R;
-import com.welling.kinghacker.bean.OxygenDataRecord;
 import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.tools.FontTool;
 import com.welling.kinghacker.tools.SystemTool;
