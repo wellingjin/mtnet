@@ -67,7 +67,7 @@
 	
 	<string name="ble_not_supported">该设备不支持BLE</string>
     <string name="connected">已连接</string>
-    <string name="disconnected">未连接</string>
+    <string name="disconnected">正在连接...</string>
     <string name="title_devices">可用设备</string>
     <string name="error_bluetooth_not_supported">该设备不支持蓝牙</string>
     <string name="textViewState">没发现 iGate 设备</string>
