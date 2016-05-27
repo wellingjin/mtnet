@@ -24,6 +24,11 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="未连接"/>
+				<ProgressBar
+					android:id="@+id/trytoconnprobar"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					style="@android:style/Widget.ProgressBar.Small"/>
 			</LinearLayout>
 			<TextView
 				android:layout_marginRight="15dp"
@@ -157,6 +162,7 @@
 				android:id="@+id/start_to_measure"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:enabled="false"
 				android:text="开始量测"/>
 			<TextView
 				android:id="@+id/sendtoservertext"
