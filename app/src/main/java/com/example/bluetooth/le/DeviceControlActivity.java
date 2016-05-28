@@ -48,11 +48,11 @@ public class DeviceControlActivity extends MTActivity {
 	private TextView bloodpressure_state=null;
 	private ProgressBar pressure_bar=null;
 	private ProgressBar showuptoservernow_1;
+	private ProgressBar trytoconnprobar;
     private MyHandler handler=new MyHandler();
     private final int UPDATE_PRESSURE=0,SHOWBLOODPRESSURE=1,SETBAR2ZERO=2;
 	private final static String TAG = DeviceControlActivity.class
 			.getSimpleName();
-
 	public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
 	public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
@@ -124,6 +124,7 @@ public class DeviceControlActivity extends MTActivity {
 		heart_rate_pro=(TextView)findViewById(R.id.heart_rate_pro);
 		showtime=(TextView)findViewById(R.id.showtime);
 		pressure_bar=(ProgressBar)findViewById(R.id.pressure_bar);
+		trytoconnprobar=(ProgressBar)findViewById(R.id.trytoconnprobar);
 		showuptoservernow_1=(ProgressBar)findViewById(R.id.showuptoservernow_1);
 		heart_rate_pro.setVisibility(View.GONE);
 		final Intent intent = getIntent();
@@ -174,6 +175,13 @@ public class DeviceControlActivity extends MTActivity {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
+				if(!mConnected){
+					trytoconnprobar.setVisibility(View.VISIBLE);
+					start_to_measure.setEnabled(false);
+				}else{
+					trytoconnprobar.setVisibility(View.GONE);
+					start_to_measure.setEnabled(true);
+				}
 				status_dev.setText(resourceId);
 			}
 		});
