@@ -43,7 +43,7 @@
             android:textSize="18sp"
             android:gravity="start"
             android:hint="@string/accountHint"
-            android:ems="12"
+            android:ems="10"
             android:textColorHint="@color/colorHint"
             android:labelFor="@id/account"
             />
@@ -71,7 +71,7 @@
             android:layout_weight="4"
             android:textSize="18sp"
             android:gravity="start"
-            android:ems="12"
+            android:ems="10"
             android:labelFor="@id/password"
             android:inputType="textPassword"
             />

@@ -93,7 +93,7 @@
             android:text="@string/confirmPassword"
             android:textSize="@dimen/normalTextSize"
             android:gravity="end"
-            android:layout_marginLeft="@dimen/activity_vertical_margin"
+
             />
         <EditText
             android:id="@+id/registerComfirePsd"
@@ -174,7 +174,6 @@
                 android:text="@string/identityCard"
                 android:textSize="@dimen/normalTextSize"
                 android:gravity="end"
-                android:layout_marginLeft="@dimen/activity_vertical_margin"
                 />
             <EditText
                 android:id="@+id/registerID"
@@ -233,48 +232,48 @@
         android:textColor="@color/colorWhite"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="这是一个很长的问题"
-        android:textSize="@dimen/normalTextSize"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        />
-    <EditText
-        android:id="@+id/registerAnswer1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="这是一个很长的问题"
-        android:textSize="@dimen/normalTextSize"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        />
-    <EditText
-        android:id="@+id/registerAnswer2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="这是一个很长的问题"
-        android:textSize="@dimen/normalTextSize"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        />
-    <EditText
-        android:id="@+id/registerAnswer3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/question1"
+            android:textSize="@dimen/normalTextSize"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            />
+        <EditText
+            android:id="@+id/registerAnswer1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/question2"
+            android:textSize="@dimen/normalTextSize"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            />
+        <EditText
+            android:id="@+id/registerAnswer2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/question3"
+            android:textSize="@dimen/normalTextSize"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            />
+        <EditText
+            android:id="@+id/registerAnswer3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            />
     </LinearLayout>
     </ScrollView>
 

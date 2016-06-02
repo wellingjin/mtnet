@@ -54,6 +54,9 @@
         <item>你的女儿叫什么？</item>
         <item>你的初恋叫什么？</item>
     </string-array>
+    <string name="question1">你的生日？</string>
+    <string name="question2">你最喜欢看的书？</string>
+    <string name="question3">你最喜欢的人？</string>
 
     <string name="baseInfo">基本信息</string>
     <string name="persionalInfo">个人信息</string>

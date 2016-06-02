@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.creative.base.BLUReader;
 import com.creative.base.BLUSender;
 import com.creative.base.BaseDate;
 import com.creative.ecg.ECG;
@@ -63,7 +62,7 @@ public class ElectorDragramActivity extends MTActivity {
     int sumSize = 0,fileNum=0;
     MTDialog mtDialog;
     TextView ELCDate,ELCTime,ELCattr;
-
+    int ECGanalisy = 0;
     int retryNum = 0;
 
     BluetoothConnectUtils connectUtils;
@@ -78,7 +77,7 @@ public class ElectorDragramActivity extends MTActivity {
             MTTRANS = 0x006;//实时传输
 
     Handler handler;
-//    boolean isFinish = false;
+    //    boolean isFinish = false;
     ElectrocarDiogram diogram;
     @Override
     protected void onCreate(Bundle saveBundle){
@@ -116,7 +115,7 @@ public class ElectorDragramActivity extends MTActivity {
                         sumSize = 0;
                         break;
                     case MTOUTOFTIME:
-                       // showAlertDialog("文件接收超时", true, true,true,false);
+                        // showAlertDialog("文件接收超时", true, true,true,false);
                         break;
 
                 }
@@ -184,11 +183,48 @@ public class ElectorDragramActivity extends MTActivity {
             }
         });
 
+        ELCattr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert();
+            }
+        });
+
         mtToast = new MTToast(this);
         items = new ArrayList<>();
         getAllTimeList();
     }
+    void alert(){
+        String alertTitle = "异常警告！";
+        String text = "";
+        if(ECGanalisy == 0){
+            alertTitle = "温馨提示！";
+        }
+        if(ECGanalisy <= PublicRes.ELCresult.length) {
+            text = PublicRes.ELCresult[ECGanalisy];
+        }
 
+        text += " 是否咨询医生？";
+
+        new AlertDialog.Builder(this).setTitle(alertTitle)//设置对话框标题
+
+                .setMessage(text)//设置显示的内容
+
+                .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+                        // TODO Auto-generated method stub
+                        gotoActivity(MainDoctorActivity.class);
+                    }
+
+                }).setNegativeButton("取消",new DialogInterface.OnClickListener() {//添加返回按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {//响应事件
+                // TODO Auto-generated method stub
+            }
+
+        }).show();//在按键响应事件中显示此对话框
+    }
     void showELC(ECGFile file){
         if (file != null) {
             diogram.stopDram();
@@ -206,7 +242,8 @@ public class ElectorDragramActivity extends MTActivity {
         ELCDate.setText(dateTime[0]);
         ELCTime.setText(dateTime[1]);
         String attr = "异常";
-        if (file.nAnalysis == 0){
+        ECGanalisy = file.nAnalysis;
+        if (ECGanalisy == 0){
             attr = "正常";
         }
         Log.i(TAG, PublicRes.ELCresult[file.nAnalysis]);
@@ -269,13 +306,36 @@ public class ElectorDragramActivity extends MTActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                if (connectUtils!=null) {
-                    connectUtils.closeSocket();
-                    connectUtils = null;
-                    mtDialog = null;
-                }
-                startSearchBlueTooth();
+                new AlertDialog.Builder(this).setTitle("提示")//设置对话框标题
+
+                        .setMessage("蓝牙已打开，是否开始匹配")//设置显示的内容
+
+                        .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
+                            @Override
+
+                            public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+
+                                // TODO Auto-generated method stub
+                                startSearchBlueTooth();
+                            }
+
+                        }).setNegativeButton("取消",new DialogInterface.OnClickListener() {//添加返回按钮
+
+
+
+                    @Override
+
+                    public void onClick(DialogInterface dialog, int which) {//响应事件
+
+                        // TODO Auto-generated method stub
+
+
+                    }
+
+                }).show();//在按键响应事件中显示此对话框
+
             }
+
         }
 
     }
@@ -330,17 +390,7 @@ public class ElectorDragramActivity extends MTActivity {
                         break;
                     case BluetoothConnectUtils.CONNECT_FAILED:
                         showAlertDialog("连接失败...", true, true, true, false);
-                        retryNum++;
-                        if(retryNum <5) {
-                            Log.i(TAG,"retry"+retryNum);
-                            if (connectUtils!=null) {
-                                connectUtils.closeSocket();
-                                connectUtils = null;
-                            }
-                            discoverBlueTooth();
-                        }else {
-                            retryNum = 0;
-                        }
+                        reConnet();
                         break;
                     case BluetoothConnectUtils.CONNECTED:
                         showAlertDialog("连接成功，等待接收文件...", false, true, true, false);
@@ -350,6 +400,7 @@ public class ElectorDragramActivity extends MTActivity {
                         break;
                     case BluetoothConnectUtils.SEARCH_FAILED:
                         showAlertDialog("搜索失败...", true, true, true, false);
+//                        reConnet();
                         break;
 
                 }
@@ -357,7 +408,19 @@ public class ElectorDragramActivity extends MTActivity {
         });
 
     }
-
+    void reConnet(){
+        retryNum++;
+        if(retryNum <3) {
+            Log.i(TAG,"retry"+retryNum);
+            if (connectUtils!=null) {
+                connectUtils.closeSocket();
+                connectUtils = null;
+            }
+            discoverBlueTooth();
+        }else {
+            retryNum = 0;
+        }
+    }
     void showAlertDialog(String str,boolean prgHide,boolean barHiden,boolean caEnable,boolean coEnable){
         if (mtDialog == null){
             mtDialog = new MTDialog(this);
@@ -368,7 +431,6 @@ public class ElectorDragramActivity extends MTActivity {
                     switch (which){
 
                         case 0://取消
-
                             break;
                         case 1://确定
                             updateToCloud();
@@ -471,6 +533,7 @@ public class ElectorDragramActivity extends MTActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+
                 }
                 if (state == 0){
                     makeToast("获取历史列表失败");
@@ -488,7 +551,7 @@ public class ElectorDragramActivity extends MTActivity {
     }
     private void showTimeChoose(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(R.drawable.shape_circle);
+        builder.setIcon(android.R.drawable.ic_menu_search);
         builder.setTitle("选择一个时间的心电数据");
         //    指定下拉列表的显示数据
 
@@ -742,4 +805,5 @@ public class ElectorDragramActivity extends MTActivity {
         msg.arg1 = hr;
         handler.sendMessage(msg);
     }
+
 }

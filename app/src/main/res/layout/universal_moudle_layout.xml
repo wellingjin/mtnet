@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/lineWidth"
             android:background="@color/colorWhite"
-           >
+            >
         </LinearLayout>
         <Button
             android:id="@+id/synButton"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/sync_blood_suger"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/date_size"
             />
         <LinearLayout
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/query_medicine"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/date_size"
             />
         <LinearLayout
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/date_size"
             android:text="@string/doctor_info"
             />

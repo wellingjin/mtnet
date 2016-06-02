@@ -1,9 +1,14 @@
 package com.welling.kinghacker.activities;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +52,18 @@ public class RegisterActivity extends MTActivity{
         birthday = (TextView)findViewById(R.id.registerBirdthday);
         summit = (Button)findViewById(R.id.registerCommitButton);
         editID = (EditText)findViewById(R.id.registerID);
-
+        sex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSexDialog();
+            }
+        });
+        birthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimeDialog();
+            }
+        });
         summit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +78,45 @@ public class RegisterActivity extends MTActivity{
                 }
             }
         });
+    }
+    public void setAgeText(String text){
+        birthday.setText(text);
+    }
+    private void showTimeDialog(){
+        Log.i("information","data");
+        DatePickerDialog pickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                setAgeText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+            }
+        },2016,2,3);
+        pickerDialog.show();
+    }
+    private void showSexDialog(){
+        Log.i("information", "sex");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("");
+        //    指定下拉列表的显示数据
+
+        final String[] cities ={"女","男"};
+
+
+
+        //    设置一个下拉的列表选择项
+        builder.setItems(cities, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setSexText(which);
+            }
+        });
+        builder.show();
+    }
+    public void setSexText(int sex){
+        String text = "男";
+        if (sex == 0){
+            text = "女";
+        }
+        this.sex.setText(text);
     }
     //提交注册
     private void summitRegist(){
