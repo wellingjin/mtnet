@@ -31,7 +31,7 @@ public class ELCBean  extends MTBean{
 
     @Override
     public void init() {
-        TABLENAME = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT)+"ECG";
+        TABLENAME = "ECG"+SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
 
     public void update(){

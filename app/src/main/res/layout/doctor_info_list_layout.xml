@@ -25,6 +25,7 @@
             android:layout_height="@dimen/nameHeight"
             android:text="@string/blood_fat"
             android:textSize="@dimen/nameSize"
+            android:singleLine="true"
             />
         <TextView
             android:id="@+id/descText"

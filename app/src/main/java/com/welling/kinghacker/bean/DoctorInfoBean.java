@@ -50,7 +50,7 @@ public class DoctorInfoBean extends MTBean {
 
     @Override
     public void init() {
-        TABLENAME = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT) + "DoctorInfo";
+        TABLENAME =  "DoctorInfo"+SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
 
     public DoctorInfoBean(Context context,int doctorID){

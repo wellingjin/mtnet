@@ -289,11 +289,6 @@ public class ElectorDragramActivity extends MTActivity {
             // mBluetoothAdapter.enable();
             // mBluetoothAdapter.disable();//关闭蓝牙
         }else {
-            /*if (connectUtils!=null) {
-                connectUtils.closeSocket();
-                connectUtils = null;
-                mtDialog = null;
-            }*/
             startSearchBlueTooth();
         }
 
@@ -691,7 +686,6 @@ public class ElectorDragramActivity extends MTActivity {
             //    当bfinish值为1代表传输完成
             if (bFinish == 1 ){
                 Log.i(TAG,"完成");
-//                isFinish = true;
             }
             try {
                 if(srcByte == null){
@@ -711,10 +705,6 @@ public class ElectorDragramActivity extends MTActivity {
                     bean.fileName = ECGFilesUtils.packECGFile(ecgFile);
                     saveFileToLocal(bean);
                     handler.sendEmptyMessage(MTFINISH);
-
-//                    handler.sendEmptyMessage(MTFINISH);
-//                    setHR(ecgFile.nAverageHR);
-//                    setAnalysisResult(ecgFile.nAnalysis-1);
 
                 }else {
                     Log.i(TAG, "空"+bFinish);

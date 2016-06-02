@@ -56,7 +56,7 @@ public class MedicineBean extends MTBean {
 
     @Override
     public void init() {
-        TABLENAME = SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT) +  "medicinebean";
+        TABLENAME =  "medicinebean"+SystemTool.getSystem(context).getStringValue(PublicRes.ACCOUNT);
     }
 
     public MedicineBean(Context context,int medicineID){
