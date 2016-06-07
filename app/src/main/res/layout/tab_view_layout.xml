@@ -8,10 +8,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical">
     <ImageView
+        android:contentDescription="@string/startTime"
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/abc_ic_ab_back_material"
+        android:background="@drawable/arrow"
         />
     </com.welling.kinghacker.customView.RippleView>
     <LinearLayout
@@ -45,7 +46,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/abc_ic_menu_overflow_material"
+        android:background="@drawable/sanpoint"
         />
 </com.welling.kinghacker.customView.RippleView>
 </FrameLayout>

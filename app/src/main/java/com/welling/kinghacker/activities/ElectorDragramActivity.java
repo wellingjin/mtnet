@@ -484,9 +484,6 @@ public class ElectorDragramActivity extends MTActivity {
             Log.i(TAG,"updateExc");
             e.printStackTrace();
         }
-
-
-
     }
     void getLocalTimeList(){
         timeList.clear();
