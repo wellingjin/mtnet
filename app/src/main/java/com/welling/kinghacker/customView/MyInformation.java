@@ -25,8 +25,8 @@ import org.json.JSONObject;
  * 我的信息
  */
 public class MyInformation {
-    private EditText editName,editPhone,editID;
-    private TextView textSex,textAge;
+    private EditText editName,editPhone,editID,textAge;
+    private TextView textSex;
     private View rootView ;
     private Button saveButton;
     private PersonalInfo info;
@@ -39,7 +39,7 @@ public class MyInformation {
         editName = (EditText)rootView.findViewById(R.id.personName);
         editPhone = (EditText)rootView.findViewById(R.id.personPhone);
         editID = (EditText)rootView.findViewById(R.id.personID);
-        textAge = (TextView)rootView.findViewById(R.id.personBirdthday);
+        textAge = (EditText)rootView.findViewById(R.id.personBirdthday);
         textSex = (TextView)rootView.findViewById(R.id.personSex);
         saveButton = (Button)rootView.findViewById(R.id.save);
         textSex.setOnClickListener(new View.OnClickListener() {
@@ -48,12 +48,12 @@ public class MyInformation {
                 showSexDialog();
             }
         });
-        textAge.setOnClickListener(new View.OnClickListener() {
+        /*textAge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimeDialog();
             }
-        });
+        });*/
         setEditEnable(false);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +146,7 @@ public class MyInformation {
         editName.setEnabled(editEnable);
         editID.setEnabled(editEnable);
         textSex.setClickable(editEnable);
-        textAge.setClickable(editEnable);
+        textAge.setEnabled(editEnable);
         if (editEnable){
             saveButton.setVisibility(View.VISIBLE);
         }else {

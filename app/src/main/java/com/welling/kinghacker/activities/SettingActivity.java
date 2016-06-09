@@ -46,6 +46,8 @@ public class SettingActivity extends MTActivity {
                 gotoActivity(LoginActivity.class);
                 break;
             case 2:
+                gotoActivity(LoginActivity.class);
+                finish();
                 break;
         }
     }

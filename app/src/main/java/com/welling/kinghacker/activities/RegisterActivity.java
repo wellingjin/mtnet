@@ -27,8 +27,8 @@ import org.json.JSONObject;
  *
  */
 public class RegisterActivity extends MTActivity{
-    EditText account,password,comfirePassword,name,phone,answer1,answer2,answer3,editID;
-    TextView sex,birthday;
+    EditText account,password,comfirePassword,name,phone,answer1,answer2,answer3,editID,birthday;
+    TextView sex;
     Button summit;
     ProgressDialog progressDialog;
     @Override
@@ -49,7 +49,7 @@ public class RegisterActivity extends MTActivity{
         answer2 = (EditText)findViewById(R.id.registerAnswer2);
         answer3 = (EditText)findViewById(R.id.registerAnswer3);
         sex = (TextView)findViewById(R.id.registerSex);
-        birthday = (TextView)findViewById(R.id.registerBirdthday);
+        birthday = (EditText)findViewById(R.id.registerBirdthday);
         summit = (Button)findViewById(R.id.registerCommitButton);
         editID = (EditText)findViewById(R.id.registerID);
         sex.setOnClickListener(new View.OnClickListener() {
@@ -58,12 +58,12 @@ public class RegisterActivity extends MTActivity{
                 showSexDialog();
             }
         });
-        birthday.setOnClickListener(new View.OnClickListener() {
+        /*birthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimeDialog();
             }
-        });
+        });*/
         summit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +158,7 @@ public class RegisterActivity extends MTActivity{
             sexInt = 1;
         }
         params.put("sex", sexInt);
-        params.put("birthday",birthday.getText().toString());
+        params.put("age",birthday.getText().toString());
         params.put("phone",phone.getText().toString());
         params.put("idNumber",editID.getText().toString());
         params.put("answer1",answer1.getText().toString());
