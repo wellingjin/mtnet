@@ -1,5 +1,6 @@
 package com.welling.kinghacker.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 public class ChangePasswordActivity extends MTActivity{
     EditText account,oldPassword,answer1,answer2,answer3,password,comfirePassword;
     Button summit;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +42,25 @@ public class ChangePasswordActivity extends MTActivity{
         summit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changePassword();
+                if (check()) {
+                    changePassword();
+                }
             }
         });
     }
+    private boolean check(){
+        if (password.getText().toString().length() <= 7){
+            makeToast("密码长度不能少于8位");
+            return false;
+        }
+        if (!password.getText().toString().equals(comfirePassword.getText().toString())){
+            makeToast("密码不一致");
+            return false;
+        }
+        return true;
+    }
     private void changePassword(){
+        progressDialog = ProgressDialog.show(this,"请稍候","正在验证登录信息...");
         MTHttpManager manager = new MTHttpManager();
         manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
             @Override
@@ -63,13 +79,14 @@ public class ChangePasswordActivity extends MTActivity{
                 }else {
                     makeToast(error);
                 }
-
+                dismissProgress();
 
             }
 
             @Override
             public void onFailure(int requestId, int errorCode) {
-
+                dismissProgress();
+                makeToast("修改失败，错误码："+errorCode);
             }
         });
         RequestParams params = new RequestParams();
@@ -80,5 +97,10 @@ public class ChangePasswordActivity extends MTActivity{
         params.put("answer3",answer3.getText().toString());
         params.put("newPassword",password.getText().toString());
         manager.post(params,manager.getRequestID(),"changePassword.do");
+    }
+    private void dismissProgress(){
+        if (progressDialog != null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 }

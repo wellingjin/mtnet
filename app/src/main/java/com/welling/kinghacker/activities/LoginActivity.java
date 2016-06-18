@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,12 +39,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        SystemTool.getSystem(this).saveBooleanKV(PublicRes.AUTOLOGIN, false);
+//        SystemTool.getSystem(this).saveBooleanKV(PublicRes.AUTOLOGIN, true);
         String accountStr = SystemTool.getSystem(this).getStringValue(PublicRes.ACCOUNT);
         String passwordStr = SystemTool.getSystem(this).getStringValue(PublicRes.PASSWORD, "");
         Boolean isAutoLogin = SystemTool.getSystem(this).getBooleanValue(PublicRes.AUTOLOGIN, false);
         if (isAutoLogin){
-            login(accountStr,passwordStr);
+            jumpActivity(HomeActivity.class);
+//            login(accountStr,passwordStr);
         }
 
         setContentView(R.layout.activity_login);
@@ -184,6 +186,16 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void makeToast(String content){
         Toast.makeText(this,content,Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addCategory(Intent.CATEGORY_HOME);
+            startActivity(i);
+        }
+        return super.onKeyDown(keyCode, event);
     }
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

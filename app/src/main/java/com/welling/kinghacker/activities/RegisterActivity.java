@@ -180,8 +180,8 @@ public class RegisterActivity extends MTActivity{
             account.requestFocus();
             return false;
         }
-        if (password.getText().toString().length() <= 6){
-            makeToast("密码不能少于6位");
+        if (password.getText().toString().length() <= 7){
+            makeToast("密码不能少于8位");
             password.requestFocus();
             return false;
         }
@@ -208,6 +208,12 @@ public class RegisterActivity extends MTActivity{
         if (editID.getText().toString().length() != 18){
             makeToast("身份证号码不符合规则，必须为18位");
             phone.requestFocus();
+            return false;
+        }
+        int age = Integer.parseInt(birthday.getText().toString());
+        if (age < 0 || age>120){
+            makeToast("年龄不合法，必须是0~120之间");
+            birthday.requestFocus();
             return false;
         }
         if (answer1.getText().toString().length() <= 0){
