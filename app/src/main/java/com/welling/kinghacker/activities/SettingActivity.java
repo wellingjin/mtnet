@@ -6,6 +6,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.welling.kinghacker.tools.PublicRes;
+import com.welling.kinghacker.tools.SystemTool;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +46,11 @@ public class SettingActivity extends MTActivity {
             case 0:
                 break;
             case 1:
+                SystemTool.getSystem(this).saveBooleanKV(PublicRes.AUTOLOGIN, false);
                 gotoActivity(LoginActivity.class);
                 break;
             case 2:
+                SystemTool.getSystem(this).saveBooleanKV(PublicRes.AUTOLOGIN, false);
                 gotoActivity(LoginActivity.class);
                 finish();
                 break;
