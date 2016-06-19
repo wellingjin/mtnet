@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * Created by KingHacker on 2/28/2016.
+ * 血压部分用我的手机测试还是不能正常运行！  ——13wlli
  **/
 public class HomeActivity extends MTActivity {
     private ElectrocarDiogram diogram;

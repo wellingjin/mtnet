@@ -626,14 +626,14 @@ public class BloodSugerActivity extends MTActivity {
             });
         }
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(update){
-            updateToCloud();
-            update = false;
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if(update){
+//            updateToCloud();
+//            update = false;
+//        }
+//    }
 
     private void showTimeChoose(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -19,11 +19,18 @@ import android.widget.Toast;
 
 import com.welling.kinghacker.bean.SugerBean;
 import com.welling.kinghacker.customView.BloodSugerView;
+import com.welling.kinghacker.database.DatabaseManager;
+import com.welling.kinghacker.tools.MTHttpManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import cn.novacomm.ble.iGate;
@@ -38,6 +45,7 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
     private boolean dataRevice = false;
     private TextView mIGateState;
     private TextView mReceivedData;
+    private Button mConfig;
     private Button mButtonSend;
     private Button mDataUp;
     private Button mButtonFinish;
@@ -45,7 +53,6 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
     private ArrayList<String> mConnectedBluetoothDevicesAddress=new ArrayList<String>();
     private int sendIndex=0;
     public SugerBean sugerBean = null;
-    BloodSugerActivity sugerAct;
     public float sugarData;
 
     //private String mConnectedBluetoothAddress=null;
@@ -81,6 +88,8 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                 IGateActivity.this.finish();
             }
         });
+        mConfig = (Button) findViewById(R.id.config);
+
         mButtonSend = (Button) findViewById(R.id.buttonSend);
         mButtonSend.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -325,6 +334,12 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                 mReceivedData.append("\n接收到数据为："+String.format("%.1f",bloodGlusoce));
                                 mReceivedData.append("mmol/L");
                                 mReceivedData.append(",数据类型为：血糖。\n");
+                                if(bloodGlusoce<ChartView.ym)
+                                    mReceivedData.append("您的血糖低于正常值，请多注意身体健康！\n");
+                                if(bloodGlusoce>ChartView.yn)
+                                    mReceivedData.append("您的血糖高于正常值，请多注意身体健康！\n");
+                                if(bloodGlusoce>ChartView.ym&&bloodGlusoce<ChartView.yn)
+                                    mReceivedData.append("您的血糖处于正常值，身体很健康！\n");
                                 if(measureData[i+2].equals("0")||measureData[i+2].startsWith("0")){
                                     intentdata.putExtra("type", "1");
                                     intentdata.putExtra("bloodGlusoce", String.format("%.1f",bloodGlusoce));
@@ -332,8 +347,14 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                     mButtonCleanData.setVisibility(View.VISIBLE);
                                     mDataUp.setVisibility(View.VISIBLE);
                                     mButtonSend.setVisibility(View.INVISIBLE);
+                                    mConfig.setVisibility(View.INVISIBLE);
 
-                                    sugarData = bloodGlusoce;
+//                                    sugarData = bloodGlusoce;
+                                    double b1 = bloodGlusoce*10;
+                                    int b2 = (int)b1;
+                                    double b3= b2*0.1;
+                                    sugarData = (float) b3;
+                                    Log.i("333","血糖数据是："+sugarData);
                                     mDataUp.setOnClickListener(new OnClickListener() {
                                         public void onClick(View v) {
                                             if (sugarData<=30&&sugarData>0) {
@@ -352,10 +373,11 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                                     ChartView.numberOfData = 10;
                                                     ChartView.initDate();
                                                 }
+                                                updateToCloud();
                                             }else{
                                                 Toast.makeText(IGateActivity.this,"数据不合法",Toast.LENGTH_LONG).show();
                                             }
-                                            BloodSugerActivity.update = true;
+//                                            BloodSugerActivity.update = true;
                                             AlertDialog.Builder builder  = new AlertDialog.Builder(IGateActivity.this);
                                             builder.setTitle("提示" ) ;
                                             builder.setMessage("数据上传成功" ) ;
@@ -367,6 +389,14 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
                                 }
                                 break;
                             }
+                        }
+                        if(tempData.startsWith("&M")){
+                            AlertDialog.Builder builder  = new AlertDialog.Builder(IGateActivity.this);
+                            builder.setTitle("提示" ) ;
+                            builder.setMessage("新血糖仪配置成功" ) ;
+                            builder.setPositiveButton("确定" ,  null );
+                            builder.show();
+                            mConfig.setVisibility(View.INVISIBLE);
                         }
                         if(tempData.startsWith("&J1")){
                             mReceivedData.append("血糖仪数据清空完毕!\n");
@@ -404,6 +434,27 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
         mIGateState.setText(getString(R.string.str_connected) + allConnectedDevices);
     }
 
+    public void config(View v){
+        // Send a message using content of the edit text widget
+        String message;
+        message = "&TD 25720";
+
+        if(sendIndex<mConnectedBluetoothDevicesAddress.size()){
+            mIgate.iGateDeviceSendData(mConnectedBluetoothDevicesAddress.get(sendIndex), message.getBytes());
+        }
+        else{
+            sendIndex=0;
+            if(mConnectedBluetoothDevicesAddress.size()>0){
+                mIgate.iGateDeviceSendData(mConnectedBluetoothDevicesAddress.get(sendIndex), message.getBytes());
+                Log.i("------",String.format("iGate State %d",mIgate.iGateDeviceGetState(mConnectedBluetoothDevicesAddress.get(sendIndex)).ordinal()));
+            }
+        }
+        sendIndex++;
+        if(sendIndex==mConnectedBluetoothDevicesAddress.size()){
+            sendIndex=0;
+        }
+    }
+
     public void cleanData(View v){
         // Send a message using content of the edit text widget
         String message;
@@ -427,4 +478,60 @@ public class IGateActivity extends MTActivity implements iGateCallBacks {
 
     private iGate mIgate=null;
 
+    public void updateToCloud(){
+        MTHttpManager manager = new MTHttpManager();
+
+        final List<SugerBean> beans = new ArrayList<>();
+        manager.setHttpResponseListener(new MTHttpManager.HttpResponseListener() {
+            @Override
+            public void onSuccess(int requestId, JSONObject JSONResponse) {
+                if (requestId < beans.size()) {
+                    beans.get(requestId).update();
+                    if (requestId == beans.size() - 1)
+                        makeToast("上传云端成功");
+//                    Toast.makeText(BloodSugerActivity.this, "上传云端成功", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int requestId, int errorCode) {
+//                Toast.makeText(BloodSugerActivity.this, "上传云端失败", Toast.LENGTH_LONG).show();
+                if (requestId == beans.size() - 1)
+                    makeToast("上传云端失败");
+            }
+        });
+
+        DatabaseManager dbManager = new DatabaseManager(this);
+        JSONObject object = dbManager.getMultiRaw(new SugerBean(this).tableName, SugerBean.ISUPDATE,null, "0");
+
+        try {
+            int count = object.getInt("count");
+            Log.i("123", "count:" + count);
+            if(count==0) makeToast("没有可以上传的数据");
+            else
+                for(int i=0;i<count;i++){
+                    SugerBean bean = new SugerBean(this);
+                    bean.updatetime = object.getJSONObject(""+i).getString(SugerBean.UPDATETIME);
+                    beans.add(bean);
+                    String time =null;
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("SugerValue",object.getJSONObject(""+i).getInt(SugerBean.SUGERVALUE));
+                    SimpleDateFormat formatter = new  SimpleDateFormat  ("yyyy年MM月dd日HH:mm:ss");
+                    try {
+                        long st = formatter.parse(object.getJSONObject("" + i).getString(SugerBean.UPDATETIME)).getTime();
+                        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        time =formatter.format(st);
+                    }catch (ParseException e){
+                        e.printStackTrace();
+                    }
+
+                    jsonObject.put("time",time);
+                    manager.updateToCloud(this, jsonObject.toString(), MTHttpManager.BS, i);
+                    Log.i("123", jsonObject.toString());
+                }
+        } catch (JSONException e) {
+            Log.i("123","updateExc");
+            e.printStackTrace();
+        }
+    }
 }

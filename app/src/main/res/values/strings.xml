@@ -75,10 +75,12 @@
     <string name="title_devices">可用设备</string>
     <string name="error_bluetooth_not_supported">该设备不支持蓝牙</string>
     <string name="textViewState">没发现 iGate 设备</string>
+    <string name="button_config">新蓝牙一键配置</string>
     <string name="button_send">下载蓝牙数据</string>
     <string name="finish">下载完成，返回</string>
-    <string name="cleandata">清除数据</string>
-    <string name="dataup">上传数据</string>
+    <string name="mind"> </string>
+    <string name="cleandata">清除血糖仪数据</string>
+    <string name="dataup">上  传  数  据</string>
     <string name="str_connected">iGate设备连接:</string>
     <string name="str_scanning">正在查找iGate设备...</string>
     <string name="str_idle">iGate 闲置中...</string>
