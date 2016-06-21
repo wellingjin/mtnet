@@ -28,6 +28,8 @@ public class ChartView extends View {
     private Context context;
     private LinearLayout rootView;
 
+    public static double ym=3.9;    //低血糖上限
+    public static double yn=16;     //高血糖下限
     public static int numberOfData = 10;
     public int leftI,rightI;
     private List<String> Xaxis;
@@ -212,11 +214,9 @@ public class ChartView extends View {
         int pointSize = points.size();
         if (pointSize < 2) return;
         for (int i = 0;i < pointSize-1;i++){
-            double xm,ym,xn,yn;
+            double xm,xn;
             float  y1 = getY(intervalY * Yaxis.get(i)),y2= getY(intervalY * Yaxis.get(i+1));
             double x=150;  //数据到折线图的X轴偏移为150
-            ym=3.9;    //低血糖上限
-            yn=16;     //高血糖下限
 
             //低于低血糖上限画灰线
              if(Yaxis.get(i)<ym&&Yaxis.get(i+1)<ym) canvas.drawLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y,linePaintL);

@@ -23,18 +23,60 @@
         android:layout_height="fill_parent"
         android:layout_alignLeft="@+id/textViewState"
         android:layout_alignTop="@dimen/activity_vertical_margin"
-        android:layout_below="@+id/cleandatabutton"
+        android:layout_below="@+id/buttonSend"
         android:layout_marginTop="14dp"
         android:background="#deee00"
-        android:text="这里显示结果:" />
+        android:text="这里显示结果:"/>
 
+    <Button
+        android:visibility="invisible"
+        android:text="@string/dataup"
+        android:id="@+id/dataUp"
+        android:layout_toLeftOf="@+id/mind"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/textViewRxData"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:id="@+id/mind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/textViewRxData"
+        android:text="@string/mind"
+        />
+
+    <Button
+        android:visibility="invisible"
+        android:onClick="cleanData"
+        android:textColor="#aaee0000"
+        android:id="@+id/cleandatabutton"
+        android:text="@string/cleandata"
+        android:layout_alignBottom="@+id/textViewRxData"
+        android:layout_toRightOf="@+id/mind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:id="@+id/config"
+        android:onClick="config"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewState"
+        android:text="@string/button_config" />
     <Button
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
         android:id="@+id/buttonSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewState"
+        android:layout_below="@+id/config"
         android:text="@string/button_send" />
     <Button
         android:visibility="invisible"
@@ -47,27 +89,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
-    <Button
-        android:visibility="invisible"
-        android:text="@string/dataup"
-        android:id="@+id/dataUp"
-        android:layout_below="@id/buttonSend"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-    <Button
-        android:visibility="invisible"
-        android:onClick="cleanData"
-        android:textColor="#aaee0000"
-        android:id="@+id/cleandatabutton"
-        android:text="@string/cleandata"
-        android:layout_below="@id/dataUp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
 
 
